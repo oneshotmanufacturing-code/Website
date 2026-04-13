@@ -11,7 +11,7 @@ export const COMPANY = {
   gstin: "27AAIFM2903L1Z5",
   address: "L140, MIDC, Ahilyanagar, Maharashtra, India - 414111",
   mapsUrl: "https://maps.app.goo.gl/1WyyRTztDgSzYjEw8",
-  phone: "+91 98765 43210",
+  phone: "+91 95884 46409",
   email: "info@mayurprecision.in",
   inquiryEmail: "info@mayurprecision.in",
   businessHours: {
