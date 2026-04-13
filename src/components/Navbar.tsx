@@ -3,14 +3,29 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { NAV_LINKS } from "@/lib/constants";
 import Button from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [portalPath, setPortalPath] = useState("/portal");
   const pathname = usePathname();
+
+  useEffect(() => {
+    const supabase = createClient();
+    // Get initial user
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user ?? null));
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,12 +92,22 @@ export default function Navbar() {
           {/* CTA + Mobile Burger */}
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2">
-              <Link
-                href="/login"
-                className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors"
-              >
-                Login
-              </Link>
+              {user ? (
+                <Link
+                  href="/portal"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-accent-primary hover:text-accent-primary/80 transition-colors"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  My Portal
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-accent-primary transition-colors"
+                >
+                  Login
+                </Link>
+              )}
               <Button variant="primary" size="sm" href="/services#quote-builder">
                 Get a Quote
               </Button>
