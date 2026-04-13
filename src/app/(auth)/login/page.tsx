@@ -37,10 +37,11 @@ export default function LoginPage() {
       .eq("id", data.user.id)
       .single();
 
+    // Full reload so middleware can read the fresh session cookie
     if (profile?.role === "admin") {
-      router.push("/admin");
+      window.location.href = "/admin";
     } else {
-      router.push("/portal");
+      window.location.href = "/portal";
     }
   }
 
