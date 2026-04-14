@@ -33,7 +33,7 @@ export const FOOTER_LINKS = {
     { label: "Wire & Cable Prep", href: "/services#wire-cable" },
     { label: "PCB Assembly", href: "/services#pcb-assembly" },
     { label: "Raw Material Sourcing", href: "/services#material" },
-    { label: "Door-Step Pickup & Delivery", href: "/services#quote-builder" },
+    { label: "Door-Step Pickup & Delivery", href: "/services#logistics" },
     { label: "Get a Quote", href: "/services#quote-builder" },
   ],
   company: [
@@ -62,12 +62,6 @@ export const DIFFERENTIATORS = [
     description:
       "Buyer-supplied, we-procure, or hybrid — choose the model that fits your budget.",
     icon: "Package",
-  },
-  {
-    title: "Competitive Pricing",
-    description:
-      "Transparent, volume-based pricing with no hidden charges.",
-    icon: "IndianRupee",
   },
   {
     title: "Free Door-Step Pickup & Delivery",

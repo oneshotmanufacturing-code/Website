@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Phone, Mail, MessageSquare } from "lucide-react";
+import { CheckCircle, Phone, Mail, MessageSquare, ArrowRight, ExternalLink } from "lucide-react";
 
 const STATUSES = ["new", "contacted", "converted", "closed"] as const;
 type Status = typeof STATUSES[number];
@@ -18,10 +18,22 @@ export default function AdminQuoteActions({
   quoteId,
   currentStatus,
   adminNotes,
+  customerId,
+  phone,
+  email,
+  serviceType,
+  quantity,
+  companyName,
 }: {
   quoteId: string;
   currentStatus: string;
   adminNotes: string;
+  customerId?: string | null;
+  phone?: string;
+  email?: string;
+  serviceType?: string;
+  quantity?: number | null;
+  companyName?: string;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState<Status>(currentStatus as Status);
@@ -41,6 +53,15 @@ export default function AdminQuoteActions({
     setTimeout(() => { setSaved(false); router.refresh(); }, 1500);
   }
 
+  function handleConvertToOrder() {
+    const params = new URLSearchParams();
+    if (customerId) params.set("customer_id", customerId);
+    if (serviceType) params.set("description", serviceType === "pcb" ? "PCB Assembly" : "Wire & Cable Preparation");
+    if (quantity) params.set("quantity", String(quantity));
+    params.set("quote_id", quoteId);
+    router.push(`/admin/orders/new?${params.toString()}`);
+  }
+
   return (
     <div className="glass-card p-6">
       <h2 className="font-semibold text-text-primary mb-4 text-sm uppercase tracking-wider text-accent-primary">
@@ -48,13 +69,22 @@ export default function AdminQuoteActions({
       </h2>
 
       {/* Quick contact buttons */}
-      <div className="flex gap-2 mb-5">
-        <a href="#" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-400/10 border border-green-400/20 text-green-400 text-xs hover:bg-green-400/20 transition-colors">
-          <Phone className="w-3.5 h-3.5" /> Call
-        </a>
-        <a href="#" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-400/10 border border-blue-400/20 text-blue-400 text-xs hover:bg-blue-400/20 transition-colors">
-          <Mail className="w-3.5 h-3.5" /> Email
-        </a>
+      <div className="flex gap-2 mb-5 flex-wrap">
+        {phone && (
+          <a href={`tel:${phone}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-400/10 border border-green-400/20 text-green-400 text-xs hover:bg-green-400/20 transition-colors">
+            <Phone className="w-3.5 h-3.5" /> Call
+          </a>
+        )}
+        {email && (
+          <a href={`mailto:${email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-400/10 border border-blue-400/20 text-blue-400 text-xs hover:bg-blue-400/20 transition-colors">
+            <Mail className="w-3.5 h-3.5" /> Email
+          </a>
+        )}
+        {customerId && (
+          <a href={`/portal`} target="_blank" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs hover:bg-accent-primary/20 transition-colors">
+            <ExternalLink className="w-3.5 h-3.5" /> View Portal
+          </a>
+        )}
       </div>
 
       {/* Status */}
@@ -93,19 +123,36 @@ export default function AdminQuoteActions({
         />
       </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="btn-glow flex items-center gap-2 px-6 py-2.5 disabled:opacity-60"
-      >
-        {saved ? (
-          <><CheckCircle className="w-4 h-4" /> Saved!</>
-        ) : saving ? (
-          <><span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" /> Saving…</>
-        ) : (
-          "Save Changes"
+      <div className="flex gap-3 flex-wrap">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="btn-glow flex items-center gap-2 px-6 py-2.5 disabled:opacity-60"
+        >
+          {saved ? (
+            <><CheckCircle className="w-4 h-4" /> Saved!</>
+          ) : saving ? (
+            <><span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" /> Saving…</>
+          ) : (
+            "Save Changes"
+          )}
+        </button>
+
+        {/* Convert to Order - only if quote has a registered customer */}
+        {customerId && (
+          <button
+            onClick={handleConvertToOrder}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-green-400/30 text-green-400 bg-green-400/5 hover:bg-green-400/15 transition-colors text-sm font-medium"
+          >
+            <ArrowRight className="w-4 h-4" /> Convert to Order
+          </button>
         )}
-      </button>
+        {!customerId && (
+          <p className="text-xs text-text-muted self-center">
+            ⚠ No portal account linked — customer must sign up to create an order
+          </p>
+        )}
+      </div>
     </div>
   );
 }

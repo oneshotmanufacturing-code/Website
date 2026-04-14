@@ -9,13 +9,31 @@ export default async function PortalProfilePage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
     .single();
 
+  // Create a blank profile if one doesn't exist yet
+  if (!profile) {
+    await supabase.from("profiles").insert({
+      id: user.id,
+      email: user.email,
+      company_name: "",
+      contact_name: "",
+      role: "customer",
+    });
+    const { data: newProfile } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    profile = newProfile;
+  }
+
   if (!profile) redirect("/portal");
 
   return <ProfileClient profile={profile} />;
 }
+

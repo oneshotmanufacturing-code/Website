@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Package, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -13,17 +13,18 @@ interface Profile {
 
 export default function NewOrderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [customers, setCustomers] = useState<Profile[]>([]);
   const [form, setForm] = useState({
-    customer_id: "",
+    customer_id: searchParams.get("customer_id") ?? "",
     order_number: "",
-    description: "",
-    quantity: "",
+    description: searchParams.get("description") ?? "",
+    quantity: searchParams.get("quantity") ?? "",
     amount: "",
     expected_delivery: "",
     delivery_address: "",
     pickup_required: false,
-    internal_notes: "",
+    internal_notes: searchParams.get("quote_id") ? `Converted from quote #${searchParams.get("quote_id")}` : "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

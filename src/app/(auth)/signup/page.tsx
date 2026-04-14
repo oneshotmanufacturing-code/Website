@@ -29,7 +29,6 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   function update(field: keyof FormData) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -75,28 +74,21 @@ export default function SignupPage() {
         return;
       }
 
-      // 2. Insert profile
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: authData.user.id,
+      // 2. Update profile details (trigger auto-created the profile row)
+      await supabase.from("profiles").update({
         contact_name: form.contactName,
         company_name: form.companyName,
         phone: form.phone,
-        email: form.email,
-        gstin: form.gstin,
+        gstin: form.gstin || null,
         address: form.address,
         city: form.city,
         state: form.state,
         pincode: form.pincode,
-        role: "customer",
-      });
+      }).eq("id", authData.user.id);
 
-      if (profileError) {
-        setError("Account created but profile save failed. Please contact support.");
-        setLoading(false);
-        return;
-      }
+      // Redirect to portal immediately
+      window.location.href = "/portal";
 
-      setSuccess(true);
     } catch (err) {
       console.error("Signup error:", err);
       setError("Could not connect to the server. Please check your internet connection and try again.");
@@ -105,25 +97,6 @@ export default function SignupPage() {
     }
   }
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 circuit-bg">
-        <div className="glass-card p-10 max-w-md w-full text-center">
-          <div className="w-16 h-16 rounded-full bg-accent-primary/15 border border-accent-primary/30 flex items-center justify-center mx-auto mb-4">
-            <Mail className="w-7 h-7 text-accent-primary" />
-          </div>
-          <h2 className="font-display text-2xl font-bold text-text-primary mb-3">Check your email</h2>
-          <p className="text-text-secondary text-sm leading-relaxed mb-6">
-            We&apos;ve sent a confirmation link to <strong className="text-text-primary">{form.email}</strong>.
-            Click it to activate your account, then log in.
-          </p>
-          <Link href="/login" className="btn-glow inline-flex items-center gap-2">
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const inputClass = "w-full px-4 py-3 rounded-xl bg-bg-tertiary/40 border border-border-subtle text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-primary/60 focus:ring-1 focus:ring-accent-primary/30 transition-colors";
   const labelClass = "block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5";

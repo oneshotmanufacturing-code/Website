@@ -46,6 +46,7 @@ export default async function PortalPage() {
 
   const quickLinks = [
     { label: "My Orders", desc: "Track your orders and status", icon: Package, href: "/portal/orders" },
+    { label: "My Quotes", desc: "Track your quote requests", icon: ClipboardList, href: "/portal/quotes" },
     { label: "Invoices", desc: "Download your GST invoices", icon: FileText, href: "/portal/invoices" },
     { label: "My Profile", desc: "View company info & GSTIN", icon: User, href: "/portal/profile" },
   ];
@@ -61,7 +62,7 @@ export default async function PortalPage() {
               Customer Portal
             </p>
             <h1 className="font-display text-3xl font-bold text-text-primary">
-              Welcome, {profile?.company_name ?? "Customer"}
+              Welcome, {profile?.contact_name ?? profile?.company_name ?? "Customer"}
             </h1>
             <p className="text-text-muted text-sm mt-1">{user.email}</p>
           </div>

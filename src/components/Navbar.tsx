@@ -13,17 +13,32 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [portalPath, setPortalPath] = useState("/portal");
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
     const supabase = createClient();
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => setUser(user ?? null));
-    // Listen for auth changes
+
+    const fetchName = async (userId: string) => {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("contact_name, company_name")
+        .eq("id", userId)
+        .single();
+      setDisplayName(profile?.contact_name ?? profile?.company_name ?? null);
+    };
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user ?? null);
+      if (user) fetchName(user.id);
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) fetchName(session.user.id);
+      else setDisplayName(null);
     });
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -98,7 +113,7 @@ export default function Navbar() {
                   className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-accent-primary hover:text-accent-primary/80 transition-colors"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5" />
-                  My Portal
+                  {displayName ? displayName.split(" ")[0] : "My Portal"}
                 </Link>
               ) : (
                 <Link

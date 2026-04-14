@@ -94,7 +94,17 @@ export default async function AdminQuoteDetailPage({ params }: { params: { id: s
           </div>
 
           {/* Admin Actions */}
-          <AdminQuoteActions quoteId={quote.id} currentStatus={quote.status} adminNotes={quote.admin_notes ?? ""} />
+          <AdminQuoteActions
+            quoteId={quote.id}
+            currentStatus={quote.status}
+            adminNotes={quote.admin_notes ?? ""}
+            customerId={quote.customer_id ?? null}
+            phone={quote.phone}
+            email={quote.email}
+            serviceType={quote.service_type}
+            quantity={quote.quantity}
+            companyName={quote.company_name}
+          />
         </div>
       </div>
     </div>
