@@ -143,6 +143,49 @@ export const PCB_ASSEMBLY_SERVICES: ServiceGroup = {
   ],
 };
 
+export const CNC_SERVICES: ServiceGroup = {
+  id: "cnc-manufacturing",
+  title: "CNC Manufacturing",
+  description:
+    "High-precision CNC milled parts, gear manufacturing, and turned components in various materials. Upload your drawings for an accurate quotation.",
+  icon: "Settings",
+  categories: [
+    {
+      id: "cnc-types",
+      title: "Manufacturing Types",
+      items: [
+        "CNC Milling (3, 4, 5-Axis)",
+        "CNC Turning / Lathe",
+        "Gear Manufacturing",
+        "Precision Machining",
+        "Sheet Metal Fabrication",
+      ],
+    },
+    {
+      id: "cnc-materials",
+      title: "Materials",
+      items: [
+        "Aluminum (6061, 7075)",
+        "Stainless Steel (304, 316)",
+        "Mild Steel / Carbon Steel",
+        "Brass & Copper",
+        "Plastics (Delrin, Nylon, PEEK)",
+      ],
+    },
+    {
+      id: "cnc-finishes",
+      title: "Surface Finishes",
+      items: [
+        "As Machined",
+        "Anodizing (Clear, Hard, Color)",
+        "Powder Coating",
+        "Bead Blasting",
+        "Plating (Zinc, Nickel)",
+      ],
+    },
+  ],
+};
+
 export const RAW_MATERIAL_OPTIONS = {
   id: "material",
   title: "Raw Material Sourcing",
@@ -191,7 +234,16 @@ export const PCB_TYPE_OPTIONS = PCB_ASSEMBLY_SERVICES.categories
   .find((c) => c.id === "assembly-types")!
   .items;
 
+export const CNC_TYPE_OPTIONS = CNC_SERVICES.categories
+  .find((c) => c.id === "cnc-types")!
+  .items;
+
+export const CNC_MATERIAL_OPTIONS = CNC_SERVICES.categories
+  .find((c) => c.id === "cnc-materials")!
+  .items;
+
 export const ALL_SERVICE_GROUPS: ServiceGroup[] = [
   WIRE_CABLE_SERVICES,
   PCB_ASSEMBLY_SERVICES,
+  CNC_SERVICES,
 ];

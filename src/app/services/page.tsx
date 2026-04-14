@@ -1,6 +1,6 @@
 import React from "react";
 import type { Metadata } from "next";
-import { Cable, Cpu, ShoppingBag, ArrowRight } from "lucide-react";
+import { Cable, Cpu, ShoppingBag, Settings } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import ServiceCard from "@/components/ServiceCard";
@@ -8,6 +8,7 @@ import QuoteBuilder from "@/components/QuoteBuilder";
 import {
   WIRE_CABLE_SERVICES,
   PCB_ASSEMBLY_SERVICES,
+  CNC_SERVICES,
   RAW_MATERIAL_OPTIONS,
 } from "@/lib/serviceData";
 
@@ -87,6 +88,20 @@ export default function ServicesPage() {
               }
               categories={PCB_ASSEMBLY_SERVICES.categories}
               accentColor="accent-secondary"
+            />
+          </div>
+
+          {/* CNC Manufacturing */}
+          <div id="cnc-manufacturing">
+            <ServiceCard
+              title={CNC_SERVICES.title}
+              description={CNC_SERVICES.description}
+              icon={
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-emerald-500/20">
+                  <Settings className="w-6 h-6 text-emerald-400" />
+                </div>
+              }
+              categories={CNC_SERVICES.categories}
             />
           </div>
 

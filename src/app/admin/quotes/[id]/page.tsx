@@ -91,6 +91,20 @@ export default async function AdminQuoteDetailPage({ params }: { params: { id: s
                 <p className="text-text-secondary text-sm">{quote.message}</p>
               </div>
             )}
+            
+            {quote.design_file_url && (
+              <div className="mt-4 pt-4 border-t border-border-subtle">
+                <p className="text-xs text-text-muted mb-2 flex items-center gap-1">Attached Design File</p>
+                <a 
+                  href={quote.design_file_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-accent-primary/30 bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 transition-colors text-sm font-medium"
+                >
+                  View / Download File
+                </a>
+              </div>
+            )}
           </div>
 
           {/* Admin Actions */}

@@ -20,9 +20,11 @@ import {
   PROCESSING_OPTIONS,
   PCB_TYPE_OPTIONS,
   RAW_MATERIAL_OPTIONS,
+  CNC_TYPE_OPTIONS,
+  CNC_MATERIAL_OPTIONS,
 } from "@/lib/serviceData";
 
-type ServiceType = "wire_cable" | "pcb" | "both";
+type ServiceType = "wire_cable" | "pcb" | "both" | "cnc";
 
 interface ConnectorEntry {
   id: string;
@@ -41,6 +43,10 @@ interface QuoteFormData {
   // PCB
   pcbType: string;
   boardQty: string;
+  // CNC
+  cncType: string;
+  cncMaterial: string;
+  cncQty: string;
   // Common
   materialSupply: string;
   notes: string;
@@ -61,6 +67,9 @@ const initialForm: QuoteFormData = {
   cableLength: "",
   pcbType: "",
   boardQty: "",
+  cncType: "",
+  cncMaterial: "",
+  cncQty: "",
   materialSupply: "buyer",
   notes: "",
   name: "",
@@ -181,6 +190,14 @@ function formatQuoteText(form: QuoteFormData): string {
     lines.push("");
   }
 
+  if (form.serviceType === "cnc") {
+    lines.push("── CNC Manufacturing ──");
+    if (form.cncType) lines.push(`Manufacturing Type: ${form.cncType}`);
+    if (form.cncMaterial) lines.push(`Material: ${form.cncMaterial}`);
+    if (form.cncQty) lines.push(`Quantity: ${form.cncQty}`);
+    lines.push("");
+  }
+
   lines.push(`Material Supply: ${form.materialSupply}`);
   if (form.notes) {
     lines.push(`Notes: ${form.notes}`);
@@ -200,6 +217,7 @@ export default function QuoteBuilder() {
   const [copied, setCopied] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [designFile, setDesignFile] = useState<File | null>(null);
 
   const update = <K extends keyof QuoteFormData>(
     key: K,
@@ -253,6 +271,24 @@ export default function QuoteBuilder() {
       // Check if user is logged in to link quote to their profile
       const { data: { user } } = await supabase.auth.getUser();
 
+      // Handle Design File Upload
+      let designFileUrl = null;
+      if (designFile) {
+        const fileExt = designFile.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from("quote_documents")
+          .upload(fileName, designFile);
+        
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from("quote_documents")
+          .getPublicUrl(fileName);
+          
+        designFileUrl = publicUrl;
+      }
+
       const specs = {
         ...(form.serviceType === "wire_cable" || form.serviceType === "both" ? {
           cable_type: form.cableType,
@@ -264,6 +300,11 @@ export default function QuoteBuilder() {
         ...(form.serviceType === "pcb" || form.serviceType === "both" ? {
           pcb_type: form.pcbType,
           board_qty: form.boardQty,
+        } : {}),
+        ...(form.serviceType === "cnc" ? {
+          cnc_type: form.cncType,
+          cnc_material: form.cncMaterial,
+          cnc_qty: form.cncQty,
         } : {}),
         material_supply: form.materialSupply,
       };
@@ -280,6 +321,7 @@ export default function QuoteBuilder() {
         message: form.notes || null,
         status: "new",
         customer_id: user?.id ?? null,
+        design_file_url: designFileUrl,
       });
 
       if (insertError) throw insertError;
@@ -330,6 +372,7 @@ export default function QuoteBuilder() {
           variant="outline"
           onClick={() => {
             setForm(initialForm);
+            setDesignFile(null);
             setSubmitted(false);
           }}
         >
@@ -366,6 +409,7 @@ export default function QuoteBuilder() {
               [
                 { value: "wire_cable", label: "Wire / Cable" },
                 { value: "pcb", label: "PCB Assembly" },
+                { value: "cnc", label: "CNC Manufacturing" },
               ] as const
             ).map((opt) => (
               <button
@@ -373,7 +417,7 @@ export default function QuoteBuilder() {
                 type="button"
                 onClick={() => update("serviceType", opt.value)}
                 className={`px-5 py-2.5 rounded-xl text-sm font-medium border transition-all duration-200 ${
-                  form.serviceType === opt.value
+                  form.serviceType === opt.value || (form.serviceType === "both" && opt.value !== "cnc")
                     ? "bg-accent-primary/15 border-accent-primary text-accent-primary"
                     : "bg-transparent border-border-subtle text-text-secondary hover:border-text-muted"
                 }`}
@@ -525,6 +569,41 @@ export default function QuoteBuilder() {
           </div>
         )}
 
+        {/* ── CNC Options ── */}
+        {form.serviceType === "cnc" && (
+          <div className="space-y-6 p-5 rounded-2xl border border-border-subtle bg-bg-primary/30">
+            <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">
+              CNC Manufacturing
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <SelectInput
+                label="Manufacturing Type"
+                id="cnc-type"
+                value={form.cncType}
+                onChange={(v) => update("cncType", v)}
+                options={CNC_TYPE_OPTIONS}
+              />
+              <SelectInput
+                label="Material Preference"
+                id="cnc-material"
+                value={form.cncMaterial}
+                onChange={(v) => update("cncMaterial", v)}
+                options={CNC_MATERIAL_OPTIONS}
+              />
+            </div>
+            <div className="w-1/2 pr-3">
+              <TextInput
+                label="Quantity"
+                id="cnc-qty"
+                value={form.cncQty}
+                onChange={(v) => update("cncQty", v)}
+                type="number"
+                placeholder="100"
+              />
+            </div>
+          </div>
+        )}
+
         {/* ── Material Supply ── */}
         <div>
           <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-3">
@@ -575,6 +654,34 @@ export default function QuoteBuilder() {
             placeholder="Any special requirements, BOM reference, drawings…"
             className="w-full px-4 py-3 rounded-xl bg-bg-primary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/30 outline-none transition-all resize-y"
           />
+        </div>
+
+        {/* ── Design File Upload ── */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
+            Design File / Drawing (Optional)
+          </label>
+          <div className="flex items-center gap-4 p-4 rounded-xl border border-dashed border-border-subtle bg-bg-primary/20">
+            <input
+              type="file"
+              id="file-upload"
+              onChange={(e) => setDesignFile(e.target.files?.[0] || null)}
+              className="text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-accent-primary/10 file:text-accent-primary hover:file:bg-accent-primary/20 transition-colors"
+            />
+            {designFile && (
+              <button
+                type="button"
+                onClick={() => setDesignFile(null)}
+                className="text-text-muted hover:text-red-400 p-2"
+                aria-label="Remove file"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <p className="mt-2 text-xs text-text-muted">
+            Upload CAD files, PDFs, images, or STEP models for an accurate quote. Max 10MB.
+          </p>
         </div>
 
         {/* ── Divider ── */}
