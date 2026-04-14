@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Package, Plus } from "lucide-react";
@@ -11,7 +11,7 @@ interface Profile {
   contact_name: string | null;
 }
 
-export default function NewOrderPage() {
+function NewOrderForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [customers, setCustomers] = useState<Profile[]>([]);
@@ -81,6 +81,115 @@ export default function NewOrderPage() {
   const labelClass = "block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1.5";
 
   return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Customer */}
+      <div className="glass-card p-6">
+        <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Customer</p>
+        <div>
+          <label className={labelClass}>Select Customer *</label>
+          <select required value={form.customer_id} onChange={update("customer_id")} className={inputClass}>
+            <option value="">— Choose customer —</option>
+            {customers.map(c => (
+              <option key={c.id} value={c.id}>{c.company_name} {c.contact_name ? `(${c.contact_name})` : ""}</option>
+            ))}
+          </select>
+          {customers.length === 0 && (
+            <p className="text-xs text-text-muted mt-1">
+              No customers yet.{" "}
+              <Link href="/admin/customers" className="text-accent-primary hover:underline">Add a customer first</Link>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Order Details */}
+      <div className="glass-card p-6">
+        <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Order Details</p>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Order Number *</label>
+              <input required type="text" value={form.order_number} onChange={update("order_number")}
+                className={`${inputClass} font-mono`} />
+            </div>
+            <div>
+              <label className={labelClass}>Quantity</label>
+              <input type="number" min="1" value={form.quantity} onChange={update("quantity")}
+                placeholder="e.g. 500" className={inputClass} />
+            </div>
+          </div>
+          <div>
+            <label className={labelClass}>Description *</label>
+            <textarea required value={form.description} onChange={update("description")}
+              rows={3} placeholder="e.g. Wire harness assembly for CNC machine, 18AWG..."
+              className={`${inputClass} resize-none`} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Agreed Amount (₹)</label>
+              <input type="number" min="0" step="0.01" value={form.amount} onChange={update("amount")}
+                placeholder="e.g. 25000" className={inputClass} />
+            </div>
+            <div>
+              <label className={labelClass}>Expected Delivery</label>
+              <input type="date" value={form.expected_delivery} onChange={update("expected_delivery")}
+                className={inputClass} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Delivery */}
+      <div className="glass-card p-6">
+        <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Delivery</p>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <input type="checkbox" id="pickup" checked={form.pickup_required}
+              onChange={update("pickup_required")}
+              className="w-4 h-4 accent-[#D4A847] rounded" />
+            <label htmlFor="pickup" className="text-sm text-text-secondary">
+              Free door-step pickup required from customer
+            </label>
+          </div>
+          <div>
+            <label className={labelClass}>Delivery Address</label>
+            <input type="text" value={form.delivery_address} onChange={update("delivery_address")}
+              placeholder="Customer's delivery address" className={inputClass} />
+          </div>
+        </div>
+      </div>
+
+      {/* Notes */}
+      <div className="glass-card p-6">
+        <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Internal Notes</p>
+        <textarea value={form.internal_notes} onChange={update("internal_notes")}
+          rows={3} placeholder="Internal notes — not visible to customer..."
+          className={`${inputClass} resize-none`} />
+      </div>
+
+      {error && (
+        <p className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-3">{error}</p>
+      )}
+
+      <div className="flex gap-3">
+        <button type="submit" disabled={loading}
+          className="btn-glow flex items-center gap-2 px-6 py-3 disabled:opacity-60">
+          {loading
+            ? <span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" />
+            : <Plus className="w-4 h-4" />}
+          {loading ? "Creating…" : "Create Order"}
+        </button>
+        <Link href="/admin/orders"
+          className="px-6 py-3 rounded-xl border border-border-subtle text-text-secondary hover:text-text-primary transition-colors text-sm">
+          Cancel
+        </Link>
+      </div>
+    </form>
+  )
+}
+
+export default function NewOrderPage() {
+  return (
     <div className="min-h-screen py-24 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-2">
@@ -93,110 +202,11 @@ export default function NewOrderPage() {
           <Package className="w-7 h-7 text-accent-primary" /> Create New Order
         </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Customer */}
-          <div className="glass-card p-6">
-            <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Customer</p>
-            <div>
-              <label className={labelClass}>Select Customer *</label>
-              <select required value={form.customer_id} onChange={update("customer_id")} className={inputClass}>
-                <option value="">— Choose customer —</option>
-                {customers.map(c => (
-                  <option key={c.id} value={c.id}>{c.company_name} {c.contact_name ? `(${c.contact_name})` : ""}</option>
-                ))}
-              </select>
-              {customers.length === 0 && (
-                <p className="text-xs text-text-muted mt-1">
-                  No customers yet.{" "}
-                  <Link href="/admin/customers" className="text-accent-primary hover:underline">Add a customer first</Link>
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Order Details */}
-          <div className="glass-card p-6">
-            <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Order Details</p>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Order Number *</label>
-                  <input required type="text" value={form.order_number} onChange={update("order_number")}
-                    className={`${inputClass} font-mono`} />
-                </div>
-                <div>
-                  <label className={labelClass}>Quantity</label>
-                  <input type="number" min="1" value={form.quantity} onChange={update("quantity")}
-                    placeholder="e.g. 500" className={inputClass} />
-                </div>
-              </div>
-              <div>
-                <label className={labelClass}>Description *</label>
-                <textarea required value={form.description} onChange={update("description")}
-                  rows={3} placeholder="e.g. Wire harness assembly for CNC machine, 18AWG..."
-                  className={`${inputClass} resize-none`} />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Agreed Amount (₹)</label>
-                  <input type="number" min="0" step="0.01" value={form.amount} onChange={update("amount")}
-                    placeholder="e.g. 25000" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Expected Delivery</label>
-                  <input type="date" value={form.expected_delivery} onChange={update("expected_delivery")}
-                    className={inputClass} />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Delivery */}
-          <div className="glass-card p-6">
-            <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Delivery</p>
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <input type="checkbox" id="pickup" checked={form.pickup_required}
-                  onChange={update("pickup_required")}
-                  className="w-4 h-4 accent-[#D4A847] rounded" />
-                <label htmlFor="pickup" className="text-sm text-text-secondary">
-                  Free door-step pickup required from customer
-                </label>
-              </div>
-              <div>
-                <label className={labelClass}>Delivery Address</label>
-                <input type="text" value={form.delivery_address} onChange={update("delivery_address")}
-                  placeholder="Customer's delivery address" className={inputClass} />
-              </div>
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div className="glass-card p-6">
-            <p className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Internal Notes</p>
-            <textarea value={form.internal_notes} onChange={update("internal_notes")}
-              rows={3} placeholder="Internal notes — not visible to customer..."
-              className={`${inputClass} resize-none`} />
-          </div>
-
-          {error && (
-            <p className="text-red-400 text-sm bg-red-400/10 border border-red-400/20 rounded-lg px-4 py-3">{error}</p>
-          )}
-
-          <div className="flex gap-3">
-            <button type="submit" disabled={loading}
-              className="btn-glow flex items-center gap-2 px-6 py-3 disabled:opacity-60">
-              {loading
-                ? <span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" />
-                : <Plus className="w-4 h-4" />}
-              {loading ? "Creating…" : "Create Order"}
-            </button>
-            <Link href="/admin/orders"
-              className="px-6 py-3 rounded-xl border border-border-subtle text-text-secondary hover:text-text-primary transition-colors text-sm">
-              Cancel
-            </Link>
-          </div>
-        </form>
+        <Suspense fallback={
+          <div className="p-12 text-center text-text-muted">Loading form...</div>
+        }>
+          <NewOrderForm />
+        </Suspense>
       </div>
     </div>
   );
