@@ -1,9 +1,9 @@
-// Mayur Precision — Constants & Company Info
+// OneShot Manufacturing — Constants & Company Info
 
 export const COMPANY = {
-  name: "Mayur Precision",
-  officialName: "Mayur Precision Products",
-  shortName: "Mayur Precision",
+  name: "OneShot Manufacturing",
+  officialName: "OneShot Manufacturing",
+  shortName: "OneShot Manufacturing",
   tagline: "Precision Wiring & Assembly Solutions",
   description:
     "Specializing in wire/cable preparation, PCB assembly, and custom electronic manufacturing services for businesses of all sizes.",
@@ -12,8 +12,8 @@ export const COMPANY = {
   address: "L140, MIDC, Ahilyanagar, Maharashtra, India - 414111",
   mapsUrl: "https://maps.app.goo.gl/1WyyRTztDgSzYjEw8",
   phone: "+91 95884 46409",
-  email: "info@mayurprecision.in",
-  inquiryEmail: "info@mayurprecision.in",
+  email: "info@oneshotmanufacturing.com",
+  inquiryEmail: "info@oneshotmanufacturing.com",
   businessHours: {
     days: "Monday – Saturday",
     time: "9:00 AM – 6:00 PM IST",

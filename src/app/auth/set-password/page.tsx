@@ -77,7 +77,7 @@ export default function SetPasswordPage() {
         <div className="text-center mb-8">
           <Link href="/">
             <span className="font-display text-2xl font-bold text-text-primary">
-              Mayur<span className="text-accent-primary">Precision</span>
+              OneShot<span className="text-accent-primary">Manufacturing</span>
             </span>
           </Link>
         </div>

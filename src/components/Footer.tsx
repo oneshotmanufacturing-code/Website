@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center mb-4">
               <span className="font-display text-xl font-bold text-text-primary">
-                Mayur<span className="text-accent-primary">Precision</span>
+                OneShot<span className="text-accent-primary">Manufacturing</span>
               </span>
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed mb-6">

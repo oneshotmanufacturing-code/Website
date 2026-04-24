@@ -109,7 +109,7 @@ export default function AboutPage() {
           </span>
           <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
             The Story Behind{" "}
-            <span className="text-gradient">Mayur Precision</span>
+            <span className="text-gradient">OneShot Manufacturing</span>
           </h1>
           <p className="text-text-secondary text-lg md:text-xl leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
             Founded in {COMPANY.established} in Ahilyanagar, we set out with a simple

@@ -4,13 +4,13 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
-const BASE_URL = "https://mayurprecision.in"; // update when domain is live
+const BASE_URL = "https://oneshotmanufacturing.com"; // update when domain is live
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Mayur Precision — Precision Wiring & Assembly Solutions",
-    template: "%s | Mayur Precision",
+    default: "OneShot Manufacturing — Precision Wiring & Assembly Solutions",
+    template: "%s | OneShot Manufacturing",
   },
   description:
     "Wire/cable preparation, PCB assembly, and electronics manufacturing services in Ahilyanagar, India. Free door-step pickup & delivery for batch orders. Pan-India shipping.",
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
     "MIDC",
     "Maharashtra",
     "India",
-    "Mayur Precision",
-    "Mayur Precision Products",
+    "OneShot Manufacturing",
+    "OneShot Manufacturing",
     "contract manufacturing",
     "batch manufacturing",
   ],
-  authors: [{ name: "Mayur Precision Products" }],
-  creator: "Mayur Precision Products",
-  publisher: "Mayur Precision Products",
+  authors: [{ name: "OneShot Manufacturing" }],
+  creator: "OneShot Manufacturing",
+  publisher: "OneShot Manufacturing",
   robots: {
     index: true,
     follow: true,
@@ -44,14 +44,14 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: BASE_URL,
-    siteName: "Mayur Precision",
-    title: "Mayur Precision — Precision Wiring & Assembly Solutions",
+    siteName: "OneShot Manufacturing",
+    title: "OneShot Manufacturing — Precision Wiring & Assembly Solutions",
     description:
       "Wire/cable preparation, PCB assembly, and electronics manufacturing in Ahilyanagar, India. Free door-step pickup & delivery for batch orders.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mayur Precision — Precision Wiring & Assembly Solutions",
+    title: "OneShot Manufacturing — Precision Wiring & Assembly Solutions",
     description:
       "Wire/cable preparation, PCB assembly, and electronics manufacturing in Ahilyanagar, India.",
   },

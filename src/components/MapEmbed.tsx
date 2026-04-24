@@ -19,7 +19,7 @@ export default function MapEmbed() {
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        title="Mayur Precision Products — L140 MIDC Ahilyanagar"
+        title="OneShot Manufacturing — L140 MIDC Ahilyanagar"
         className="w-full"
       />
       {/* View on Google Maps link */}

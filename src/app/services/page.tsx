@@ -17,12 +17,12 @@ export const metadata: Metadata = {
   description:
     "Wire & cable preparation, PCB assembly, and raw material sourcing. Free door-step pickup & delivery for batch orders. Build a custom quote online.",
   openGraph: {
-    title: "Services — Mayur Precision",
+    title: "Services — OneShot Manufacturing",
     description:
       "Full-spectrum electronics manufacturing: wire harnesses, PCB assembly, and raw material sourcing. Pan-India delivery.",
-    url: "https://mayurprecision.in/services",
+    url: "https://oneshotmanufacturing.com/services",
   },
-  alternates: { canonical: "https://mayurprecision.in/services" },
+  alternates: { canonical: "https://oneshotmanufacturing.com/services" },
 };
 
 export default function ServicesPage() {

@@ -1,4 +1,4 @@
-// Mayur Precision — Complete Service Catalog Data
+// OneShot Manufacturing — Complete Service Catalog Data
 
 export interface ServiceCategory {
   id: string;

@@ -69,11 +69,11 @@ export default function Navbar() {
           <Link
             href="/"
             className="flex items-center group"
-            aria-label="Mayur Precision Home"
+            aria-label="OneShot Manufacturing Home"
           >
             <div className="flex flex-col">
               <span className="font-display text-xl font-bold text-text-primary leading-tight tracking-tight group-hover:text-accent-primary transition-colors">
-                Mayur<span className="text-accent-primary">Precision</span>
+                OneShot<span className="text-accent-primary">Manufacturing</span>
               </span>
               <span className="text-[10px] uppercase tracking-[0.2em] text-text-muted leading-none hidden sm:block">
                 Wiring &amp; Assembly

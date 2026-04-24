@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://mayurprecision.in/sitemap.xml",
+    sitemap: "https://oneshotmanufacturing.com/sitemap.xml",
   };
 }

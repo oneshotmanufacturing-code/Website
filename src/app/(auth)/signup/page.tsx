@@ -114,7 +114,7 @@ export default function SignupPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <span className="font-display text-2xl font-bold text-text-primary">
-              Mayur<span className="text-accent-primary">Precision</span>
+              OneShot<span className="text-accent-primary">Manufacturing</span>
             </span>
           </Link>
           <p className="text-text-muted text-sm mt-2">Create your customer account</p>

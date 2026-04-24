@@ -93,7 +93,7 @@ export default async function AdminPage() {
               Admin Panel
             </p>
             <h1 className="font-display text-3xl font-bold text-text-primary">
-              Mayur Precision Dashboard
+              OneShot Manufacturing Dashboard
             </h1>
             <p className="text-text-muted text-sm mt-1">{user.email}</p>
           </div>
