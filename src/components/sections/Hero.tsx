@@ -35,22 +35,33 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section id="hero" className="relative w-full overflow-hidden h-screen">
-      {/* Background Images with Crossfade — full cover */}
+    <section
+      id="hero"
+      style={{
+        position: "relative",
+        width: "100%",
+        overflow: "hidden",
+        height: "100vh",
+        /* Push content below announcement bar (40px) + navbar (64px) */
+        marginTop: "104px",
+        height: "calc(100vh - 104px)",
+      }}
+    >
+      {/* Background Images */}
       {slides.map((slide, index) => (
         <div
           key={slide.img}
-          className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${index === currentSlide ? "opacity-100 z-0" : "opacity-0 z-[-1]"
-            }`}
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: index === currentSlide ? 1 : 0,
+            zIndex: index === currentSlide ? 0 : -1,
+            transition: "opacity 1.2s ease-in-out",
+          }}
         >
           <Image
             src={slide.img}
@@ -63,63 +74,155 @@ export default function Hero() {
         </div>
       ))}
 
-      {/* Gradient Overlay — left-heavy for text readability */}
+      {/* Navy-tinted dark overlay */}
       <div
-        className="absolute inset-0 z-[1]"
         style={{
-          background: 'linear-gradient(to right, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.50) 45%, rgba(0,0,0,0.15) 100%)',
-        }}
-      />
-      {/* Bottom fade for dots/progress */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-24 z-[1]"
-        style={{
-          background: 'linear-gradient(to top, rgba(0,0,0,0.50) 0%, transparent 100%)',
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          background: "rgba(10, 25, 60, 0.65)",
         }}
       />
 
-      {/* Content — left-aligned */}
-      <div className="absolute inset-0 z-10 flex items-center w-full px-5 sm:px-8 md:px-16">
-        <div className="max-w-3xl">
-          <span className="inline-block bg-red px-3 sm:px-5 py-1.5 sm:py-2 mb-4 sm:mb-6 text-[14px] sm:text-[18px] uppercase tracking-[0.15em] text-white font-semibold rounded-[2px]">
+      {/* Content */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 40px",
+        }}
+      >
+        <div style={{ maxWidth: "700px" }}>
+          {/* Amber badge tag */}
+          <span
+            style={{
+              display: "inline-block",
+              background: "#F7941D",
+              color: "#FFFFFF",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.10em",
+              padding: "4px 10px",
+              marginBottom: "20px",
+            }}
+          >
             {slides[currentSlide].tag}
           </span>
 
-          <h1 className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[110px] leading-[0.95] text-white whitespace-pre-line">
+          {/* Headline */}
+          <h1
+            style={{
+              color: "#FFFFFF",
+              fontSize: "clamp(36px, 6vw, 64px)",
+              fontWeight: 900,
+              lineHeight: 1.0,
+              textTransform: "uppercase",
+              whiteSpace: "pre-line",
+              marginBottom: "20px",
+            }}
+          >
             {slides[currentSlide].headline}
           </h1>
 
-          <p className="font-body text-[20px] md:text-[24px] text-white/75 mt-5 max-w-lg leading-relaxed">
+          {/* Subtext */}
+          <p
+            style={{
+              color: "rgba(255,255,255,0.75)",
+              fontSize: "18px",
+              fontWeight: 400,
+              lineHeight: 1.6,
+              maxWidth: "480px",
+              marginBottom: "32px",
+            }}
+          >
             {slides[currentSlide].sub}
           </p>
 
+          {/* CTA */}
           <a
             href="#services"
-            className="inline-flex items-center justify-center border-2 border-white/40 hover:border-white hover:bg-white/10 text-white font-display tracking-wide text-lg sm:text-2xl px-6 sm:px-10 h-12 sm:h-14 rounded-[2px] transition-all mt-6 sm:mt-8"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "transparent",
+              color: "#FFFFFF",
+              fontSize: "13px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              padding: "14px 32px",
+              borderRadius: "4px",
+              border: "2px solid rgba(255,255,255,0.80)",
+              textDecoration: "none",
+              transition: "background 0.2s ease, border-color 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "#F7941D";
+              el.style.borderColor = "#F7941D";
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "transparent";
+              el.style.borderColor = "rgba(255,255,255,0.80)";
+            }}
           >
             EXPLORE SERVICES
           </a>
         </div>
       </div>
 
-      {/* Navigation and Dot Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 z-10">
+      {/* Slide navigation + amber dot indicators */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "24px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 10,
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
         <button
           onClick={prevSlide}
           aria-label="Previous slide"
-          className="text-white/50 hover:text-white transition-colors p-1"
+          style={{
+            background: "none",
+            border: "none",
+            color: "rgba(255,255,255,0.60)",
+            cursor: "pointer",
+            padding: "4px",
+            transition: "color 0.2s",
+          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFFFF"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.60)"; }}
         >
-          <ChevronLeft size={24} />
+          <ChevronLeft size={22} />
         </button>
 
-        <div className="flex gap-2">
+        <div style={{ display: "flex", gap: "8px" }}>
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
               aria-label={`Go to slide ${index + 1}`}
-              className={`w-2.5 h-2.5 rounded-full transition-colors ${index === currentSlide ? "bg-red" : "bg-white/30"
-                }`}
+              style={{
+                width: "10px",
+                height: "10px",
+                borderRadius: "50%",
+                background: index === currentSlide ? "#F7941D" : "rgba(255,255,255,0.35)",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                transition: "background 0.3s ease",
+              }}
             />
           ))}
         </div>
@@ -127,24 +230,40 @@ export default function Hero() {
         <button
           onClick={nextSlide}
           aria-label="Next slide"
-          className="text-white/50 hover:text-white transition-colors p-1"
+          style={{
+            background: "none",
+            border: "none",
+            color: "rgba(255,255,255,0.60)",
+            cursor: "pointer",
+            padding: "4px",
+            transition: "color 0.2s",
+          }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "#FFFFFF"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "rgba(255,255,255,0.60)"; }}
         >
-          <ChevronRight size={24} />
+          <ChevronRight size={22} />
         </button>
       </div>
 
-      {/* Bottom Progress Bar */}
+      {/* Bottom progress bar */}
       <div
         key={currentSlide}
-        className="absolute bottom-0 left-0 h-[3px] bg-red z-10"
-        style={{ animation: "heroProgressBar 5s linear forwards" }}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          height: "3px",
+          background: "#F7941D",
+          zIndex: 10,
+          animation: "heroProgressBar 5s linear forwards",
+        }}
       />
 
       <style dangerouslySetInnerHTML={{
         __html: `
           @keyframes heroProgressBar {
             from { width: 0%; }
-            to { width: 100%; }
+            to   { width: 100%; }
           }
         `
       }} />

@@ -1,16 +1,6 @@
+"use client";
+
 import React from "react";
-
-const SectionTag = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-block text-[18px] font-bold uppercase tracking-[0.15em] text-red mb-4">
-    {children}
-  </span>
-);
-
-const SectionHeading = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-display text-3xl sm:text-5xl md:text-7xl leading-none text-white-text">
-    {children}
-  </h2>
-);
 
 const pcbPoints = [
   {
@@ -41,26 +31,81 @@ const pcbPoints = [
 
 export default function PCBQuality() {
   return (
-    <section id="pcb" className="py-16 md:py-28 min-h-screen flex items-center">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-        <header className="flex flex-col items-start">
-          <SectionTag>PCB PROCESS</SectionTag>
-          <SectionHeading>PCB ASSEMBLY QUALITY</SectionHeading>
-        </header>
+    <section id="pcb" style={{ background: "#0F1D3F", padding: "80px 0" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "48px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              background: "#F7941D",
+              color: "#FFFFFF",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.10em",
+              padding: "4px 10px",
+              marginBottom: "12px",
+            }}
+          >
+            PCB PROCESS
+          </span>
+          <h2
+            style={{
+              fontSize: "32px",
+              fontWeight: 700,
+              color: "#FFFFFF",
+              lineHeight: 1.15,
+            }}
+          >
+            PCB ASSEMBLY QUALITY
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-14">
+        {/* 3×2 Grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+            gap: "24px",
+          }}
+        >
           {pcbPoints.map((point, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden bg-white border border-dark-3 border-t-2 border-t-red p-6 rounded-lg hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-red/30 transition-all duration-300"
+              style={{
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderTop: "2px solid #F7941D",
+                borderRadius: "4px",
+                padding: "24px",
+                transition: "background 0.25s ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background = "rgba(247,148,29,0.12)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)";
+              }}
             >
-              {/* Glow line at top */}
-              <div className="absolute top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-red to-transparent transition-all duration-700 group-hover:w-full" />
-
-              <h3 className="font-body font-semibold text-[18px] sm:text-[24px] text-white-text">
+              <h3
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: "#FFFFFF",
+                  marginBottom: "8px",
+                }}
+              >
                 {point.title}
               </h3>
-              <p className="font-body text-[16px] sm:text-[21px] text-grey mt-2 leading-relaxed">
+              <p
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 400,
+                  color: "rgba(255,255,255,0.60)",
+                  lineHeight: 1.5,
+                }}
+              >
                 {point.desc}
               </p>
             </div>

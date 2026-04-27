@@ -1,47 +1,32 @@
+"use client";
+
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Cable, Cpu, Search, Rocket, ChevronRight } from "lucide-react";
 
-const SectionTag = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-block text-[18px] font-bold uppercase tracking-[0.15em] text-red mb-4">
-    {children}
-  </span>
-);
-
-const SectionHeading = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-display text-3xl sm:text-4xl md:text-6xl font-bold leading-tight text-white-text">
-    {children}
-  </h2>
-);
-
 const services = [
   {
-    icon: <Cable size={40} className="text-red" />,
+    icon: <Cable size={32} color="#F7941D" />,
     title: "Wire & Cable Preparation",
     desc: "Custom harnesses, crimping, harness assembly, end-to-end processing. We offer a complete solution in cable assembly and wire harness processes.",
-    img: "/images/wire.jpg",
     href: "/services#wire-cable",
   },
   {
-    icon: <Cpu size={40} className="text-red" />,
+    icon: <Cpu size={32} color="#F7941D" />,
     title: "PCB Assembly & Soldering",
     desc: "SMT, THT, mixed-tech — prototype to mid-volume production. Our engineers can assist customers with Design for Manufacturability (DfM).",
-    img: "/images/pcb.jpg",
     href: "/services#pcb-assembly",
   },
   {
-    icon: <Search size={40} className="text-red" />,
+    icon: <Search size={32} color="#F7941D" />,
     title: "Raw Material Sourcing",
     desc: "Buyer-supplied, we-procure, or hybrid procurement models. Sourcing capability is the core strength of our group ensuring quality components.",
-    img: "/images/sourcing.jpg",
     href: "/services#material",
   },
   {
-    icon: <Rocket size={40} className="text-red" />,
+    icon: <Rocket size={32} color="#F7941D" />,
     title: "Startup-Friendly Services",
     desc: "No MOQ, no quantity is too small. End-to-end — from free pickup to doorstep delivery. Fast iterations with a team that understands hardware startups.",
-    img: "/images/for-startup-3.jpg",
     href: "/services#startup",
   },
 ];
@@ -50,46 +35,137 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="relative w-full min-h-screen flex"
+      style={{ background: "#FFFFFF", padding: "80px 0" }}
     >
-      <div className="relative z-10 max-w-[1450px] mx-auto w-full px-2 sm:px-4 md:px-6 pt-20 md:pt-32 pb-16 flex flex-col">
-        <header className="flex flex-col items-center text-center mb-20">
-          <SectionTag>OUR SERVICES</SectionTag>
-          <SectionHeading>WHAT WE BUILD</SectionHeading>
-        </header>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "#F7941D",
+              marginBottom: "12px",
+            }}
+          >
+            OUR SERVICES
+          </span>
+          <h2
+            style={{
+              fontSize: "32px",
+              fontWeight: 700,
+              color: "#0F1D3F",
+              lineHeight: 1.15,
+            }}
+          >
+            WHAT WE BUILD
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 2×2 grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            gap: "24px",
+          }}
+        >
           {services.map((service, index) => (
-            <div
-              key={index}
-              className="group relative overflow-hidden rounded-xl border border-dark-3 bg-white flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-red/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] min-h-[380px] md:min-h-[420px]"
-            >
-              {/* Glow line at top */}
-              <div className="absolute top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-red to-transparent transition-all duration-700 group-hover:w-full z-10" />
-
-              {/* Top content */}
-              <div className="p-8 flex-1 flex flex-col">
-                <div className="mb-6">
-                  {service.icon}
-                </div>
-                <h3 className="font-display text-2xl md:text-[26px] font-medium text-white-text mb-4">
-                  {service.title}
-                </h3>
-                <p className="font-body text-grey text-[18px] md:text-[18px] leading-relaxed mb-8 flex-1">
-                  {service.desc}
-                </p>
-                <Link
-                  href={service.href}
-                  className="bg-red hover:bg-red-hover transition-colors w-12 h-10 rounded-lg flex items-center justify-center text-white shrink-0 shadow-md mt-auto"
-                  aria-label={`Learn more about ${service.title}`}
-                >
-                  <ChevronRight size={24} />
-                </Link>
-              </div>
-            </div>
+            <ServiceCard key={index} {...service} />
           ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ServiceCard({
+  icon,
+  title,
+  desc,
+  href,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  href: string;
+}) {
+  return (
+    <div
+      className="group"
+      style={{
+        background: "#FFFFFF",
+        border: "1px solid #E0E0E0",
+        borderLeft: "4px solid #F7941D",
+        borderRadius: "4px",
+        padding: "32px",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+        transition: "box-shadow 0.25s ease, transform 0.25s ease",
+        display: "flex",
+        flexDirection: "column",
+        cursor: "default",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = "0 4px 16px rgba(0,0,0,0.12)";
+        el.style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.08)";
+        el.style.transform = "translateY(0)";
+      }}
+    >
+      <div style={{ marginBottom: "20px" }}>{icon}</div>
+      <h3
+        style={{
+          fontSize: "17px",
+          fontWeight: 600,
+          color: "#0F1D3F",
+          marginBottom: "12px",
+          lineHeight: 1.3,
+        }}
+      >
+        {title}
+      </h3>
+      <p
+        style={{
+          fontSize: "14px",
+          fontWeight: 400,
+          color: "#555555",
+          lineHeight: 1.6,
+          flex: 1,
+          marginBottom: "24px",
+        }}
+      >
+        {desc}
+      </p>
+      <Link
+        href={href}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "12px",
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+          color: "#F7941D",
+          textDecoration: "none",
+          transition: "color 0.2s ease",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.color = "#E08319";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLAnchorElement).style.color = "#F7941D";
+        }}
+      >
+        Learn More <ChevronRight size={14} />
+      </Link>
+    </div>
   );
 }

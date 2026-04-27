@@ -1,90 +1,144 @@
+"use client";
+
 import React from "react";
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-dark-3">
+    <footer style={{ background: "#091530", color: "#FFFFFF" }}>
       {/* Upper section */}
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-10 md:py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
-          
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 24px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "40px",
+          }}
+        >
           {/* Col 1 */}
-          <div className="sm:col-span-2 md:col-span-1">
-            <div className="font-display text-[24px] sm:text-[33px] text-white-text">
+          <div style={{ gridColumn: "span 2" }}>
+            <div
+              style={{
+                fontSize: "24px",
+                fontWeight: 800,
+                letterSpacing: "0.10em",
+                textTransform: "uppercase",
+                marginBottom: "8px",
+              }}
+            >
               ONESHOT
             </div>
-            <div className="font-body text-[16px] sm:text-[20px] text-grey mt-2">
+            <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.8)", marginBottom: "16px" }}>
               Precision Wiring & Assembly Solutions
             </div>
-            <div className="font-body text-[14px] sm:text-[16px] text-dim mt-4">
+            <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
               GSTIN: 27AAIFM2903L1Z5
             </div>
           </div>
 
           {/* Col 2 */}
           <div>
-            <h3 className="font-body text-[14px] sm:text-[16px] uppercase tracking-wide text-grey mb-4">
+            <h3
+              style={{
+                color: "#F7941D",
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.10em",
+                marginBottom: "20px",
+              }}
+            >
               Quick Links
             </h3>
-            <a href="#services" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              Services
-            </a>
-            <a href="#why-us" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              Why Us
-            </a>
-            <a href="#process" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              Process
-            </a>
-            <a href="#contact" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              Contact
-            </a>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <FooterLink href="#services">Services</FooterLink>
+              <FooterLink href="#why-us">Why Us</FooterLink>
+              <FooterLink href="#process">Process</FooterLink>
+              <FooterLink href="#contact">Contact</FooterLink>
+            </div>
           </div>
 
           {/* Col 3 */}
           <div>
-            <h3 className="font-body text-[14px] sm:text-[16px] uppercase tracking-wide text-grey mb-4">
+            <h3
+              style={{
+                color: "#F7941D",
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.10em",
+                marginBottom: "20px",
+              }}
+            >
               Company
             </h3>
-            <a href="#" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              Quality Standards
-            </a>
-            <a href="#" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              ESD Policy
-            </a>
-            <a href="#" className="font-body text-[16px] sm:text-[21px] text-grey hover:text-red block mb-2 transition-colors">
-              About
-            </a>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <FooterLink href="#">Quality Standards</FooterLink>
+              <FooterLink href="#">ESD Policy</FooterLink>
+              <FooterLink href="#">About</FooterLink>
+            </div>
           </div>
 
           {/* Col 4 */}
           <div>
-            <h3 className="font-body text-[14px] sm:text-[16px] uppercase tracking-wide text-grey mb-4">
+            <h3
+              style={{
+                color: "#F7941D",
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.10em",
+                marginBottom: "20px",
+              }}
+            >
               Contact
             </h3>
-            <span className="font-body text-[16px] sm:text-[20px] text-grey block mb-2">
-              +91 95884 46409
-            </span>
-            <span className="font-body text-[16px] sm:text-[20px] text-grey block mb-2 break-all">
-              info@oneshotmanufacturing.com
-            </span>
-            <span className="font-body text-[16px] sm:text-[20px] text-grey block mb-2">
-              Mon–Sat, 9AM–6PM IST
-            </span>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>+91 95884 46409</span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", wordBreak: "break-all" }}>
+                info@oneshotmanufacturing.com
+              </span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
+                Mon–Sat, 9AM–6PM IST
+              </span>
+            </div>
           </div>
-
         </div>
       </div>
 
+      {/* Divider */}
+      <div style={{ width: "100%", height: "1px", background: "rgba(255,255,255,0.08)" }} />
+
       {/* Bottom bar */}
-      <div className="border-t border-dark-3 py-6">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="font-body text-[14px] sm:text-[18px] text-dim text-center sm:text-left">
-            © 2026 OneShot Manufacturing. All rights reserved.
-          </div>
-          <div className="font-body text-[14px] sm:text-[18px] text-dim text-center sm:text-right">
-            L140, MIDC, Ahilyanagar, Maharashtra — 414111
-          </div>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "24px", display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "16px" }}>
+        <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>
+          © 2026 OneShot Manufacturing. All rights reserved.
+        </div>
+        <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>
+          L140, MIDC, Ahilyanagar, Maharashtra — 414111
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      style={{
+        fontSize: "13px",
+        color: "rgba(255,255,255,0.7)",
+        textDecoration: "none",
+        transition: "color 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.color = "#F7941D";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.7)";
+      }}
+    >
+      {children}
+    </a>
   );
 }

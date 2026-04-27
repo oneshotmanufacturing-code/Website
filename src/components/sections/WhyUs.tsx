@@ -2,10 +2,6 @@
 
 import React from "react";
 
-/* ─────────────────────────────────────────────
-   DATA
-   ───────────────────────────────────────────── */
-
 const edges = [
   {
     num: "01",
@@ -45,134 +41,227 @@ const edges = [
   },
 ];
 
-/* ─────────────────────────────────────────────
-   BENTO CELL
-   ───────────────────────────────────────────── */
-
-interface BentoCellProps {
+function EdgeCard({
+  num,
+  tag,
+  title,
+  desc,
+}: {
   num: string;
   tag: string;
   title: string;
   desc: string;
-  className?: string;
-  large?: boolean;
-}
-
-function BentoCell({ num, tag, title, desc, className = "", large = false }: BentoCellProps) {
+}) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-lg border border-dark-3 bg-white transition-all duration-500 hover:border-red/30 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:-translate-y-1 ${className}`}
+      style={{
+        background: "#FFFFFF",
+        border: "1px solid #E0E0E0",
+        borderRadius: "4px",
+        padding: "28px",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+        transition: "box-shadow 0.25s ease, transform 0.25s ease, border-left 0.25s ease",
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+      }}
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = "0 4px 16px rgba(0,0,0,0.12)";
+        el.style.transform = "translateY(-2px)";
+        el.style.borderLeft = "3px solid #F7941D";
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLDivElement;
+        el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.08)";
+        el.style.transform = "translateY(0)";
+        el.style.borderLeft = "1px solid #E0E0E0";
+      }}
     >
-      {/* Glow line at top */}
-      <div className="absolute top-0 left-0 h-[2px] w-0 bg-gradient-to-r from-red to-transparent transition-all duration-700 group-hover:w-full" />
+      {/* Number badge */}
+      <div>
+        <span
+          style={{
+            display: "inline-block",
+            background: "#F7941D",
+            color: "#FFFFFF",
+            fontSize: "13px",
+            fontWeight: 700,
+            padding: "2px 8px",
+            borderRadius: "2px",
+          }}
+        >
+          {num}
+        </span>
+      </div>
 
-      {/* Content */}
-      <div className={`relative z-10 flex h-full flex-col justify-between ${large ? "p-8 lg:p-10" : "p-6 lg:p-8"}`}>
-        {/* Top row: number + tag */}
-        <div className="flex items-center gap-4 mb-6">
-          <span className="font-display text-[36px] lg:text-[48px] font-bold leading-none text-dark-3 transition-colors duration-500 group-hover:text-red/20">
-            {num}
-          </span>
-          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-red/80">
-            {tag}
-          </span>
-        </div>
+      <h3
+        style={{
+          fontSize: "16px",
+          fontWeight: 600,
+          color: "#0F1D3F",
+          lineHeight: 1.3,
+        }}
+      >
+        {title}
+      </h3>
 
-        {/* Title */}
-        <h3 className={`font-display font-bold text-white-text leading-[1.1] mb-4 transition-transform duration-500 group-hover:-translate-y-1 ${large ? "text-[28px] lg:text-[36px]" : "text-[22px] lg:text-[26px]"}`}>
-          {title}
-        </h3>
+      <p
+        style={{
+          fontSize: "14px",
+          fontWeight: 400,
+          color: "#555555",
+          lineHeight: 1.6,
+          flex: 1,
+        }}
+      >
+        {desc}
+      </p>
 
-        {/* Description — fades in on hover */}
-        <p className={`font-body text-grey leading-relaxed transition-all duration-500 group-hover:text-white-text ${large ? "text-[16px] lg:text-[18px]" : "text-[14px] lg:text-[16px]"}`}>
-          {desc}
-        </p>
-
-        {/* Bottom accent line */}
-        <div className="mt-6 flex items-center gap-3">
-          <div className="h-[1px] w-8 bg-dark-3 transition-all duration-500 group-hover:w-16 group-hover:bg-red/60" />
-          <span className="text-[11px] text-grey uppercase tracking-widest transition-colors duration-500 group-hover:text-white-text">
-            Learn more
-          </span>
-        </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          fontSize: "12px",
+          fontWeight: 700,
+          textTransform: "uppercase" as const,
+          letterSpacing: "0.08em",
+          color: "#F7941D",
+          cursor: "default",
+        }}
+      >
+        Learn more →
       </div>
     </div>
   );
 }
 
-/* ─────────────────────────────────────────────
-   MAIN SECTION
-   ───────────────────────────────────────────── */
-
 export default function WhyUs() {
   return (
     <section
       id="why-us"
-      className="relative w-full overflow-hidden min-h-screen flex items-center py-20 md:py-28"
+      style={{ background: "#F5F5F5", padding: "80px 0" }}
     >
-
-      {/* ── Content ── */}
-      <div className="relative z-10 max-w-[1500px] mx-auto px-4 sm:px-8 lg:px-12 w-full">
-        {/* Header row */}
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16 lg:mb-20 gap-6">
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Header row with stats */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            marginBottom: "48px",
+            gap: "24px",
+          }}
+        >
           <div>
-            <span className="inline-block text-[14px] font-bold uppercase tracking-[0.2em] text-red mb-4">
+            <span
+              style={{
+                display: "block",
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.12em",
+                color: "#F7941D",
+                marginBottom: "12px",
+              }}
+            >
               OUR EDGE
             </span>
-            <h2 className="font-display text-4xl sm:text-6xl lg:text-[80px] font-bold leading-[0.9] text-white-text">
-              WHY
-              <br />
-              <span className="text-dim">ONE</span>SHOT
+            <h2
+              style={{
+                fontSize: "clamp(28px, 4vw, 40px)",
+                fontWeight: 700,
+                color: "#0F1D3F",
+                lineHeight: 1.1,
+                textTransform: "uppercase",
+              }}
+            >
+              WHY ONESHOT
             </h2>
           </div>
 
-          {/* Decorative stat */}
-          <div className="hidden lg:flex items-end gap-8 pb-2">
-            <div className="text-right">
-              <div className="text-[48px] font-display font-bold text-red leading-none">6</div>
-              <div className="text-[12px] uppercase tracking-[0.15em] text-grey mt-1">Competitive<br/>Advantages</div>
+          {/* Stats row */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "24px",
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontSize: "48px",
+                  fontWeight: 900,
+                  color: "#0F1D3F",
+                  lineHeight: 1,
+                }}
+              >
+                6
+              </div>
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.10em",
+                  color: "#F7941D",
+                  marginTop: "4px",
+                }}
+              >
+                Advantages
+              </div>
             </div>
-            <div className="h-16 w-[1px] bg-dark-3" />
-            <div className="text-right">
-              <div className="text-[48px] font-display font-bold text-dim leading-none">99.9<span className="text-red">%</span></div>
-              <div className="text-[12px] uppercase tracking-[0.15em] text-grey mt-1">Quality<br/>Yield Rate</div>
+
+            <div
+              style={{
+                width: "1px",
+                height: "48px",
+                background: "#E0E0E0",
+              }}
+            />
+
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  fontSize: "48px",
+                  fontWeight: 900,
+                  color: "#0F1D3F",
+                  lineHeight: 1,
+                }}
+              >
+                99.9%
+              </div>
+              <div
+                style={{
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.10em",
+                  color: "#F7941D",
+                  marginTop: "4px",
+                }}
+              >
+                Yield Rate
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ── Bento Grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-5">
-          {/* Row 1 */}
-          <BentoCell
-            {...edges[0]}
-            large
-            className="lg:col-span-5 lg:row-span-2 min-h-[280px] lg:min-h-[380px]"
-          />
-          <BentoCell
-            {...edges[1]}
-            className="lg:col-span-4 min-h-[180px]"
-          />
-          <BentoCell
-            {...edges[2]}
-            className="lg:col-span-3 min-h-[180px]"
-          />
-
-          {/* Row 2 */}
-          <BentoCell
-            {...edges[3]}
-            className="lg:col-span-3 min-h-[180px]"
-          />
-          <BentoCell
-            {...edges[4]}
-            large
-            className="lg:col-span-4 min-h-[180px]"
-          />
-
-          {/* Row 3 — full-width bottom bar */}
-          <BentoCell
-            {...edges[5]}
-            className="lg:col-span-12 min-h-[140px] lg:min-h-[160px]"
-          />
+        {/* 3×2 card grid */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "24px",
+          }}
+        >
+          {edges.map((edge, index) => (
+            <EdgeCard key={index} {...edge} />
+          ))}
         </div>
       </div>
     </section>

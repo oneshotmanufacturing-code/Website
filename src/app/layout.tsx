@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const bebasNeue = Bebas_Neue({
-  weight: "400",
+const inter = Inter({
+  weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
-  variable: "--font-display",
-});
-
-const dmSans = DM_Sans({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  variable: "--font-body",
+  variable: "--font-inter",
 });
 
 const BASE_URL = "https://oneshotmanufacturing.com"; // update when domain is live
@@ -76,8 +70,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable}`}>
-      <body className="font-body antialiased">
+    <html lang="en" className={inter.variable}>
+      <body className="antialiased" style={{ fontFamily: "var(--font-inter, 'Inter', 'Roboto', system-ui, sans-serif)" }}>
         {children}
       </body>
     </html>

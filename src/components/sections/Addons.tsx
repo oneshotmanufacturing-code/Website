@@ -1,22 +1,6 @@
+"use client";
+
 import React from "react";
-
-const SectionTag = ({ children, center }: { children: React.ReactNode; center?: boolean }) => (
-  <span
-    className={`inline-block text-[18px] font-bold uppercase tracking-[0.15em] text-red mb-4 ${center ? "mx-auto" : ""
-      }`}
-  >
-    {children}
-  </span>
-);
-
-const SectionHeading = ({ children, center }: { children: React.ReactNode; center?: boolean }) => (
-  <h2
-    className={`font-display text-3xl sm:text-5xl md:text-7xl leading-none text-white-text ${center ? "text-center" : ""
-      }`}
-  >
-    {children}
-  </h2>
-);
 
 const addons = [
   "QC Report & Data",
@@ -31,20 +15,80 @@ const addons = [
 
 export default function Addons() {
   return (
-    <section id="addons" className="py-16 md:py-28 text-center min-h-screen flex items-center justify-center">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex flex-col items-center">
-        <SectionTag center>EXTRAS</SectionTag>
-        <SectionHeading center>OPTIONAL ADD-ONS</SectionHeading>
+    <section id="addons" style={{ background: "#FFFFFF", padding: "80px 0" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "32px", textAlign: "center" }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "#F7941D",
+              marginBottom: "12px",
+            }}
+          >
+            EXTRAS
+          </span>
+          <h2
+            style={{
+              fontSize: "32px",
+              fontWeight: 700,
+              color: "#0F1D3F",
+              lineHeight: 1.15,
+            }}
+          >
+            OPTIONAL ADD-ONS
+          </h2>
+          <p
+            style={{
+              fontSize: "14px",
+              fontWeight: 400,
+              color: "#555555",
+              marginTop: "8px",
+            }}
+          >
+            Available at additional cost. Mention when requesting a quote.
+          </p>
+        </div>
 
-        <p className="font-body text-[16px] sm:text-[21px] text-grey mt-4">
-          Available at additional cost. Mention when requesting a quote.
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-3 mt-12">
+        {/* Pill Badges */}
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: "12px",
+          }}
+        >
           {addons.map((item, index) => (
             <span
               key={index}
-              className="border border-dark-3 bg-white text-white-text font-body text-[15px] sm:text-[20px] px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg cursor-default hover:border-red/40 hover:shadow-[0_4px_16px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 transition-all duration-300"
+              style={{
+                background: "#F5F5F5",
+                border: "1px solid #E0E0E0",
+                color: "#1A1A1A",
+                fontSize: "13px",
+                fontWeight: 500,
+                padding: "8px 16px",
+                borderRadius: "4px",
+                cursor: "default",
+                transition: "background 0.2s ease, border-color 0.2s ease, color 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLSpanElement;
+                el.style.background = "#F7941D";
+                el.style.borderColor = "#F7941D";
+                el.style.color = "#FFFFFF";
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLSpanElement;
+                el.style.background = "#F5F5F5";
+                el.style.borderColor = "#E0E0E0";
+                el.style.color = "#1A1A1A";
+              }}
             >
               {item}
             </span>

@@ -4,7 +4,6 @@ import Footer from '@/components/layout/Footer';
 import ScrollReveal from '@/components/layout/ScrollReveal';
 
 import Hero from '@/components/sections/Hero';
-// import Stats from '@/components/sections/Stats';
 import Services from '@/components/sections/Services';
 import WhyUs from '@/components/sections/WhyUs';
 import PcbQuality from '@/components/sections/PcbQuality';
@@ -22,20 +21,39 @@ export default function Home() {
     <>
       <ScrollReveal />
 
-      {/* ── Fixed static wire-pattern background ── */}
+      {/* Announcement Bar */}
       <div
-        className="fixed inset-0 z-0 bg-[#FAFAFA]"
         style={{
-          backgroundImage: 'url(/images/wire-pattern.svg)',
-          backgroundSize: '200px 200px',
-          backgroundRepeat: 'repeat',
+          width: "100%",
+          height: "40px",
+          background: "#F7941D",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 60,
         }}
-      />
+      >
+        <p
+          style={{
+            fontSize: "11px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            color: "#FFFFFF",
+            textAlign: "center",
+            padding: "0 16px",
+          }}
+        >
+          Zero-Defect Guarantee &nbsp;|&nbsp; Free Pickup &amp; Delivery Across India &nbsp;|&nbsp; ESD-Safe Handling
+        </p>
+      </div>
 
-      <main className="relative z-10 min-h-screen">
+      <main className="relative min-h-screen bg-white">
         <Navbar />
         <Hero />
-        {/* <Stats /> */}
         <Services />
         <WhyUs />
         <PcbQuality />

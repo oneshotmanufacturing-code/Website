@@ -1,17 +1,5 @@
 import React from "react";
 
-const SectionTag = ({ children }: { children: React.ReactNode }) => (
-  <span className="inline-block text-[18px] font-bold uppercase tracking-[0.15em] text-red mb-4">
-    {children}
-  </span>
-);
-
-const SectionHeading = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="font-display text-3xl sm:text-5xl md:text-7xl leading-none text-white-text">
-    {children}
-  </h2>
-);
-
 const steps = [
   {
     number: "01",
@@ -37,34 +25,109 @@ const steps = [
 
 export default function Process() {
   return (
-    <section id="process" className="py-16 md:py-28 min-h-screen flex items-center">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-        <header className="flex flex-col items-start">
-          <SectionTag>PROCESS</SectionTag>
-          <SectionHeading>HOW IT WORKS</SectionHeading>
-        </header>
+    <section id="process" style={{ background: "#F5F5F5", padding: "80px 0" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+        {/* Header */}
+        <div style={{ marginBottom: "48px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              color: "#F7941D",
+              marginBottom: "12px",
+            }}
+          >
+            PROCESS
+          </span>
+          <h2
+            style={{
+              fontSize: "32px",
+              fontWeight: 700,
+              color: "#0F1D3F",
+              lineHeight: 1.15,
+            }}
+          >
+            HOW IT WORKS
+          </h2>
+        </div>
 
-        <div className="relative grid grid-cols-1 md:grid-cols-4 gap-8 mt-14">
-          {/* Desktop timeline connector */}
-          <div className="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-px border-t-2 border-dashed z-0" style={{ borderColor: 'rgba(192,57,43,0.4)' }} />
+        {/* Timeline */}
+        <div
+          style={{
+            position: "relative",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "32px",
+          }}
+        >
+          {/* Desktop timeline connector (hidden on small screens via CSS/media query in global, but using inline for now we'll do a simple trick or just rely on layout) */}
+          <div
+            className="hidden md:block"
+            style={{
+              position: "absolute",
+              top: "24px", /* half of 48px circle */
+              left: "12%",
+              right: "12%",
+              height: "2px",
+              borderTop: "2px dashed #E0E0E0",
+              zIndex: 0,
+            }}
+          />
 
           {steps.map((step, index) => (
-            <div key={index} className="relative z-10 group">
-              {/* Step card container */}
-              <div className="bg-white border border-dark-3 rounded-lg p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] hover:border-red/30">
-                {/* Glow line at top */}
-                <div className="absolute top-0 left-0 right-0 h-[2px] w-0 bg-gradient-to-r from-red to-transparent transition-all duration-700 group-hover:w-full rounded-t-lg" />
-
-                <div className="font-display text-[48px] sm:text-[72px] text-red leading-none">
-                  {step.number}
-                </div>
-                <h3 className="font-body font-semibold text-[18px] sm:text-[24px] text-white-text mt-3">
-                  {step.title}
-                </h3>
-                <p className="font-body text-[16px] sm:text-[20px] text-grey mt-1 leading-relaxed">
-                  {step.desc}
-                </p>
+            <div
+              key={index}
+              style={{
+                position: "relative",
+                zIndex: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
+              {/* Number Circle */}
+              <div
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  borderRadius: "50%",
+                  background: "#F7941D",
+                  color: "#FFFFFF",
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "20px",
+                }}
+              >
+                {step.number}
               </div>
+
+              {/* Title & Desc */}
+              <h3
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 600,
+                  color: "#0F1D3F",
+                  marginBottom: "8px",
+                }}
+              >
+                {step.title}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  color: "#555555",
+                  lineHeight: 1.6,
+                }}
+              >
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>

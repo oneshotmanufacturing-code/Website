@@ -11,87 +11,186 @@ export default function Navbar() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
     { name: "Services", href: "#services" },
-    { name: "Why Us", href: "#why-us" },
-    { name: "Process", href: "#process" },
-    { name: "Contact", href: "#contact" },
+    { name: "Why Us",   href: "#why-us" },
+    { name: "Process",  href: "#process" },
+    { name: "Contact",  href: "#contact" },
   ];
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-dark-3" : "bg-transparent"
-        }`}
+      style={{
+        position: "fixed",
+        top: "40px", /* below announcement bar */
+        left: 0,
+        width: "100%",
+        zIndex: 50,
+        background: "#0F1D3F",
+        boxShadow: isScrolled ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
+        transition: "box-shadow 0.3s ease",
+      }}
     >
-      <div className="w-full px-4 sm:px-6 md:px-10 h-[80px] flex items-center justify-between">
-        {/* Left: Logo */}
-        <a href="/" className={`font-display text-2xl md:text-4xl transition-colors ${isScrolled ? "text-white-text" : "text-white"}`}>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "0 24px",
+          height: "64px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Logo */}
+        <a
+          href="/"
+          style={{
+            color: "#FFFFFF",
+            fontSize: "20px",
+            fontWeight: 800,
+            letterSpacing: "0.10em",
+            textDecoration: "none",
+            textTransform: "uppercase",
+          }}
+        >
           ONESHOT
         </a>
 
-        {/* Center: Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-10">
+        {/* Desktop nav links */}
+        <div className="hidden md:flex items-center" style={{ gap: "36px" }}>
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
-              className={`text-[16px] uppercase tracking-[0.12em] hover:text-red transition-colors ${isScrolled ? "text-grey" : "text-white/60"}`}
+              style={{
+                color: "#FFFFFF",
+                fontSize: "13px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                paddingBottom: "4px",
+                borderBottom: "2px solid transparent",
+                transition: "border-color 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "#F7941D";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "transparent";
+              }}
             >
               {link.name}
             </a>
           ))}
         </div>
 
-        {/* Right: CTA & Mobile Toggle */}
-        <div className="flex items-center space-x-4">
+        {/* CTA + mobile toggle */}
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           <a
             href="#contact"
-            className="hidden md:inline-block bg-red hover:bg-red-hover text-white text-[15px] font-semibold px-7 py-2.5 rounded-[2px] transition-colors"
+            className="hidden md:inline-flex"
+            style={{
+              background: "#F7941D",
+              color: "#FFFFFF",
+              fontSize: "12px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              padding: "10px 20px",
+              borderRadius: "4px",
+              textDecoration: "none",
+              transition: "background 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.background = "#E08319";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLAnchorElement).style.background = "#F7941D";
+            }}
           >
             GET A QUOTE
           </a>
 
           <button
-            className={`md:hidden focus:outline-none transition-colors ${isScrolled ? "text-white-text" : "text-white"}`}
+            className="md:hidden focus:outline-none"
             onClick={() => setIsMobileMenuOpen(true)}
             aria-label="Open mobile menu"
+            style={{ color: "#FFFFFF", background: "none", border: "none", cursor: "pointer" }}
           >
-            <Menu size={30} />
+            <Menu size={28} />
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center">
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "#0F1D3F",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <button
-            className="absolute top-5 right-6 text-white-text focus:outline-none"
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "24px",
+              color: "#FFFFFF",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
             onClick={() => setIsMobileMenuOpen(false)}
             aria-label="Close mobile menu"
           >
             <X size={34} />
           </button>
 
-          <div className="flex flex-col items-center space-y-8">
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "32px" }}>
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-4xl text-white-text uppercase hover:text-red transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  textDecoration: "none",
+                }}
               >
                 {link.name}
               </a>
             ))}
             <a
               href="#contact"
-              className="text-4xl text-red font-semibold uppercase mt-4 hover:text-red-hover transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
+              style={{
+                background: "#F7941D",
+                color: "#FFFFFF",
+                fontSize: "18px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "14px 32px",
+                borderRadius: "4px",
+                textDecoration: "none",
+                marginTop: "8px",
+              }}
             >
               GET A QUOTE
             </a>
