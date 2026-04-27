@@ -36,7 +36,7 @@ export default function Process() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
-              color: "#F7941D",
+              color: "#C0392B",
               marginBottom: "12px",
             }}
           >
@@ -46,7 +46,7 @@ export default function Process() {
             style={{
               fontSize: "32px",
               fontWeight: 700,
-              color: "#0F1D3F",
+              color: "#171717",
               lineHeight: 1.15,
             }}
           >
@@ -94,7 +94,7 @@ export default function Process() {
                   width: "48px",
                   height: "48px",
                   borderRadius: "50%",
-                  background: "#F7941D",
+                  background: "#C0392B",
                   color: "#FFFFFF",
                   fontSize: "18px",
                   fontWeight: 700,
@@ -112,7 +112,7 @@ export default function Process() {
                 style={{
                   fontSize: "16px",
                   fontWeight: 600,
-                  color: "#0F1D3F",
+                  color: "#171717",
                   marginBottom: "8px",
                 }}
               >

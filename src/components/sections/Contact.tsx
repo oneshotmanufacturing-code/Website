@@ -87,7 +87,7 @@ export default function Contact() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
-              color: "#F7941D",
+              color: "#C0392B",
               marginBottom: "12px",
             }}
           >
@@ -97,7 +97,7 @@ export default function Contact() {
             style={{
               fontSize: "32px",
               fontWeight: 700,
-              color: "#0F1D3F",
+              color: "#171717",
               lineHeight: 1.15,
               marginBottom: "48px",
             }}
@@ -107,9 +107,9 @@ export default function Contact() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <MapPin size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <MapPin size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Address</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Address</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
                   L140, MIDC, Ahilyanagar<br />
                   Maharashtra, India - 414111
@@ -118,25 +118,25 @@ export default function Contact() {
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Phone size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Phone size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Phone</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Phone</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>+91 95884 46409</p>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Mail size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Mail size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Email</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Email</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>info@oneshotmanufacturing.com</p>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Clock size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Clock size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Hours</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Hours</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>Monday – Saturday<br />9:00 AM – 6:00 PM IST</p>
               </div>
             </div>
@@ -148,7 +148,7 @@ export default function Contact() {
       <div
         style={{
           flex: "1 1 50%",
-          background: "#0F1D3F",
+          background: "#171717",
           padding: "80px 10%",
           display: "flex",
           flexDirection: "column",
@@ -163,7 +163,7 @@ export default function Contact() {
                   width: "64px",
                   height: "64px",
                   borderRadius: "50%",
-                  background: "#F7941D",
+                  background: "#C0392B",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -205,8 +205,8 @@ export default function Contact() {
                       borderColor: errors.name ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#F7941D";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
+                      e.target.style.borderColor = "#C0392B";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.name ? "#ef4444" : "#E0E0E0";
@@ -238,8 +238,8 @@ export default function Contact() {
                       borderColor: errors.email ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#F7941D";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
+                      e.target.style.borderColor = "#C0392B";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.email ? "#ef4444" : "#E0E0E0";
@@ -273,8 +273,8 @@ export default function Contact() {
                       borderColor: errors.phone ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#F7941D";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
+                      e.target.style.borderColor = "#C0392B";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.phone ? "#ef4444" : "#E0E0E0";
@@ -305,8 +305,8 @@ export default function Contact() {
                       transition: "border-color 0.2s, box-shadow 0.2s",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#F7941D";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
+                      e.target.style.borderColor = "#C0392B";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = "#E0E0E0";
@@ -339,8 +339,8 @@ export default function Contact() {
                     borderColor: errors.message ? "#ef4444" : "#E0E0E0",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "#F7941D";
-                    e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
+                    e.target.style.borderColor = "#C0392B";
+                    e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
                   }}
                   onBlur={(e) => {
                     e.target.style.borderColor = errors.message ? "#ef4444" : "#E0E0E0";
@@ -355,7 +355,7 @@ export default function Contact() {
                 disabled={isSubmitting}
                 style={{
                   width: "100%",
-                  background: "#F7941D",
+                  background: "#C0392B",
                   color: "#FFFFFF",
                   fontSize: "13px",
                   fontWeight: 700,
@@ -369,10 +369,10 @@ export default function Contact() {
                   transition: "background 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
-                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#E08319";
+                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#A93226";
                 }}
                 onMouseLeave={(e) => {
-                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#F7941D";
+                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#C0392B";
                 }}
               >
                 {isSubmitting ? "SENDING..." : "SEND MESSAGE →"}

@@ -26,7 +26,7 @@ export default function Addons() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
-              color: "#F7941D",
+              color: "#C0392B",
               marginBottom: "12px",
             }}
           >
@@ -36,7 +36,7 @@ export default function Addons() {
             style={{
               fontSize: "32px",
               fontWeight: 700,
-              color: "#0F1D3F",
+              color: "#171717",
               lineHeight: 1.15,
             }}
           >
@@ -79,8 +79,8 @@ export default function Addons() {
               }}
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLSpanElement;
-                el.style.background = "#F7941D";
-                el.style.borderColor = "#F7941D";
+                el.style.background = "#C0392B";
+                el.style.borderColor = "#C0392B";
                 el.style.color = "#FFFFFF";
               }}
               onMouseLeave={(e) => {

@@ -69,7 +69,7 @@ function EdgeCard({
         const el = e.currentTarget as HTMLDivElement;
         el.style.boxShadow = "0 4px 16px rgba(0,0,0,0.12)";
         el.style.transform = "translateY(-2px)";
-        el.style.borderLeft = "3px solid #F7941D";
+        el.style.borderLeft = "3px solid #C0392B";
       }}
       onMouseLeave={(e) => {
         const el = e.currentTarget as HTMLDivElement;
@@ -83,7 +83,7 @@ function EdgeCard({
         <span
           style={{
             display: "inline-block",
-            background: "#F7941D",
+            background: "#C0392B",
             color: "#FFFFFF",
             fontSize: "13px",
             fontWeight: 700,
@@ -99,7 +99,7 @@ function EdgeCard({
         style={{
           fontSize: "16px",
           fontWeight: 600,
-          color: "#0F1D3F",
+          color: "#171717",
           lineHeight: 1.3,
         }}
       >
@@ -127,7 +127,7 @@ function EdgeCard({
           fontWeight: 700,
           textTransform: "uppercase" as const,
           letterSpacing: "0.08em",
-          color: "#F7941D",
+          color: "#C0392B",
           cursor: "default",
         }}
       >
@@ -163,7 +163,7 @@ export default function WhyUs() {
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.12em",
-                color: "#F7941D",
+                color: "#C0392B",
                 marginBottom: "12px",
               }}
             >
@@ -173,7 +173,7 @@ export default function WhyUs() {
               style={{
                 fontSize: "clamp(28px, 4vw, 40px)",
                 fontWeight: 700,
-                color: "#0F1D3F",
+                color: "#171717",
                 lineHeight: 1.1,
                 textTransform: "uppercase",
               }}
@@ -196,7 +196,7 @@ export default function WhyUs() {
                 style={{
                   fontSize: "48px",
                   fontWeight: 900,
-                  color: "#0F1D3F",
+                  color: "#171717",
                   lineHeight: 1,
                 }}
               >
@@ -208,7 +208,7 @@ export default function WhyUs() {
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.10em",
-                  color: "#F7941D",
+                  color: "#C0392B",
                   marginTop: "4px",
                 }}
               >
@@ -229,7 +229,7 @@ export default function WhyUs() {
                 style={{
                   fontSize: "48px",
                   fontWeight: 900,
-                  color: "#0F1D3F",
+                  color: "#171717",
                   lineHeight: 1,
                 }}
               >
@@ -241,7 +241,7 @@ export default function WhyUs() {
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.10em",
-                  color: "#F7941D",
+                  color: "#C0392B",
                   marginTop: "4px",
                 }}
               >

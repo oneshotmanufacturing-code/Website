@@ -30,7 +30,7 @@ export default function Navbar() {
         left: 0,
         width: "100%",
         zIndex: 50,
-        background: "#0F1D3F",
+        background: "#171717",
         boxShadow: isScrolled ? "0 2px 8px rgba(0,0,0,0.15)" : "none",
         transition: "box-shadow 0.3s ease",
       }}
@@ -79,7 +79,7 @@ export default function Navbar() {
                 transition: "border-color 0.2s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "#F7941D";
+                (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "#C0392B";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLAnchorElement).style.borderBottomColor = "transparent";
@@ -96,7 +96,7 @@ export default function Navbar() {
             href="#contact"
             className="hidden md:inline-flex"
             style={{
-              background: "#F7941D",
+              background: "#C0392B",
               color: "#FFFFFF",
               fontSize: "12px",
               fontWeight: 700,
@@ -108,10 +108,10 @@ export default function Navbar() {
               transition: "background 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = "#E08319";
+              (e.currentTarget as HTMLAnchorElement).style.background = "#A93226";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.background = "#F7941D";
+              (e.currentTarget as HTMLAnchorElement).style.background = "#C0392B";
             }}
           >
             GET A QUOTE
@@ -134,7 +134,7 @@ export default function Navbar() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "#0F1D3F",
+            background: "#171717",
             zIndex: 100,
             display: "flex",
             flexDirection: "column",
@@ -180,7 +180,7 @@ export default function Navbar() {
               href="#contact"
               onClick={() => setIsMobileMenuOpen(false)}
               style={{
-                background: "#F7941D",
+                background: "#C0392B",
                 color: "#FFFFFF",
                 fontSize: "18px",
                 fontWeight: 700,
