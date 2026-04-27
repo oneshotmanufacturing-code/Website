@@ -118,7 +118,7 @@ function EdgeCard({
         {desc}
       </p>
 
-      <div
+      {/* <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -132,7 +132,7 @@ function EdgeCard({
         }}
       >
         Learn more →
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -178,7 +178,8 @@ export default function WhyUs() {
                 textTransform: "uppercase",
               }}
             >
-              WHY CHOOSE ONESHOT
+              WHY CHOOSE US?
+
             </h2>
           </div>
 
@@ -218,13 +219,13 @@ export default function WhyUs() {
 
             <div
               style={{
-                width: "1px",
-                height: "48px",
+                width: "2px",
+                height: "70px",
                 background: "#E0E0E0",
               }}
             />
 
-            <div style={{ textAlign: "center" }}>
+            {/* <div style={{ textAlign: "center" }}>
               <div
                 style={{
                   fontSize: "48px",
@@ -247,7 +248,7 @@ export default function WhyUs() {
               >
                 Yield Rate
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

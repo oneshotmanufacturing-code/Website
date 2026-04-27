@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -16,11 +16,12 @@ export default function Contact() {
   const [errors, setErrors] = useState<Partial<Record<keyof typeof formData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    
+
     if (errors[name as keyof typeof formData]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -33,7 +34,7 @@ export default function Contact() {
     else if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = "Email is invalid";
     if (!formData.phone.trim()) newErrors.phone = "Phone is required";
     if (!formData.message.trim()) newErrors.message = "Message is required";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -43,9 +44,12 @@ export default function Contact() {
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
       const supabase = createClient();
+      
+      // Public insertion - no login required
       const { error } = await supabase.from("contact_submissions").insert({
         name: formData.name,
         email: formData.email,
@@ -54,13 +58,11 @@ export default function Contact() {
         message: formData.message,
       });
 
-      if (error) {
-        throw error;
-      }
-
+      if (error) throw error;
       setIsSuccess(true);
     } catch (err) {
       console.error("Submission error:", err);
+      setSubmitError("Something went wrong. Please try again or email us directly.");
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +89,7 @@ export default function Contact() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
-              color: "#C0392B",
+              color: "#F7941D",
               marginBottom: "12px",
             }}
           >
@@ -97,7 +99,7 @@ export default function Contact() {
             style={{
               fontSize: "32px",
               fontWeight: 700,
-              color: "#171717",
+              color: "#0F1D3F",
               lineHeight: 1.15,
               marginBottom: "48px",
             }}
@@ -107,9 +109,9 @@ export default function Contact() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <MapPin size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <MapPin size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Address</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Address</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
                   L140, MIDC, Ahilyanagar<br />
                   Maharashtra, India - 414111
@@ -118,25 +120,25 @@ export default function Contact() {
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Phone size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Phone size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Phone</h4>
-                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>+91 95884 46409</p>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Phone</h4>
+                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>+91 90000 00000</p>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Mail size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Mail size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Email</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Email</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>info@oneshotmanufacturing.com</p>
               </div>
             </div>
 
             <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
-              <Clock size={24} color="#C0392B" style={{ flexShrink: 0, marginTop: "2px" }} />
+              <Clock size={24} color="#F7941D" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
-                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#171717", marginBottom: "4px" }}>Hours</h4>
+                <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#0F1D3F", marginBottom: "4px" }}>Hours</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>Monday – Saturday<br />9:00 AM – 6:00 PM IST</p>
               </div>
             </div>
@@ -148,7 +150,7 @@ export default function Contact() {
       <div
         style={{
           flex: "1 1 50%",
-          background: "#171717",
+          background: "#0F1D3F",
           padding: "80px 10%",
           display: "flex",
           flexDirection: "column",
@@ -163,7 +165,7 @@ export default function Contact() {
                   width: "64px",
                   height: "64px",
                   borderRadius: "50%",
-                  background: "#C0392B",
+                  background: "#F7941D",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -181,7 +183,7 @@ export default function Contact() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              
+
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
                 <div>
                   <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
@@ -205,8 +207,8 @@ export default function Contact() {
                       borderColor: errors.name ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#C0392B";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
+                      e.target.style.borderColor = "#F7941D";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.name ? "#ef4444" : "#E0E0E0";
@@ -238,8 +240,8 @@ export default function Contact() {
                       borderColor: errors.email ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#C0392B";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
+                      e.target.style.borderColor = "#F7941D";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.email ? "#ef4444" : "#E0E0E0";
@@ -273,8 +275,8 @@ export default function Contact() {
                       borderColor: errors.phone ? "#ef4444" : "#E0E0E0",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#C0392B";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
+                      e.target.style.borderColor = "#F7941D";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = errors.phone ? "#ef4444" : "#E0E0E0";
@@ -305,8 +307,8 @@ export default function Contact() {
                       transition: "border-color 0.2s, box-shadow 0.2s",
                     }}
                     onFocus={(e) => {
-                      e.target.style.borderColor = "#C0392B";
-                      e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
+                      e.target.style.borderColor = "#F7941D";
+                      e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
                     }}
                     onBlur={(e) => {
                       e.target.style.borderColor = "#E0E0E0";
@@ -339,8 +341,8 @@ export default function Contact() {
                     borderColor: errors.message ? "#ef4444" : "#E0E0E0",
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "#C0392B";
-                    e.target.style.boxShadow = "0 0 0 2px rgba(192,57,43,0.2)";
+                    e.target.style.borderColor = "#F7941D";
+                    e.target.style.boxShadow = "0 0 0 2px rgba(247,148,29,0.2)";
                   }}
                   onBlur={(e) => {
                     e.target.style.borderColor = errors.message ? "#ef4444" : "#E0E0E0";
@@ -350,12 +352,19 @@ export default function Contact() {
                 {errors.message && <p style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px" }}>{errors.message}</p>}
               </div>
 
+              {submitError && (
+                <div style={{ color: "#ef4444", fontSize: "13px", display: "flex", gap: "8px", alignItems: "center" }}>
+                   <AlertCircle size={16} />
+                   <span>{submitError}</span>
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
                 style={{
                   width: "100%",
-                  background: "#C0392B",
+                  background: "#F7941D",
                   color: "#FFFFFF",
                   fontSize: "13px",
                   fontWeight: 700,
@@ -369,10 +378,10 @@ export default function Contact() {
                   transition: "background 0.2s ease",
                 }}
                 onMouseEnter={(e) => {
-                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#A93226";
+                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#E08319";
                 }}
                 onMouseLeave={(e) => {
-                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#C0392B";
+                  if (!isSubmitting) (e.currentTarget as HTMLButtonElement).style.background = "#F7941D";
                 }}
               >
                 {isSubmitting ? "SENDING..." : "SEND MESSAGE →"}

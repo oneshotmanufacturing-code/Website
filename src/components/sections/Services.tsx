@@ -143,7 +143,7 @@ function ServiceCard({
       >
         {desc}
       </p>
-      <Link
+      {/* <Link
         href={href}
         style={{
           display: "inline-flex",
@@ -165,7 +165,7 @@ function ServiceCard({
         }}
       >
         Learn More <ChevronRight size={14} />
-      </Link>
+      </Link> */}
     </div>
   );
 }

@@ -25,13 +25,13 @@ export default function Footer() {
                 marginBottom: "8px",
               }}
             >
-              ONESHOT
+              ONESHOT MANUFACTURING
             </div>
             <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.8)", marginBottom: "16px" }}>
               Precision Wiring & Assembly Solutions
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.5)" }}>
-              GSTIN: 27AAIFM2903L1Z5
+              GSTIN: 2727272727272727
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function Footer() {
               Contact
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>+91 95884 46409</span>
+              <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>+91 90000 00000</span>
               <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", wordBreak: "break-all" }}>
                 info@oneshotmanufacturing.com
               </span>

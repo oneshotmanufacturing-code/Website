@@ -100,7 +100,7 @@ export default function Hero() {
           <span
             style={{
               display: "inline-block",
-              background: "#C0392B",
+              background: "#F7941D",
               color: "#FFFFFF",
               fontSize: "11px",
               fontWeight: 700,
@@ -163,8 +163,8 @@ export default function Hero() {
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "#C0392B";
-              el.style.borderColor = "#C0392B";
+              el.style.background = "#F7941D";
+              el.style.borderColor = "#F7941D";
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
@@ -217,7 +217,7 @@ export default function Hero() {
                 width: "10px",
                 height: "10px",
                 borderRadius: "50%",
-                background: index === currentSlide ? "#C0392B" : "rgba(255,255,255,0.35)",
+                background: index === currentSlide ? "#F7941D" : "rgba(255,255,255,0.35)",
                 border: "none",
                 cursor: "pointer",
                 padding: 0,
@@ -253,7 +253,7 @@ export default function Hero() {
           bottom: 0,
           left: 0,
           height: "3px",
-          background: "#C0392B",
+          background: "#F7941D",
           zIndex: 10,
           animation: "heroProgressBar 5s linear forwards",
         }}

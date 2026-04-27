@@ -430,7 +430,7 @@ Upper section: max-w-[1200px] mx-auto px-6 py-14
   Col 1:
     "ONESHOT" in font-display text-[22px] text-white-text
     "Precision Wiring & Assembly Solutions" in font-body text-[13px] text-grey mt-2
-    "GSTIN: 27AAIFM2903L1Z5" in font-body text-[11px] text-dim mt-4
+    "GSTIN: 2727272727272727" in font-body text-[11px] text-dim mt-4
 
   Col 2 — Quick Links (anchor tags to sections):
     Heading: font-body text-[11px] uppercase tracking-wide text-grey mb-4
