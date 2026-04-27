@@ -7,7 +7,7 @@ const edges = [
     num: "01",
     tag: "QUALITY ASSURANCE",
     title: "Computer Vision QC",
-    desc: "Automated camera systems detect microscopic defects instantly, ensuring 99.9% yield rates before your products ever leave the factory floor.",
+    desc: "Automated camera systems detect microscopic defects instantly, ensuring higher yield rates before your products ever leave the factory floor.",
   },
   {
     num: "02",
@@ -178,7 +178,7 @@ export default function WhyUs() {
                 textTransform: "uppercase",
               }}
             >
-              WHY ONESHOT
+              WHY CHOOSE ONESHOT
             </h2>
           </div>
 
