@@ -9,22 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── Carbon & Gold ──
-        "bg-primary":       "#12181F",   // deep graphite
-        "bg-secondary":     "#1C2733",   // dark slate — cards
-        "bg-tertiary":      "#2E4057",   // steel blue-grey — nested elements
-        "accent-primary":   "#D4A847",   // warm gold — CTAs, links, highlights
-        "accent-secondary": "#B8893A",   // deeper gold — hover / secondary
-        "accent-glow":      "rgba(212,168,71,0.12)",
-        "text-primary":     "#F0EDE6",   // warm off-white — headings & body
-        "text-secondary":   "rgba(240,237,230,0.68)",
-        "text-muted":       "rgba(240,237,230,0.38)",
-        "border-subtle":    "rgba(46,64,87,0.60)",    // steel blue-grey borders
-        "border-glow":      "rgba(212,168,71,0.28)",  // gold glow border
+        black: 'var(--black)',
+        'dark-1': 'var(--dark-1)',
+        'dark-2': 'var(--dark-2)',
+        'dark-3': 'var(--dark-3)',
+        dim: 'var(--dim)',
+        grey: 'var(--grey)',
+        'white-text': 'var(--white-text)',
+        red: 'var(--red)',
+        'red-hover': 'var(--red-hover)',
+        'red-dim': 'var(--red-dim)',
       },
       fontFamily: {
-        sans:    ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        body: ["var(--font-body)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

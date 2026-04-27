@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
-import { inter, outfit } from "@/lib/fonts";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Bebas_Neue, DM_Sans } from "next/font/google";
 import "./globals.css";
+
+const bebasNeue = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+
+const dmSans = DM_Sans({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  variable: "--font-body",
+});
 
 const BASE_URL = "https://oneshotmanufacturing.com"; // update when domain is live
 
@@ -66,11 +76,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body className="font-sans bg-bg-primary text-text-primary antialiased">
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+    <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable}`}>
+      <body className="font-body antialiased">
+        {children}
       </body>
     </html>
   );

@@ -68,7 +68,6 @@ export const WIRE_CABLE_SERVICES: ServiceGroup = {
       id: "processing",
       title: "Processing",
       items: [
-        "Cut-to-length",
         "Stripping",
         "Tinning",
         "Soldering",

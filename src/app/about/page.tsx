@@ -140,7 +140,7 @@ export default function AboutPage() {
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
           {[
             { value: `${new Date().getFullYear() - COMPANY.established}+`, label: "Years in Business" },
-            { value: "1000+", label: "Projects Completed" },
+            { value: "1000+", label: "Project Experience" },
             { value: "50+", label: "Happy Clients" },
           ].map((stat) => (
             <div key={stat.label} className="glass-card p-6 text-center">

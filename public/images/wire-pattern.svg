@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <style>
+      .wire { fill: none; stroke: #000; stroke-width: 0.6; opacity: 0.07; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-thin { fill: none; stroke: #000; stroke-width: 0.4; opacity: 0.05; stroke-linecap: round; }
+      .node { fill: #000; opacity: 0.09; }
+      .node-hollow { fill: none; stroke: #000; stroke-width: 0.5; opacity: 0.07; }
+    </style>
+  </defs>
+
+  <!-- Main horizontal wires with slight organic bends -->
+  <path class="wire" d="M0,40 C15,40 20,38 35,38 C50,38 55,42 70,42 C85,42 90,40 105,40 C120,40 125,39 140,39 C155,39 160,41 175,41 C190,41 195,40 200,40" />
+  <path class="wire" d="M0,100 C10,100 18,98 30,98 C45,98 50,102 65,103 C80,103 88,100 100,100 C115,100 120,101 135,101 C150,101 158,99 170,99 C185,99 192,100 200,100" />
+  <path class="wire" d="M0,160 C12,160 20,162 35,162 C50,162 58,158 70,158 C85,158 90,160 105,161 C120,161 128,159 140,159 C155,159 162,161 178,161 C192,161 196,160 200,160" />
+
+  <!-- Main vertical wires with slight organic bends -->
+  <path class="wire" d="M40,0 C40,12 38,20 38,35 C38,50 42,55 42,70 C42,85 40,92 40,105 C40,120 39,125 39,140 C39,155 41,162 41,178 C41,192 40,196 40,200" />
+  <path class="wire" d="M100,0 C100,10 98,18 98,32 C98,48 103,55 103,68 C103,82 100,90 100,105 C100,118 101,125 101,138 C101,152 99,160 99,175 C99,190 100,196 100,200" />
+  <path class="wire" d="M160,0 C160,15 162,22 162,35 C162,48 158,55 158,70 C158,85 161,92 161,105 C161,118 159,128 159,142 C159,158 161,165 161,178 C161,190 160,196 160,200" />
+
+  <!-- Diagonal cross-wires (like harness branches) -->
+  <path class="wire-thin" d="M38,38 C45,45 50,50 58,58" />
+  <path class="wire-thin" d="M98,98 C105,105 110,110 118,118" />
+  <path class="wire-thin" d="M158,38 C152,45 148,50 142,58" />
+  <path class="wire-thin" d="M42,158 C48,152 52,148 58,142" />
+  <path class="wire-thin" d="M98,38 C105,32 110,28 118,22" />
+  <path class="wire-thin" d="M38,98 C32,105 28,110 22,118" />
+  <path class="wire-thin" d="M162,100 C170,108 175,112 182,118" />
+  <path class="wire-thin" d="M100,162 C108,170 112,175 118,182" />
+
+  <!-- Short stub wires (loose ends / branches) -->
+  <path class="wire-thin" d="M40,40 C44,30 46,24 48,18" />
+  <path class="wire-thin" d="M100,40 C96,30 94,24 92,18" />
+  <path class="wire-thin" d="M160,100 C170,96 176,94 182,92" />
+  <path class="wire-thin" d="M40,160 C30,164 24,166 18,168" />
+  <path class="wire-thin" d="M100,160 C110,156 116,154 122,152" />
+  <path class="wire-thin" d="M160,160 C156,170 154,176 152,182" />
+
+  <!-- Junction nodes (solder points / connectors) -->
+  <circle class="node" cx="40" cy="40" r="2.5" />
+  <circle class="node" cx="100" cy="100" r="2.5" />
+  <circle class="node" cx="160" cy="160" r="2.5" />
+  <circle class="node" cx="100" cy="40" r="2" />
+  <circle class="node" cx="40" cy="100" r="2" />
+  <circle class="node" cx="160" cy="40" r="2" />
+  <circle class="node" cx="40" cy="160" r="2" />
+  <circle class="node" cx="160" cy="100" r="2" />
+  <circle class="node" cx="100" cy="160" r="2" />
+
+  <!-- Hollow junction rings (connector pads) -->
+  <circle class="node-hollow" cx="40" cy="40" r="5" />
+  <circle class="node-hollow" cx="100" cy="100" r="5" />
+  <circle class="node-hollow" cx="160" cy="160" r="5" />
+</svg>
