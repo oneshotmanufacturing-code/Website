@@ -1,15 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { Send, Check } from "lucide-react";
+import { Send, Check, AlertCircle } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { COMPANY } from "@/lib/constants";
+import { createClient } from "@/lib/supabase/client";
 
 interface ContactFormData {
   name: string;
   email: string;
   phone: string;
+  company: string;
   message: string;
 }
 
@@ -18,10 +19,12 @@ export default function ContactForm() {
     name: "",
     email: "",
     phone: "",
+    company: "",
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const update = <K extends keyof ContactFormData>(
     key: K,
@@ -33,33 +36,26 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setError(null);
 
     try {
-      const response = await fetch("https://formspree.io/f/xdummyid", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          _subject: `Contact Form — ${form.name}`,
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          message: form.message,
-        }),
+      const supabase = createClient();
+      
+      // Direct insertion to Supabase. This does NOT require a logged-in user 
+      // as long as the 'contact_submissions' table has public INSERT permissions.
+      const { error: insertError } = await supabase.from("contact_submissions").insert({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        message: form.message,
       });
 
-      if (response.ok) {
-        setSubmitted(true);
-      }
-    } catch {
-      // Fallback to mailto
-      const subject = encodeURIComponent(`Contact from ${form.name}`);
-      const body = encodeURIComponent(
-        `Name: ${form.name}\nEmail: ${form.email}\nPhone: ${form.phone}\n\nMessage:\n${form.message}`
-      );
-      window.open(
-        `mailto:${COMPANY.email}?subject=${subject}&body=${body}`,
-        "_self"
-      );
+      if (insertError) throw insertError;
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Contact form error:", err);
+      setError("Failed to send message. Please try again or contact us via email.");
     } finally {
       setSubmitting(false);
     }
@@ -81,7 +77,7 @@ export default function ContactForm() {
           variant="outline"
           size="sm"
           onClick={() => {
-            setForm({ name: "", email: "", phone: "", message: "" });
+            setForm({ name: "", email: "", phone: "", company: "", message: "" });
             setSubmitted(false);
           }}
         >
@@ -134,21 +130,40 @@ export default function ContactForm() {
           </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="contact-phone"
-            className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2"
-          >
-            Phone
-          </label>
-          <input
-            id="contact-phone"
-            type="tel"
-            value={form.phone}
-            onChange={(e) => update("phone", e.target.value)}
-            placeholder="+91 98765 43210"
-            className="w-full px-4 py-2.5 rounded-xl bg-bg-primary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/30 outline-none transition-all"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label
+              htmlFor="contact-phone"
+              className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2"
+            >
+              Phone <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="contact-phone"
+              type="tel"
+              required
+              value={form.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              placeholder="+91 98765 43210"
+              className="w-full px-4 py-2.5 rounded-xl bg-bg-primary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/30 outline-none transition-all"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="contact-company"
+              className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2"
+            >
+              Company
+            </label>
+            <input
+              id="contact-company"
+              type="text"
+              value={form.company}
+              onChange={(e) => update("company", e.target.value)}
+              placeholder="Your company"
+              className="w-full px-4 py-2.5 rounded-xl bg-bg-primary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/30 outline-none transition-all"
+            />
+          </div>
         </div>
 
         <div>
@@ -168,6 +183,13 @@ export default function ContactForm() {
             className="w-full px-4 py-3 rounded-xl bg-bg-primary border border-border-subtle text-text-primary text-sm placeholder:text-text-muted focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/30 outline-none transition-all resize-y"
           />
         </div>
+
+        {error && (
+          <div className="p-4 rounded-xl bg-red-400/10 border border-red-400/20 text-red-400 text-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            {error}
+          </div>
+        )}
 
         <Button
           type="submit"
