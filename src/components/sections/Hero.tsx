@@ -80,7 +80,7 @@ export default function Hero() {
           position: "absolute",
           inset: 0,
           zIndex: 1,
-          background: "rgba(23, 23, 23, 0.65)",
+          background: "rgba(10, 25, 60, 0.65)",
         }}
       />
 

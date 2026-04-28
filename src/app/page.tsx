@@ -26,7 +26,7 @@ export default function Home() {
         style={{
           width: "100%",
           height: "40px",
-          background: "#C0392B",
+          background: "#F7941D",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
