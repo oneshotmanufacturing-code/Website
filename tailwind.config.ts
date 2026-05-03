@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         /* CableLeader-inspired palette */
-        navy:           "#0F1D3F",
-        "navy-dark":    "#091530",
-        amber:          "#F7941D",
-        "amber-hover":  "#E08319",
-        "amber-light":  "#FFF3E0",
+        navy:           "#111111",
+        "navy-dark":    "#0A0A0A",
+        amber:          "#DC2626",
+        "amber-hover":  "#B91C1C",
+        "amber-light":  "#FEF2F2",
         "gray-100-cl":  "#F5F5F5",
         "gray-300-cl":  "#E0E0E0",
         "text-dark":    "#1A1A1A",
@@ -28,9 +28,9 @@ const config: Config = {
         dim:            "#AAAAAA",
         grey:           "#555555",
         "white-text":   "#1A1A1A",
-        red:            "#F7941D",
-        "red-hover":    "#E08319",
-        "red-dim":      "#FFF3E0",
+        red:            "#DC2626",
+        "red-hover":    "#B91C1C",
+        "red-dim":      "#FEF2F2",
       },
       fontFamily: {
         body:    ["var(--font-body)", "Inter", "Roboto", "system-ui", "sans-serif"],

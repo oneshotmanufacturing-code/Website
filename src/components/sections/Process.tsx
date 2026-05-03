@@ -36,7 +36,7 @@ export default function Process() {
               fontWeight: 700,
               textTransform: "uppercase",
               letterSpacing: "0.12em",
-              color: "#F7941D",
+              color: "#DC2626",
               marginBottom: "12px",
             }}
           >
@@ -46,7 +46,7 @@ export default function Process() {
             style={{
               fontSize: "32px",
               fontWeight: 700,
-              color: "#0F1D3F",
+              color: "#111111",
               lineHeight: 1.15,
             }}
           >
@@ -59,24 +59,10 @@ export default function Process() {
           style={{
             position: "relative",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gridTemplateColumns: "repeat(4, 1fr)",
             gap: "32px",
           }}
         >
-          {/* Desktop timeline connector (hidden on small screens via CSS/media query in global, but using inline for now we'll do a simple trick or just rely on layout) */}
-          <div
-            className="hidden md:block"
-            style={{
-              position: "absolute",
-              top: "24px", /* half of 48px circle */
-              left: "12%",
-              right: "12%",
-              height: "2px",
-              borderTop: "2px dashed #E0E0E0",
-              zIndex: 0,
-            }}
-          />
-
           {steps.map((step, index) => (
             <div
               key={index}
@@ -88,13 +74,29 @@ export default function Process() {
                 alignItems: "flex-start",
               }}
             >
+              {/* Dashed connector from this circle to the next */}
+              {index < steps.length - 1 && (
+                <div
+                  className="hidden md:block"
+                  style={{
+                    position: "absolute",
+                    top: "24px",
+                    left: "48px",
+                    right: "-32px",
+                    height: "0px",
+                    borderTop: "2px dashed #D0D0D0",
+                    zIndex: 0,
+                  }}
+                />
+              )}
+
               {/* Number Circle */}
               <div
                 style={{
                   width: "48px",
                   height: "48px",
                   borderRadius: "50%",
-                  background: "#F7941D",
+                  background: "#DC2626",
                   color: "#FFFFFF",
                   fontSize: "18px",
                   fontWeight: 700,
@@ -102,6 +104,8 @@ export default function Process() {
                   alignItems: "center",
                   justifyContent: "center",
                   marginBottom: "20px",
+                  position: "relative",
+                  zIndex: 2,
                 }}
               >
                 {step.number}
@@ -112,7 +116,7 @@ export default function Process() {
                 style={{
                   fontSize: "16px",
                   fontWeight: 600,
-                  color: "#0F1D3F",
+                  color: "#111111",
                   marginBottom: "8px",
                 }}
               >

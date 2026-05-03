@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#091530", color: "#FFFFFF" }}>
+    <footer style={{ background: "#0A0A0A", color: "#FFFFFF" }}>
       {/* Upper section */}
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "64px 24px" }}>
         <div
@@ -39,7 +39,7 @@ export default function Footer() {
           <div>
             <h3
               style={{
-                color: "#F7941D",
+                color: "#DC2626",
                 fontSize: "11px",
                 fontWeight: 700,
                 textTransform: "uppercase",
@@ -61,7 +61,7 @@ export default function Footer() {
           <div>
             <h3
               style={{
-                color: "#F7941D",
+                color: "#DC2626",
                 fontSize: "11px",
                 fontWeight: 700,
                 textTransform: "uppercase",
@@ -82,7 +82,7 @@ export default function Footer() {
           <div>
             <h3
               style={{
-                color: "#F7941D",
+                color: "#DC2626",
                 fontSize: "11px",
                 fontWeight: 700,
                 textTransform: "uppercase",
@@ -132,7 +132,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
         transition: "color 0.2s ease",
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLAnchorElement).style.color = "#F7941D";
+        (e.currentTarget as HTMLAnchorElement).style.color = "#DC2626";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.7)";

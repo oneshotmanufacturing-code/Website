@@ -31,14 +31,14 @@ const pcbPoints = [
 
 export default function PCBQuality() {
   return (
-    <section id="pcb" style={{ background: "#0F1D3F", padding: "80px 0" }}>
+    <section id="pcb" style={{ background: "#111111", padding: "80px 0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
         {/* Header */}
         <div style={{ marginBottom: "48px" }}>
           <span
             style={{
               display: "inline-block",
-              background: "#F7941D",
+              background: "#DC2626",
               color: "#FFFFFF",
               fontSize: "11px",
               fontWeight: 700,
@@ -76,13 +76,13 @@ export default function PCBQuality() {
               style={{
                 background: "rgba(255,255,255,0.06)",
                 border: "1px solid rgba(255,255,255,0.12)",
-                borderTop: "2px solid #F7941D",
+                borderTop: "2px solid #DC2626",
                 borderRadius: "4px",
                 padding: "24px",
                 transition: "background 0.25s ease",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLDivElement).style.background = "rgba(247,148,29,0.12)";
+                (e.currentTarget as HTMLDivElement).style.background = "rgba(220,38,38,0.12)";
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.06)";

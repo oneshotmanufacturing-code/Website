@@ -1,7 +1,18 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const isDummyEnv =
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.includes("dummy-project") ?? false;
+
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // ── Local testing: skip all auth checks ──
+  if (isDummyEnv) {
+    return NextResponse.next({ request });
+  }
+
+  // ── Production: normal Supabase auth ──
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -28,8 +39,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
 
   // Not logged in → redirect to /login
   if (!user && (pathname.startsWith("/portal") || pathname.startsWith("/admin"))) {

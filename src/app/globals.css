@@ -8,11 +8,11 @@
 
 @layer base {
   :root {
-    --color-navy:        #0F1D3F;
-    --color-navy-dark:   #091530;
-    --color-amber:       #F7941D;
-    --color-amber-hover: #E08319;
-    --color-amber-light: #FFF3E0;
+    --color-navy:        #111111;
+    --color-navy-dark:   #0A0A0A;
+    --color-amber:       #DC2626;
+    --color-amber-hover: #B91C1C;
+    --color-amber-light: #FEF2F2;
     --color-white:       #FFFFFF;
     --color-gray-100:    #F5F5F5;
     --color-gray-300:    #E0E0E0;
@@ -38,7 +38,7 @@
   }
 
   ::selection {
-    background-color: rgba(247, 148, 29, 0.20);
+    background-color: rgba(220, 38, 38, 0.20);
     color: #1A1A1A;
   }
 
@@ -46,11 +46,11 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: #F5F5F5; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(15, 29, 63, 0.25);
+    background: rgba(17, 17, 17, 0.25);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(15, 29, 63, 0.45);
+    background: rgba(17, 17, 17, 0.45);
   }
 }
 
@@ -58,7 +58,7 @@
 
   /* ── Container ── */
   .site-container {
-    max-width: 1200px;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     padding-left: 1.5rem;
@@ -197,7 +197,7 @@
     transition: background 0.25s ease;
   }
   .cl-navy-card:hover {
-    background: rgba(247, 148, 29, 0.12);
+    background: rgba(220, 38, 38, 0.12);
   }
 
   /* ── Card title ── */

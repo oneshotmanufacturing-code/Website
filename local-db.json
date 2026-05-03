@@ -1,0 +1,13 @@
+{
+  "messages": [
+    {
+      "id": "3d90de98-4da2-442f-bc20-c2599ef0becd",
+      "name": "Rahul Sharma",
+      "email": "rahul@techstartup.in",
+      "phone": "9876543210",
+      "company": "TechStartup India",
+      "message": "We need 500 custom wire harnesses for our IoT devices. Can you share a quote and timeline?",
+      "created_at": "2026-05-03T16:14:25.806Z"
+    }
+  ]
+}

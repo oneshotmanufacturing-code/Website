@@ -1,299 +1,649 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Users,
-  Package,
-  ClipboardList,
   MessageSquare,
-  LogOut,
-  TrendingUp,
+  Mail,
+  Phone,
+  Building2,
   Clock,
-  CheckCircle,
-  Truck,
   ArrowRight,
+  LayoutDashboard,
+  Inbox,
+  LogOut,
 } from "lucide-react";
 
-export const metadata = { title: "Admin Panel" };
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+  created_at: string;
+}
 
-const STATUS_COLORS: Record<string, string> = {
-  confirmed: "text-blue-400 bg-blue-400/10 border-blue-400/20",
-  material_ready: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  in_production: "text-orange-400 bg-orange-400/10 border-orange-400/20",
-  quality_check: "text-purple-400 bg-purple-400/10 border-purple-400/20",
-  dispatched: "text-accent-primary bg-accent-primary/10 border-accent-primary/20",
-  delivered: "text-green-400 bg-green-400/10 border-green-400/20",
-};
+export default function AdminPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const STATUS_LABEL: Record<string, string> = {
-  confirmed: "Confirmed",
-  material_ready: "Material Ready",
-  in_production: "In Production",
-  quality_check: "Quality Check",
-  dispatched: "Dispatched",
-  delivered: "Delivered",
-};
+  useEffect(() => {
+    fetch("/api/contact")
+      .then((r) => r.json())
+      .then((d) => setMessages(d.data || []))
+      .catch(() => setMessages([]))
+      .finally(() => setLoading(false));
+  }, []);
 
-export default async function AdminPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase
-    .from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") redirect("/portal");
-
-  // Fetch stats including new contact submissions
-  const [
-    { count: totalCustomers },
-    { count: totalOrders },
-    { count: newQuotes },
-    { count: totalMessages },
-    { count: activeOrders },
-  ] = await Promise.all([
-    supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "customer"),
-    supabase.from("orders").select("*", { count: "exact", head: true }),
-    supabase.from("quote_requests").select("*", { count: "exact", head: true }).eq("status", "new"),
-    supabase.from("contact_submissions").select("*", { count: "exact", head: true }),
-    supabase.from("orders").select("*", { count: "exact", head: true }).not("status", "in", '("delivered")'),
-  ]);
-
-  // Recent orders
-  const { data: recentOrders } = await supabase
-    .from("orders")
-    .select("*, profiles(company_name)")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  // Recent quote requests
-  const { data: recentQuotes } = await supabase
-    .from("quote_requests")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  // Recent contact messages
-  const { data: recentMessages } = await supabase
-    .from("contact_submissions")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(5);
-
-  const stats = [
-    { label: "Total Customers", value: totalCustomers ?? 0, icon: Users, href: "/admin/customers", color: "text-blue-400" },
-    { label: "New Quotes", value: newQuotes ?? 0, icon: ClipboardList, href: "/admin/quotes", color: "text-amber-400" },
-    { label: "Messages", value: totalMessages ?? 0, icon: MessageSquare, href: "/admin/messages", color: "text-violet-400" },
-    { label: "Active Orders", value: activeOrders ?? 0, icon: TrendingUp, href: "/admin/orders", color: "text-orange-400" },
-    { label: "Total Orders", value: totalOrders ?? 0, icon: Package, href: "/admin/orders", color: "text-green-400" },
-  ];
-
-  const navLinks = [
-    { label: "Quotes", icon: ClipboardList, href: "/admin/quotes" },
-    { label: "Messages", icon: MessageSquare, href: "/admin/messages" },
-    { label: "Customers", icon: Users, href: "/admin/customers" },
-    { label: "Orders", icon: Package, href: "/admin/orders" },
-  ];
+  const totalMessages = messages.length;
+  const todayMessages = messages.filter((m) => {
+    const d = new Date(m.created_at);
+    const now = new Date();
+    return d.toDateString() === now.toDateString();
+  }).length;
 
   return (
-    <div className="min-h-screen py-24 px-4 bg-bg-primary">
-      <div className="max-w-7xl mx-auto">
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+      {/* ── Top Nav Bar (matches home page Navbar) ── */}
+      <nav
+        style={{
+          position: "sticky",
+          top: 0,
+          background: "#111111",
+          zIndex: 50,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "100%",
+            margin: "0 auto",
+            padding: "0 24px",
+            height: "64px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              color: "#FFFFFF",
+              fontSize: "20px",
+              fontWeight: 800,
+              letterSpacing: "0.10em",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+          >
+            ONESHOT
+          </Link>
 
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <div>
-            <p className="text-accent-primary text-xs font-semibold uppercase tracking-[0.2em] mb-2">
-              Management Portal
-            </p>
-            <h1 className="font-display text-4xl font-bold text-text-primary">
-              Admin Dashboard
-            </h1>
-            <p className="text-text-muted text-sm mt-2 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              Logged in as <span className="text-text-secondary font-medium">{user.email}</span>
-            </p>
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-3">
-            {navLinks.map((l) => (
-              <Link key={l.href} href={l.href}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-bg-tertiary border border-border-subtle text-text-secondary hover:text-accent-primary hover:border-accent-primary/30 transition-all">
-                <l.icon className="w-4 h-4" /> {l.label}
-              </Link>
-            ))}
-            <form action="/auth/signout" method="post" className="ml-2">
-              <button type="submit"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-text-muted hover:text-red-400 transition-colors">
-                <LogOut className="w-4 h-4" /> Sign out
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-10">
-          {stats.map((s) => (
-            <Link key={s.label} href={s.href}
-              className="glass-card p-6 hover:border-accent-primary/30 transition-all duration-300 group relative overflow-hidden">
-              <div className="absolute -right-4 -top-4 w-16 h-16 bg-gradient-to-br from-white/5 to-transparent rounded-full" />
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-2 rounded-lg bg-bg-tertiary border border-border-subtle group-hover:scale-110 transition-transform`}>
-                  <s.icon className={`w-5 h-5 ${s.color}`} />
-                </div>
-                <ArrowRight className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-              </div>
-              <p className={`text-3xl font-bold font-display tracking-tight text-text-primary`}>{s.value}</p>
-              <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mt-1">{s.label}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            <Link
+              href="/admin"
+              style={{
+                color: "#FFFFFF",
+                fontSize: "13px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                paddingBottom: "4px",
+                borderBottom: "2px solid #DC2626",
+              }}
+            >
+              Dashboard
             </Link>
-          ))}
+            <Link
+              href="/admin/messages"
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: "13px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                paddingBottom: "4px",
+                borderBottom: "2px solid transparent",
+                transition: "color 0.2s, border-color 0.2s",
+              }}
+            >
+              Messages
+            </Link>
+            <Link
+              href="/"
+              style={{
+                background: "#DC2626",
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "10px 20px",
+                borderRadius: "4px",
+                textDecoration: "none",
+                transition: "background 0.2s ease",
+              }}
+            >
+              ← BACK TO SITE
+            </Link>
+          </div>
         </div>
+      </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* ── Hero Header (Navy bg, like home hero) ── */}
+      <section
+        style={{
+          background: "#111111",
+          padding: "64px 24px 48px",
+        }}
+      >
+        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+          <span
+            style={{
+              display: "inline-block",
+              background: "#DC2626",
+              color: "#FFFFFF",
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.10em",
+              padding: "4px 10px",
+              marginBottom: "20px",
+            }}
+          >
+            ADMIN PANEL
+          </span>
+          <h1
+            style={{
+              color: "#FFFFFF",
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 900,
+              lineHeight: 1.1,
+              textTransform: "uppercase",
+              marginBottom: "12px",
+            }}
+          >
+            MANAGEMENT<br />DASHBOARD.
+          </h1>
+          <p
+            style={{
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "16px",
+              fontWeight: 400,
+              lineHeight: 1.6,
+              maxWidth: "480px",
+            }}
+          >
+            Monitor incoming inquiries and manage your contact submissions from one place.
+          </p>
+        </div>
+      </section>
 
-          {/* Recent Quote Requests */}
-          <div className="lg:col-span-1 glass-card p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display font-bold text-lg text-text-primary flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-amber-400/10 flex items-center justify-center">
-                   <ClipboardList className="w-4 h-4 text-amber-400" />
-                </div>
-                New Quotes
-              </h2>
-              <Link href="/admin/quotes" className="text-xs font-bold text-accent-primary hover:underline uppercase tracking-wider">
-                View All
-              </Link>
+      {/* ── Stats Row ── */}
+      <section
+        style={{
+          background: "#FFFFFF",
+          padding: "0 24px",
+          marginTop: "-24px",
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "100%",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {/* Total Messages */}
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E0E0E0",
+              borderRadius: "4px",
+              padding: "28px 24px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              transition: "box-shadow 0.25s ease, transform 0.25s ease",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "16px",
+              }}
+            >
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "4px",
+                  background: "rgba(220,38,38,0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <MessageSquare size={20} color="#DC2626" />
+              </div>
             </div>
-            <div className="space-y-4 flex-1">
-              {recentQuotes && recentQuotes.length > 0 ? (
-                recentQuotes.map((q) => (
-                  <Link key={q.id} href={`/admin/quotes/${q.id}`}
-                    className="block group">
-                    <div className="p-4 rounded-xl bg-bg-tertiary/40 border border-transparent group-hover:border-accent-primary/20 group-hover:bg-bg-tertiary/80 transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <p className="text-sm font-bold text-text-primary group-hover:text-accent-primary transition-colors">{q.company_name}</p>
-                        <span className="text-[10px] font-bold uppercase tracking-tight px-1.5 py-0.5 rounded bg-amber-400/10 text-amber-400 border border-amber-400/20">
-                          {q.status}
-                        </span>
-                      </div>
-                      <p className="text-xs text-text-muted line-clamp-1">{q.contact_name} · {q.service_type.replace('_', ' ')}</p>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-12 h-12 rounded-full bg-bg-tertiary flex items-center justify-center mb-3">
-                    <ClipboardList className="w-6 h-6 text-text-muted" />
-                  </div>
-                  <p className="text-text-muted text-sm font-medium">No new requests</p>
-                </div>
-              )}
-            </div>
+            <p
+              style={{
+                fontSize: "36px",
+                fontWeight: 900,
+                color: "#111111",
+                lineHeight: 1,
+              }}
+            >
+              {loading ? "—" : totalMessages}
+            </p>
+            <p
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.10em",
+                color: "#AAAAAA",
+                marginTop: "8px",
+              }}
+            >
+              TOTAL MESSAGES
+            </p>
           </div>
 
-          {/* Recent Messages */}
-          <div className="lg:col-span-1 glass-card p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display font-bold text-lg text-text-primary flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-violet-400/10 flex items-center justify-center">
-                   <MessageSquare className="w-4 h-4 text-violet-400" />
-                </div>
-                Recent Messages
-              </h2>
-              <Link href="/admin/messages" className="text-xs font-bold text-accent-primary hover:underline uppercase tracking-wider">
-                Inbox
-              </Link>
+          {/* Today */}
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E0E0E0",
+              borderRadius: "4px",
+              padding: "28px 24px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "16px",
+              }}
+            >
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "4px",
+                  background: "rgba(17,17,17,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Clock size={20} color="#111111" />
+              </div>
             </div>
-            <div className="space-y-4 flex-1">
-              {recentMessages && recentMessages.length > 0 ? (
-                recentMessages.map((m) => (
-                  <Link key={m.id} href={`/admin/messages`}
-                    className="block group">
-                    <div className="p-4 rounded-xl bg-bg-tertiary/40 border border-transparent group-hover:border-accent-primary/20 group-hover:bg-bg-tertiary/80 transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <p className="text-sm font-bold text-text-primary group-hover:text-accent-primary transition-colors">{m.name}</p>
-                        <span className="text-[10px] text-text-muted font-mono">
-                          {new Date(m.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">{m.message}</p>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                   <div className="w-12 h-12 rounded-full bg-bg-tertiary flex items-center justify-center mb-3">
-                    <MessageSquare className="w-6 h-6 text-text-muted" />
-                  </div>
-                  <p className="text-text-muted text-sm font-medium">Your inbox is empty</p>
-                </div>
-              )}
-            </div>
+            <p
+              style={{
+                fontSize: "36px",
+                fontWeight: 900,
+                color: "#111111",
+                lineHeight: 1,
+              }}
+            >
+              {loading ? "—" : todayMessages}
+            </p>
+            <p
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.10em",
+                color: "#AAAAAA",
+                marginTop: "8px",
+              }}
+            >
+              TODAY&apos;S INQUIRIES
+            </p>
           </div>
 
-          {/* Recent Orders */}
-          <div className="lg:col-span-1 glass-card p-6 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-display font-bold text-lg text-text-primary flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-green-400/10 flex items-center justify-center">
-                   <Truck className="w-4 h-4 text-green-400" />
-                </div>
-                Live Orders
-              </h2>
-              <Link href="/admin/orders" className="text-xs font-bold text-accent-primary hover:underline uppercase tracking-wider">
-                Full List
-              </Link>
+          {/* Quick Link */}
+          <Link
+            href="/admin/messages"
+            style={{
+              background: "#111111",
+              borderRadius: "4px",
+              padding: "28px 24px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              textDecoration: "none",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              transition: "transform 0.25s ease",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "16px",
+              }}
+            >
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "4px",
+                  background: "rgba(220,38,38,0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Inbox size={20} color="#DC2626" />
+              </div>
+              <ArrowRight size={18} color="rgba(255,255,255,0.4)" />
             </div>
-            <div className="space-y-4 flex-1">
-              {recentOrders && recentOrders.length > 0 ? (
-                recentOrders.map((o) => (
-                  <Link key={o.id} href={`/admin/orders/${o.id}`}
-                    className="block group">
-                    <div className="p-4 rounded-xl bg-bg-tertiary/40 border border-transparent group-hover:border-accent-primary/20 group-hover:bg-bg-tertiary/80 transition-all">
-                      <div className="flex items-start justify-between mb-2">
-                        <p className="text-sm font-bold text-text-primary group-hover:text-accent-primary transition-colors">{o.order_number}</p>
-                        <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${STATUS_COLORS[o.status] ?? ""}`}>
-                          {STATUS_LABEL[o.status] ?? o.status}
-                        </span>
+            <div>
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  color: "#FFFFFF",
+                  marginBottom: "4px",
+                }}
+              >
+                View All Messages
+              </p>
+              <p
+                style={{
+                  fontSize: "12px",
+                  color: "rgba(255,255,255,0.5)",
+                }}
+              >
+                Open the full inbox →
+              </p>
+            </div>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Recent Messages ── */}
+      <section style={{ padding: "48px 24px 80px", flex: 1 }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "32px",
+            }}
+          >
+            <div>
+              <span
+                style={{
+                  display: "inline-block",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  color: "#DC2626",
+                  marginBottom: "8px",
+                }}
+              >
+                RECENT
+              </span>
+              <h2
+                style={{
+                  fontSize: "28px",
+                  fontWeight: 700,
+                  color: "#111111",
+                  lineHeight: 1.15,
+                }}
+              >
+                LATEST INQUIRIES
+              </h2>
+            </div>
+            <Link
+              href="/admin/messages"
+              style={{
+                background: "#DC2626",
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "10px 20px",
+                borderRadius: "4px",
+                textDecoration: "none",
+                transition: "background 0.2s ease",
+              }}
+            >
+              VIEW ALL →
+            </Link>
+          </div>
+
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "60px 0" }}>
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  border: "3px solid #E0E0E0",
+                  borderTopColor: "#DC2626",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                  margin: "0 auto 16px",
+                }}
+              />
+              <p style={{ color: "#AAAAAA", fontSize: "14px" }}>Loading messages…</p>
+              <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { to { transform: rotate(360deg); } }` }} />
+            </div>
+          ) : messages.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "80px 24px",
+                background: "#F5F5F5",
+                borderRadius: "4px",
+                border: "1px dashed #E0E0E0",
+              }}
+            >
+              <MessageSquare
+                size={40}
+                color="#AAAAAA"
+                style={{ margin: "0 auto 16px", opacity: 0.4 }}
+              />
+              <h3
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "#111111",
+                  marginBottom: "8px",
+                }}
+              >
+                No messages yet
+              </h3>
+              <p style={{ fontSize: "14px", color: "#555555", maxWidth: "320px", margin: "0 auto" }}>
+                Inquiries from the contact form on your website will appear here.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {messages.slice(0, 5).map((m) => (
+                <div
+                  key={m.id}
+                  style={{
+                    background: "#FFFFFF",
+                    border: "1px solid #E0E0E0",
+                    borderLeft: "4px solid #DC2626",
+                    borderRadius: "4px",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                    overflow: "hidden",
+                    transition: "box-shadow 0.25s ease, transform 0.25s ease",
+                  }}
+                >
+                  {/* Card Header */}
+                  <div
+                    style={{
+                      padding: "20px 24px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      borderBottom: "1px solid #F5F5F5",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                      <div
+                        style={{
+                          width: "44px",
+                          height: "44px",
+                          borderRadius: "50%",
+                          background: "#111111",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#DC2626",
+                          fontSize: "18px",
+                          fontWeight: 800,
+                        }}
+                      >
+                        {m.name.charAt(0).toUpperCase()}
                       </div>
-                      <p className="text-xs text-text-muted line-clamp-1">
-                        {(o.profiles as any)?.company_name ?? "Private Customer"} · {o.description}
+                      <div>
+                        <p
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: 700,
+                            color: "#111111",
+                          }}
+                        >
+                          {m.name}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "12px",
+                            marginTop: "4px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "12px",
+                              color: "#555555",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Mail size={12} color="#DC2626" /> {m.email}
+                          </span>
+                          {m.phone && (
+                            <span
+                              style={{
+                                fontSize: "12px",
+                                color: "#555555",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                              }}
+                            >
+                              <Phone size={12} color="#DC2626" /> {m.phone}
+                            </span>
+                          )}
+                          {m.company && (
+                            <span
+                              style={{
+                                fontSize: "12px",
+                                color: "#555555",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                              }}
+                            >
+                              <Building2 size={12} color="#DC2626" /> {m.company}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 600,
+                          color: "#AAAAAA",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
+                        }}
+                      >
+                        {new Date(m.created_at).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "11px",
+                          color: "#AAAAAA",
+                        }}
+                      >
+                        {new Date(m.created_at).toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
-                  </Link>
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-12 h-12 rounded-full bg-bg-tertiary flex items-center justify-center mb-3">
-                    <Package className="w-6 h-6 text-text-muted" />
                   </div>
-                  <p className="text-text-muted text-sm font-medium">No active orders</p>
+
+                  {/* Card Body */}
+                  <div style={{ padding: "16px 24px 20px" }}>
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        color: "#555555",
+                        lineHeight: 1.6,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      &ldquo;{m.message}&rdquo;
+                    </p>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-          </div>
-
+          )}
         </div>
+      </section>
 
-        {/* Action Grid */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {[
-            { label: "Quote Management", desc: "Review and respond to inquiries", icon: ClipboardList, href: "/admin/quotes", color: "bg-amber-400/10 text-amber-400" },
-            { label: "Customer Relations", desc: "Manage accounts and profiles", icon: Users, href: "/admin/customers", color: "bg-blue-400/10 text-blue-400" },
-            { label: "Order Fulfilment", desc: "Create and update production jobs", icon: Package, href: "/admin/orders", color: "bg-green-400/10 text-green-400" },
-          ].map((a) => (
-            <Link key={a.href} href={a.href}
-              className="glass-card p-6 hover:translate-y-[-4px] hover:shadow-xl transition-all duration-300 group">
-              <div className={`w-10 h-10 rounded-xl ${a.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                <a.icon className="w-5 h-5" />
-              </div>
-              <h3 className="font-display font-bold text-text-primary group-hover:text-accent-primary transition-colors">
-                {a.label}
-              </h3>
-              <p className="text-xs text-text-muted mt-2 leading-relaxed">{a.desc}</p>
-            </Link>
-          ))}
-        </div>
-
-      </div>
+      {/* ── Footer (matching home page) ── */}
+      <footer
+        style={{
+          background: "#111111",
+          padding: "24px",
+          textAlign: "center",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.4)",
+            letterSpacing: "0.05em",
+          }}
+        >
+          © {new Date().getFullYear()} OneShot Manufacturing — Admin Panel
+        </p>
+      </footer>
     </div>
   );
 }

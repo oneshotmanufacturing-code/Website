@@ -1,132 +1,605 @@
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  MessageSquare, 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  Building2, 
-  Calendar,
-  User
+import {
+  MessageSquare,
+  Mail,
+  Phone,
+  Building2,
+  ArrowLeft,
+  Inbox,
+  Clock,
+  Search,
 } from "lucide-react";
 
-export const metadata = { title: "Inquiry Messages | Admin" };
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company: string;
+  message: string;
+  created_at: string;
+}
 
-export default async function AdminMessagesPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+export default function AdminMessagesPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
-  const { data: profile } = await supabase
-    .from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") redirect("/portal");
+  useEffect(() => {
+    fetch("/api/contact")
+      .then((r) => r.json())
+      .then((d) => setMessages(d.data || []))
+      .catch(() => setMessages([]))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const { data: messages, error } = await supabase
-    .from("contact_submissions")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const filtered = messages.filter(
+    (m) =>
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.email.toLowerCase().includes(search.toLowerCase()) ||
+      m.company.toLowerCase().includes(search.toLowerCase()) ||
+      m.message.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-    <div className="min-h-screen py-24 px-4 bg-bg-primary">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 mb-6">
-          <Link href="/admin" className="text-text-muted hover:text-accent-primary transition-colors flex items-center gap-1 text-sm font-medium">
-            <ArrowLeft className="w-4 h-4" /> Dashboard
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+      {/* ── Top Nav Bar ── */}
+      <nav
+        style={{
+          position: "sticky",
+          top: 0,
+          background: "#111111",
+          zIndex: 50,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "100%",
+            margin: "0 auto",
+            padding: "0 24px",
+            height: "64px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Link
+            href="/"
+            style={{
+              color: "#FFFFFF",
+              fontSize: "20px",
+              fontWeight: 800,
+              letterSpacing: "0.10em",
+              textDecoration: "none",
+              textTransform: "uppercase",
+            }}
+          >
+            ONESHOT
           </Link>
-          <span className="text-text-muted/30">/</span>
-          <span className="text-text-secondary text-sm font-medium">Messages</span>
-        </div>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-text-primary flex items-center gap-3">
-              <MessageSquare className="w-8 h-8 text-accent-primary" />
-              Inquiry Messages
-            </h1>
-            <p className="text-text-muted text-sm mt-1">
-              Review and manage incoming contact form submissions.
-            </p>
-          </div>
-          <div className="px-4 py-2 rounded-xl bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-sm font-bold uppercase tracking-wider">
-            {messages?.length ?? 0} Total
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            <Link
+              href="/admin"
+              style={{
+                color: "rgba(255,255,255,0.7)",
+                fontSize: "13px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                paddingBottom: "4px",
+                borderBottom: "2px solid transparent",
+                transition: "color 0.2s, border-color 0.2s",
+              }}
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/admin/messages"
+              style={{
+                color: "#FFFFFF",
+                fontSize: "13px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                textDecoration: "none",
+                paddingBottom: "4px",
+                borderBottom: "2px solid #DC2626",
+              }}
+            >
+              Messages
+            </Link>
+            <Link
+              href="/"
+              style={{
+                background: "#DC2626",
+                color: "#FFFFFF",
+                fontSize: "12px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "10px 20px",
+                borderRadius: "4px",
+                textDecoration: "none",
+                transition: "background 0.2s ease",
+              }}
+            >
+              ← BACK TO SITE
+            </Link>
           </div>
         </div>
+      </nav>
 
-        {error ? (
-          <div className="p-8 text-center glass-card border-red-500/20">
-            <p className="text-red-400 font-medium">Error loading messages: {error.message}</p>
+      {/* ── Header ── */}
+      <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+          {/* Breadcrumbs */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "24px",
+            }}
+          >
+            <Link
+              href="/admin"
+              style={{
+                color: "rgba(255,255,255,0.5)",
+                fontSize: "12px",
+                fontWeight: 600,
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                transition: "color 0.2s",
+              }}
+            >
+              <ArrowLeft size={14} /> Dashboard
+            </Link>
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "12px" }}>
+              /
+            </span>
+            <span
+              style={{
+                color: "#DC2626",
+                fontSize: "12px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              Messages
+            </span>
           </div>
-        ) : messages && messages.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4">
-            {messages.map((m) => (
-              <div key={m.id} className="glass-card overflow-hidden group hover:border-accent-primary/30 transition-all duration-300">
-                <div className="p-6 border-b border-border-subtle bg-bg-tertiary/20 group-hover:bg-bg-tertiary/40 transition-colors">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-accent-primary/10 flex items-center justify-center text-accent-primary font-bold text-lg border border-accent-primary/20">
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "16px",
+            }}
+          >
+            <div>
+              <span
+                style={{
+                  display: "inline-block",
+                  background: "#DC2626",
+                  color: "#FFFFFF",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.10em",
+                  padding: "4px 10px",
+                  marginBottom: "16px",
+                }}
+              >
+                INBOX
+              </span>
+              <h1
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: "clamp(24px, 3.5vw, 36px)",
+                  fontWeight: 900,
+                  lineHeight: 1.1,
+                  textTransform: "uppercase",
+                }}
+              >
+                INQUIRY MESSAGES
+              </h1>
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.5)",
+                  fontSize: "14px",
+                  marginTop: "8px",
+                }}
+              >
+                Review and manage incoming contact form submissions.
+              </p>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(220,38,38,0.15)",
+                border: "1px solid rgba(220,38,38,0.3)",
+                padding: "8px 16px",
+                borderRadius: "4px",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.10em",
+                  color: "#DC2626",
+                }}
+              >
+                {messages.length} Total
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Search ── */}
+      <section
+        style={{
+          background: "#FFFFFF",
+          padding: "0 24px",
+          marginTop: "-20px",
+          position: "relative",
+          zIndex: 10,
+        }}
+      >
+        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid #E0E0E0",
+              borderRadius: "4px",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+              padding: "12px 20px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <Search size={18} color="#AAAAAA" />
+            <input
+              type="text"
+              placeholder="Search by name, email, company, or message..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                fontSize: "14px",
+                color: "#1A1A1A",
+                background: "transparent",
+              }}
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#AAAAAA",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                }}
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Message List ── */}
+      <section style={{ padding: "32px 24px 80px", flex: 1 }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "80px 0" }}>
+              <div
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  border: "3px solid #E0E0E0",
+                  borderTopColor: "#DC2626",
+                  borderRadius: "50%",
+                  animation: "spin 0.8s linear infinite",
+                  margin: "0 auto 16px",
+                }}
+              />
+              <p style={{ color: "#AAAAAA", fontSize: "14px" }}>
+                Loading messages…
+              </p>
+              <style
+                dangerouslySetInnerHTML={{
+                  __html: `@keyframes spin { to { transform: rotate(360deg); } }`,
+                }}
+              />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "80px 24px",
+                background: "#F5F5F5",
+                borderRadius: "4px",
+                border: "1px dashed #E0E0E0",
+              }}
+            >
+              <Inbox
+                size={40}
+                color="#AAAAAA"
+                style={{ margin: "0 auto 16px", opacity: 0.4 }}
+              />
+              <h3
+                style={{
+                  fontSize: "18px",
+                  fontWeight: 700,
+                  color: "#111111",
+                  marginBottom: "8px",
+                }}
+              >
+                {search ? "No matching messages" : "No messages yet"}
+              </h3>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#555555",
+                  maxWidth: "360px",
+                  margin: "0 auto",
+                }}
+              >
+                {search
+                  ? "Try a different search term."
+                  : "Inquiries from the contact form will appear here."}
+              </p>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
+              {filtered.map((m) => (
+                <div
+                  key={m.id}
+                  style={{
+                    background: "#FFFFFF",
+                    border: "1px solid #E0E0E0",
+                    borderLeft: "4px solid #DC2626",
+                    borderRadius: "4px",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+                    overflow: "hidden",
+                    transition:
+                      "box-shadow 0.25s ease, transform 0.25s ease",
+                  }}
+                >
+                  {/* Card Header */}
+                  <div
+                    style={{
+                      padding: "20px 24px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: "12px",
+                      background: "#F5F5F5",
+                      borderBottom: "1px solid #E0E0E0",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "16px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "48px",
+                          height: "48px",
+                          borderRadius: "50%",
+                          background: "#111111",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#DC2626",
+                          fontSize: "20px",
+                          fontWeight: 800,
+                          flexShrink: 0,
+                        }}
+                      >
                         {m.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="font-display font-bold text-text-primary text-lg">{m.name}</h3>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-                          <span className="text-xs text-text-muted flex items-center gap-1.5">
-                            <Mail className="w-3.5 h-3.5 text-accent-primary" /> {m.email}
+                        <p
+                          style={{
+                            fontSize: "17px",
+                            fontWeight: 700,
+                            color: "#111111",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          {m.name}
+                        </p>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "16px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "12px",
+                              color: "#555555",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "4px",
+                            }}
+                          >
+                            <Mail size={13} color="#DC2626" /> {m.email}
                           </span>
                           {m.phone && (
-                            <span className="text-xs text-text-muted flex items-center gap-1.5">
-                              <Phone className="w-3.5 h-3.5 text-accent-primary" /> {m.phone}
+                            <span
+                              style={{
+                                fontSize: "12px",
+                                color: "#555555",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                              }}
+                            >
+                              <Phone size={13} color="#DC2626" /> {m.phone}
                             </span>
                           )}
                           {m.company && (
-                            <span className="text-xs text-text-muted flex items-center gap-1.5">
-                              <Building2 className="w-3.5 h-3.5 text-accent-primary" /> {m.company}
+                            <span
+                              style={{
+                                fontSize: "12px",
+                                color: "#555555",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                              }}
+                            >
+                              <Building2 size={13} color="#DC2626" />{" "}
+                              {m.company}
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xs text-text-muted flex items-center justify-end gap-1.5 font-mono uppercase tracking-widest">
-                        <Calendar className="w-3.5 h-3.5" />
+
+                    <div style={{ textAlign: "right" }}>
+                      <p
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#555555",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <Clock size={12} color="#AAAAAA" />
                         {new Date(m.created_at).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
                         })}
-                      </div>
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "11px",
+                          color: "#AAAAAA",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {new Date(m.created_at).toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
                     </div>
                   </div>
-                </div>
-                <div className="p-6 bg-bg-primary">
-                   <div className="relative">
-                      <div className="absolute -left-2 top-0 bottom-0 w-1 bg-accent-primary/20 rounded-full" />
-                      <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-wrap pl-4 italic">
-                        &quot;{m.message}&quot;
-                      </p>
-                   </div>
-                </div>
-                <div className="px-6 py-4 bg-bg-tertiary/10 border-t border-border-subtle flex justify-end gap-3">
-                   <a href={`mailto:${m.email}`} className="px-4 py-2 rounded-lg bg-accent-primary text-white text-xs font-bold uppercase tracking-wider hover:bg-accent-hover transition-colors flex items-center gap-2">
-                     <Mail className="w-3.5 h-3.5" /> Reply via Email
-                   </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-20 text-center glass-card border-dashed">
-            <MessageSquare className="w-12 h-12 text-text-muted mx-auto mb-4 opacity-30" />
-            <h3 className="font-display text-xl font-bold text-text-primary mb-2">No messages yet</h3>
-            <p className="text-text-muted text-sm max-w-sm mx-auto">
-              Inquiries from the contact forms will appear here for you to manage.
-            </p>
-          </div>
-        )}
 
-      </div>
+                  {/* Card Body — Message */}
+                  <div style={{ padding: "20px 24px" }}>
+                    <div
+                      style={{
+                        borderLeft: "3px solid rgba(220,38,38,0.3)",
+                        paddingLeft: "16px",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          color: "#555555",
+                          lineHeight: 1.7,
+                          fontStyle: "italic",
+                          whiteSpace: "pre-wrap",
+                        }}
+                      >
+                        &ldquo;{m.message}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card Footer */}
+                  <div
+                    style={{
+                      padding: "12px 24px",
+                      background: "#F5F5F5",
+                      borderTop: "1px solid #E0E0E0",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <a
+                      href={`mailto:${m.email}`}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        background: "#DC2626",
+                        color: "#FFFFFF",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        padding: "8px 16px",
+                        borderRadius: "4px",
+                        textDecoration: "none",
+                        transition: "background 0.2s ease",
+                      }}
+                    >
+                      <Mail size={13} /> Reply via Email
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer
+        style={{
+          background: "#111111",
+          padding: "24px",
+          textAlign: "center",
+        }}
+      >
+        <p
+          style={{
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.4)",
+            letterSpacing: "0.05em",
+          }}
+        >
+          © {new Date().getFullYear()} OneShot Manufacturing — Admin Panel
+        </p>
+      </footer>
     </div>
   );
 }
