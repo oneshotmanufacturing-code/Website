@@ -112,7 +112,7 @@ export default function AboutPage() {
             <span className="text-gradient">OneShot Manufacturing</span>
           </h1>
           <p className="text-text-secondary text-lg md:text-xl leading-relaxed max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
-            Founded in {COMPANY.established} in Ahilyanagar, we set out with a simple
+            Founded in {COMPANY.established} in Bengaluru, we set out with a simple
             goal: give electronics manufacturers a reliable production partner
             they can actually count on.
           </p>

@@ -17,19 +17,19 @@ export const metadata: Metadata = {
     template: "%s | OneShot Manufacturing",
   },
   description:
-    "Wire/cable preparation, PCB assembly, and electronics manufacturing services in Ahilyanagar, India. Free door-step pickup & delivery for batch orders. Pan-India shipping.",
+    "Wire/cable preparation, PCB assembly, and electronics manufacturing services in Bengaluru, India. Free door-step pickup & delivery for batch orders. Pan-India shipping.",
   keywords: [
     "wire harness manufacturer India",
-    "cable assembly Ahilyanagar",
+    "cable assembly Bengaluru",
     "PCB assembly outsourcing India",
     "electronics manufacturing services",
     "wire harness",
     "cable preparation",
     "PCB assembly",
     "electronics manufacturing",
-    "Ahilyanagar",
-    "MIDC",
-    "Maharashtra",
+    "Bengaluru",
+    "Koramangala",
+    "Karnataka",
     "India",
     "OneShot Manufacturing",
     "OneShot Manufacturing",
@@ -51,13 +51,13 @@ export const metadata: Metadata = {
     siteName: "OneShot Manufacturing",
     title: "OneShot Manufacturing — Precision Wiring & Assembly Solutions",
     description:
-      "Wire/cable preparation, PCB assembly, and electronics manufacturing in Ahilyanagar, India. Free door-step pickup & delivery for batch orders.",
+      "Wire/cable preparation, PCB assembly, and electronics manufacturing in Bengaluru, India. Free door-step pickup & delivery for batch orders.",
   },
   twitter: {
     card: "summary_large_image",
     title: "OneShot Manufacturing — Precision Wiring & Assembly Solutions",
     description:
-      "Wire/cable preparation, PCB assembly, and electronics manufacturing in Ahilyanagar, India.",
+      "Wire/cable preparation, PCB assembly, and electronics manufacturing in Bengaluru, India.",
   },
   alternates: {
     canonical: BASE_URL,

@@ -204,7 +204,7 @@ export default function ContactPage() {
         <SectionHeader
           badge="Location"
           title="Find Us"
-          subtitle="Visit us at our facility in Ahilyanagar, Maharashtra."
+          subtitle="Visit us at our facility in Bengaluru, Karnataka."
         />
         <MapEmbed />
       </section>

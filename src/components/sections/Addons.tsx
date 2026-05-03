@@ -18,7 +18,7 @@ export default function Addons() {
     <section id="addons" style={{ background: "#FFFFFF", padding: "80px 0" }}>
       <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
         {/* Header */}
-        <div style={{ marginBottom: "32px", textAlign: "center" }}>
+        <div style={{ marginBottom: "32px", textAlign: "left" }}>
           <span
             style={{
               display: "inline-block",
@@ -59,7 +59,7 @@ export default function Addons() {
           style={{
             display: "flex",
             flexWrap: "wrap",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             gap: "12px",
           }}
         >

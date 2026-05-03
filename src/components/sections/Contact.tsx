@@ -114,8 +114,8 @@ export default function Contact() {
               <div>
                 <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>Address</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
-                  L140, MIDC, Ahilyanagar<br />
-                  Maharashtra, India - 414111
+                  AVS Layout, Ejipura, Koramangala 4th Block<br />
+                  Bengaluru, Karnataka - 560095
                 </p>
               </div>
             </div>

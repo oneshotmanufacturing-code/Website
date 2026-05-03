@@ -1,9 +1,9 @@
 import React from "react";
 
 export default function MapEmbed() {
-  // L140, MIDC, Ahilyanagar, Maharashtra, India - 414111
+  // AVS Layout, Ejipura, Koramangala 4th Block, Bengaluru, Karnataka - 560095
   const embedSrc =
-    "https://maps.google.com/maps?q=L140+MIDC+Ahilyanagar+Maharashtra+India+414111&output=embed&z=15";
+    "https://maps.google.com/maps?q=AVS+Layout+Ejipura+Koramangala+4th+Block+Bengaluru+Karnataka+560095&output=embed&z=15";
 
   return (
     <div className="relative rounded-2xl overflow-hidden border border-border-subtle">
@@ -19,7 +19,7 @@ export default function MapEmbed() {
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
-        title="OneShot Manufacturing — L140 MIDC Ahilyanagar"
+        title="OneShot Manufacturing — AVS Layout, Bengaluru"
         className="w-full"
       />
       {/* View on Google Maps link */}

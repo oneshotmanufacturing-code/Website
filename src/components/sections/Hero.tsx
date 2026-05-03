@@ -46,9 +46,6 @@ export default function Hero() {
         width: "100%",
         overflow: "hidden",
         height: "100vh",
-        /* Push content below announcement bar (40px) + navbar (64px) */
-        marginTop: "104px",
-        height: "calc(100vh - 104px)",
       }}
     >
       {/* Background Images */}

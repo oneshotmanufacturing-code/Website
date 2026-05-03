@@ -9,7 +9,7 @@ export const COMPANY = {
     "Specializing in wire/cable preparation, PCB assembly, and custom electronic manufacturing services for businesses of all sizes.",
   established: 2018,
   gstin: "2727272727272727",
-  address: "L140, MIDC, Ahilyanagar, Maharashtra, India - 414111",
+  address: "AVS Layout, Ejipura, Koramangala 4th Block, Bengaluru, Karnataka - 560095",
   mapsUrl: "https://maps.app.goo.gl/1WyyRTztDgSzYjEw8",
   phone: "+91 90000 00000",
   email: "info@oneshotmanufacturing.com",

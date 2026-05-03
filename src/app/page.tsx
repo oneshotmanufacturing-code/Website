@@ -21,35 +21,6 @@ export default function Home() {
     <>
       <ScrollReveal />
 
-      {/* Announcement Bar */}
-      <div
-        style={{
-          width: "100%",
-          height: "40px",
-          background: "#DC2626",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: 60,
-        }}
-      >
-        <p
-          style={{
-            fontSize: "11px",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            color: "#FFFFFF",
-            textAlign: "center",
-            padding: "0 16px",
-          }}
-        >
-          Zero-Defect Guarantee &nbsp;|&nbsp; Free Pickup &amp; Delivery Across India &nbsp;|&nbsp; ESD-Safe Handling
-        </p>
-      </div>
 
       <main className="relative min-h-screen bg-white">
         <Navbar />

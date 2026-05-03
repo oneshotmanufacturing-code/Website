@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
 
           {/* Col 3 */}
-          <div>
+          {/* <div>
             <h3
               style={{
                 color: "#DC2626",
@@ -76,7 +76,7 @@ export default function Footer() {
               <FooterLink href="#">ESD Policy</FooterLink>
               <FooterLink href="#">About</FooterLink>
             </div>
-          </div>
+          </div> */}
 
           {/* Col 4 */}
           <div>
@@ -114,7 +114,7 @@ export default function Footer() {
           © 2026 OneShot Manufacturing. All rights reserved.
         </div>
         <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)" }}>
-          L140, MIDC, Ahilyanagar, Maharashtra — 414111
+          AVS Layout, Ejipura, Koramangala 4th Block, Bengaluru, Karnataka - 560095
         </div>
       </div>
     </footer>
