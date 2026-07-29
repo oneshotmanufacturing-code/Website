@@ -1,6 +1,43 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
+import { Resend } from "resend";
+import { COMPANY } from "@/lib/constants";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+async function sendNotificationEmail(fields: {
+  name: string;
+  email: string;
+  phone: string;
+  company?: string;
+  message: string;
+}) {
+  if (!resend) {
+    console.warn("RESEND_API_KEY not set — skipping contact notification email");
+    return;
+  }
+
+  try {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM || "OneShot Manufacturing <onboarding@resend.dev>",
+      to: COMPANY.email,
+      replyTo: fields.email,
+      subject: `New contact form submission from ${fields.name}`,
+      text: [
+        `Name: ${fields.name}`,
+        `Email: ${fields.email}`,
+        `Phone: ${fields.phone}`,
+        `Company: ${fields.company || "-"}`,
+        "",
+        "Message:",
+        fields.message,
+      ].join("\n"),
+    });
+  } catch (err) {
+    console.error("Failed to send contact notification email:", err);
+  }
+}
 
 function getSupabaseClient() {
   const cookieStore = cookies();
@@ -60,6 +97,8 @@ export async function POST(request: NextRequest) {
       console.error("Supabase insert error:", error);
       throw error;
     }
+
+    await sendNotificationEmail({ name, email, phone, company, message });
 
     return NextResponse.json({ success: true, data });
   } catch (err) {

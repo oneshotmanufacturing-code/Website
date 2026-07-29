@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { COMPANY } from "@/lib/constants";
 import { MapPin, Phone, Mail, Clock, AlertCircle } from "lucide-react";
 
 export default function Contact() {
@@ -114,8 +115,12 @@ export default function Contact() {
               <div>
                 <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>Address</h4>
                 <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>
-                  AVS Layout, Ejipura, Koramangala 4th Block<br />
-                  Bengaluru, Karnataka - 560095
+                  {COMPANY.addressLines.map((line, i) => (
+                    <React.Fragment key={line}>
+                      {i > 0 && <br />}
+                      {line}
+                    </React.Fragment>
+                  ))}
                 </p>
               </div>
             </div>
@@ -124,7 +129,7 @@ export default function Contact() {
               <Phone size={24} color="#DC2626" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
                 <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>Phone</h4>
-                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>+91 90000 00000</p>
+                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>{COMPANY.phone}</p>
               </div>
             </div>
 
@@ -132,7 +137,7 @@ export default function Contact() {
               <Mail size={24} color="#DC2626" style={{ flexShrink: 0, marginTop: "2px" }} />
               <div>
                 <h4 style={{ fontSize: "14px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>Email</h4>
-                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>info@oneshotmanufacturing.com</p>
+                <p style={{ fontSize: "14px", color: "#555555", lineHeight: 1.6 }}>{COMPANY.email}</p>
               </div>
             </div>
 

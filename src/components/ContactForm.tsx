@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Send, Check, AlertCircle } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
-import { createClient } from "@/lib/supabase/client";
 
 interface ContactFormData {
   name: string;
@@ -39,19 +38,13 @@ export default function ContactForm() {
     setError(null);
 
     try {
-      const supabase = createClient();
-      
-      // Direct insertion to Supabase. This does NOT require a logged-in user 
-      // as long as the 'contact_submissions' table has public INSERT permissions.
-      const { error: insertError } = await supabase.from("contact_submissions").insert({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        company: form.company,
-        message: form.message,
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
 
-      if (insertError) throw insertError;
+      if (!res.ok) throw new Error("Request failed");
       setSubmitted(true);
     } catch (err) {
       console.error("Contact form error:", err);

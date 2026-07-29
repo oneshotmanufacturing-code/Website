@@ -8,12 +8,18 @@ export const COMPANY = {
   description:
     "Specializing in wire/cable preparation, PCB assembly, and custom electronic manufacturing services for businesses of all sizes.",
   established: 2018,
-  gstin: "2727272727272727",
+  gstin: "29AAKFO2720R1ZM",
   address: "AVS Layout, Ejipura, Koramangala 4th Block, Bengaluru, Karnataka - 560095",
+  addressLines: [
+    "AVS Layout, Ejipura",
+    "Koramangala 4th Block",
+    "Bengaluru, Karnataka - 560095",
+  ],
   mapsUrl: "https://maps.app.goo.gl/1WyyRTztDgSzYjEw8",
-  phone: "+91 90000 00000",
-  email: "info@oneshotmanufacturing.com",
-  inquiryEmail: "info@oneshotmanufacturing.com",
+  phone: "+91 96064 77077",
+  email: "contact@oneshotmanufacturing.com",
+  inquiryEmail: "contact@oneshotmanufacturing.com",
+  website: "www.oneshotmanufacturing.com",
   businessHours: {
     days: "Monday – Saturday",
     time: "9:00 AM – 6:00 PM IST",
