@@ -38,10 +38,13 @@ Auth pages live in two places: `src/app/(auth)/` (route group — login, signup,
 
 ## Auth & authorization
 
-Two layers, both required:
+Two layers, both required — but the two surfaces do the second layer differently:
 
-1. [middleware.ts](middleware.ts) — matcher is `/portal/*`, `/admin/*`, `/login`, `/signup`. Redirects anonymous users to `/login`, non-admins away from `/admin` (reads `profiles.role`), and logged-in users off `/login`/`/signup` to `/portal`.
-2. Each server page re-checks `auth.getUser()` and the profile role itself (e.g. [src/app/portal/page.tsx](src/app/portal/page.tsx), [src/app/admin/customers/page.tsx](src/app/admin/customers/page.tsx)). Keep doing this in new protected pages — middleware alone is not the boundary.
+1. [middleware.ts](middleware.ts) — matcher is `/portal/*`, `/admin/*`, `/login`, `/signup`. Redirects anonymous users to `/login`, non-admins away from `/admin` (reads `profiles.role`), and logged-in users off `/login`/`/signup` to `/admin` or `/portal` depending on role.
+2. **`/portal/*` pages still self-check**: each one re-runs `auth.getUser()` and the profile role itself (e.g. [src/app/portal/page.tsx](src/app/portal/page.tsx)). Keep doing this for new portal pages.
+   **`/admin/*` pages do not** — [src/app/admin/layout.tsx](src/app/admin/layout.tsx) is the single auth checkpoint for the whole subtree now; individual admin pages (`customers`, `orders`, `quotes`, …) query data directly with no `auth.getUser()`/role check of their own. Put authorization logic for new admin routes in the layout, not the page.
+
+**"Owner email" bypass**: [middleware.ts](middleware.ts) and [admin/layout.tsx](src/app/admin/layout.tsx) both independently hardcode `isOwnerEmail` — true when the logged-in user's email contains `"oneshot"` or `"swaraj"` (substring match, not exact). Owner emails skip the `profiles.role` check entirely. `admin/layout.tsx` additionally **auto-repairs** the DB: if an owner email is logged in but `profiles.role !== "admin"`, it silently issues an `UPDATE profiles SET role='admin'` on that page load. If you touch either auth check, update both — they're not shared code, and the substring match means any email merely containing "swaraj" or "oneshot" (e.g. a customer signing up with a personal Gmail) gets treated as owner.
 
 Roles are a `role` column on `profiles` (`"admin"` vs everything else). Signup creates the auth user then updates its `profiles` row.
 
@@ -83,7 +86,9 @@ Two naming traps in the Tailwind palette — the legacy names were repointed rat
 - `amber` / `red` are both **red** `#DC2626`
 - `black` is **white** `#FFFFFF`, `dark-1/2/3` are light greys
 
-The **older dark** design's vocabulary is still used throughout `/admin`, `/portal`, `(auth)`, [ui/Button.tsx](src/components/ui/Button.tsx), [ProcessFlow.tsx](src/components/ProcessFlow.tsx): `btn-glow`, `glass-card`, `accent-primary`, `bg-bg-tertiary`, `border-border-subtle`, `text-text-primary/secondary/muted`. **None of those are defined any more** — they compile to nothing, which is why those screens look unstyled. Fixing one of those pages means translating it to the current tokens, not adding the old ones back. `/admin/page.tsx` sidesteps this with inline `style={{}}` objects.
+The **older dark** design's vocabulary is still used throughout `/portal`, `(auth)`, [ui/Button.tsx](src/components/ui/Button.tsx), [ProcessFlow.tsx](src/components/ProcessFlow.tsx): `btn-glow`, `glass-card`, `accent-primary`, `bg-bg-tertiary`, `border-border-subtle`, `text-text-primary/secondary/muted`. **None of those are defined any more** — they compile to nothing, which is why those screens look unstyled. Fixing one of those pages means translating it to the current tokens, not adding the old ones back.
+
+**`/admin/*` has since been fully rewritten off those tokens** — every page under `src/app/admin/` (dashboard, orders, quotes, customers, messages) now uses inline `style={{}}` objects with a bespoke dark navbar (`#111111`) instead of Tailwind classes, so it renders correctly despite not using the current light-mode tokens either. Match that inline-style pattern for new admin pages/components rather than reaching for either token set.
 
 `font-display` / `font-body` map to CSS vars that nothing sets ([src/lib/fonts.ts](src/lib/fonts.ts) is never imported), so they fall back to Inter, which the root layout loads.
 

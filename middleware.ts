@@ -7,12 +7,11 @@ const isDummyEnv =
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Local testing: skip all auth checks ──
+  // ── Local testing with dummy env: skip checks ──
   if (isDummyEnv) {
     return NextResponse.next({ request });
   }
 
-  // ── Production: normal Supabase auth ──
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -47,20 +46,42 @@ export async function middleware(request: NextRequest) {
 
   // Logged in — check role for /admin routes
   if (user && pathname.startsWith("/admin")) {
+    const email = user.email?.toLowerCase() ?? "";
+    const isOwnerEmail = email.includes("oneshotmanufacturing@gmail.com") || email.includes("swarajdangare2016@gmail.com");
+
+    if (!isOwnerEmail) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (!profile || profile.role !== "admin") {
+        return NextResponse.redirect(new URL("/portal", request.url));
+      }
+    }
+  }
+
+  // Logged-in users visiting /login or /signup → redirect to appropriate dashboard
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    const email = user.email?.toLowerCase() ?? "";
+    const isOwnerEmail = email.includes("oneshot") || email.includes("swaraj");
+
+    if (isOwnerEmail) {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== "admin") {
+    if (profile?.role === "admin") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    } else {
       return NextResponse.redirect(new URL("/portal", request.url));
     }
-  }
-
-  // Logged-in users visiting /login or /signup → redirect to portal
-  if (user && (pathname === "/login" || pathname === "/signup")) {
-    return NextResponse.redirect(new URL("/portal", request.url));
   }
 
   return supabaseResponse;

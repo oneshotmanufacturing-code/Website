@@ -21,6 +21,37 @@ interface Document {
   created_at: string;
 }
 
+const cardStyle = {
+  background: "#FFFFFF",
+  border: "1px solid #E0E0E0",
+  borderRadius: "4px",
+  boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+  padding: "24px",
+  marginTop: "16px",
+};
+
+const sectionLabel = {
+  fontSize: "11px",
+  fontWeight: 700,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.10em",
+  color: "#DC2626",
+  marginBottom: "16px",
+  display: "block",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "10px 14px",
+  borderRadius: "4px",
+  background: "#FFFFFF",
+  border: "1px solid #E0E0E0",
+  color: "#111111",
+  fontSize: "13px",
+  outline: "none",
+  boxSizing: "border-box" as const,
+};
+
 export default function OrderStatusUpdater({
   orderId,
   currentStatus,
@@ -37,7 +68,7 @@ export default function OrderStatusUpdater({
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [docType, setDocType] = useState<"invoice" | "challan" | "test_report" | "other">("invoice");
-  const [docs, setDocs] = useState<Document[]>(documents);
+  const [docs, setDocs] = useState<Document[]>(documents || []);
 
   async function handleStatusUpdate() {
     setSaving(true);
@@ -60,7 +91,6 @@ export default function OrderStatusUpdater({
     const { error: uploadError } = await supabase.storage.from("documents").upload(path, file);
     if (uploadError) { alert("Upload failed: " + uploadError.message); setUploading(false); return; }
 
-    const { data: { publicUrl } } = supabase.storage.from("documents").getPublicUrl(path);
     const { data: doc } = await supabase.from("documents").insert({
       order_id: orderId,
       type: docType,
@@ -86,71 +116,108 @@ export default function OrderStatusUpdater({
     if (data?.signedUrl) window.open(data.signedUrl, "_blank");
   }
 
-  const inputClass = "w-full px-3 py-2.5 rounded-xl bg-bg-tertiary/40 border border-border-subtle text-text-primary text-sm focus:outline-none focus:border-accent-primary/60 transition-colors";
-
   return (
     <>
-      {/* Update Status */}
-      <div className="glass-card p-5">
-        <h2 className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-3">Update Status</h2>
-        <select value={status} onChange={e => setStatus(e.target.value)} className={`${inputClass} mb-3`}>
-          {STATUSES.map(s => (
-            <option key={s.value} value={s.value}>{s.label}</option>
-          ))}
-        </select>
-        <textarea
-          value={note}
-          onChange={e => setNote(e.target.value)}
-          rows={2}
-          placeholder="Add a note (e.g. tracking number)..."
-          className={`${inputClass} resize-none mb-3`}
-        />
-        <button onClick={handleStatusUpdate} disabled={saving}
-          className="btn-glow w-full flex items-center justify-center gap-2 py-2.5 text-sm disabled:opacity-60">
-          {saved ? <><CheckCircle className="w-4 h-4" /> Updated!</> :
-            saving ? <span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" /> :
-              "Update Status"}
+      {/* Update Status Card */}
+      <div style={cardStyle}>
+        <span style={sectionLabel}>Update Order Status</span>
+        <div style={{ marginBottom: "12px" }}>
+          <select value={status} onChange={e => setStatus(e.target.value)} style={inputStyle}>
+            {STATUSES.map(s => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </div>
+        <div style={{ marginBottom: "16px" }}>
+          <textarea
+            value={note}
+            onChange={e => setNote(e.target.value)}
+            rows={2}
+            placeholder="Add a status note or tracking details (optional)..."
+            style={{ ...inputStyle, resize: "none" }}
+          />
+        </div>
+        <button
+          onClick={handleStatusUpdate}
+          disabled={saving}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#DC2626",
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "13px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            cursor: saving ? "not-allowed" : "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            opacity: saving ? 0.6 : 1,
+          }}
+        >
+          {saved ? <><CheckCircle size={15} /> Status Updated!</> :
+            saving ? "Updating Status..." :
+              "Apply Status Update"}
         </button>
       </div>
 
-      {/* Upload Document */}
-      <div className="glass-card p-5">
-        <h2 className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-3">Upload Document</h2>
-        <select value={docType} onChange={e => setDocType(e.target.value as typeof docType)} className={`${inputClass} mb-3`}>
-          <option value="invoice">Invoice</option>
-          <option value="challan">Delivery Challan</option>
-          <option value="test_report">Test Report</option>
-          <option value="other">Other</option>
-        </select>
-        <label className={`flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border-2 border-dashed cursor-pointer transition-colors text-sm ${uploading ? "border-accent-primary/40 text-accent-primary" : "border-border-subtle text-text-muted hover:border-accent-primary/40 hover:text-accent-primary"}`}>
-          {uploading ? (
-            <><span className="w-4 h-4 border-2 border-accent-primary/40 border-t-accent-primary rounded-full animate-spin" /> Uploading…</>
-          ) : (
-            <><Upload className="w-4 h-4" /> Choose file to upload</>
-          )}
-          <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleUpload} className="hidden" disabled={uploading} />
+      {/* Upload Document Card */}
+      <div style={cardStyle}>
+        <span style={sectionLabel}>Attach Documents</span>
+        <div style={{ marginBottom: "12px" }}>
+          <select value={docType} onChange={e => setDocType(e.target.value as typeof docType)} style={inputStyle}>
+            <option value="invoice">Invoice</option>
+            <option value="challan">Delivery Challan</option>
+            <option value="test_report">Test Report / QC</option>
+            <option value="other">Other Attachment</option>
+          </select>
+        </div>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+            width: "100%",
+            padding: "14px",
+            borderRadius: "4px",
+            border: "2px dashed #E0E0E0",
+            cursor: uploading ? "not-allowed" : "pointer",
+            background: "#F9F9F9",
+            color: uploading ? "#AAAAAA" : "#555555",
+            fontSize: "13px",
+            fontWeight: 600,
+            boxSizing: "border-box",
+          }}
+        >
+          <Upload size={16} color="#DC2626" />
+          {uploading ? "Uploading file..." : "Click to select file & upload"}
+          <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleUpload} style={{ display: "none" }} disabled={uploading} />
         </label>
 
-        {/* Documents list */}
+        {/* Documents List */}
         {docs.length > 0 && (
-          <div className="mt-4 space-y-2">
+          <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px", borderTop: "1px solid #E0E0E0", paddingTop: "16px" }}>
+            <p style={{ fontSize: "11px", fontWeight: 700, color: "#555555", textTransform: "uppercase" }}>Uploaded Files</p>
             {docs.map(doc => (
-              <div key={doc.id} className="flex items-center justify-between p-2.5 rounded-lg bg-bg-tertiary/30">
-                <div className="flex items-center gap-2 min-w-0">
-                  <FileText className="w-3.5 h-3.5 text-accent-primary flex-shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs text-text-primary truncate">{doc.filename}</p>
-                    <p className="text-xs text-text-muted capitalize">{doc.type.replace("_", " ")}</p>
+              <div key={doc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", background: "#F5F5F5", borderRadius: "4px", border: "1px solid #EFEFEF" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0, flex: 1 }}>
+                  <FileText size={16} color="#DC2626" style={{ flexShrink: 0 }} />
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: "13px", fontWeight: 600, color: "#111111", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.filename}</p>
+                    <p style={{ fontSize: "11px", color: "#888888", margin: "2px 0 0", textTransform: "capitalize" }}>{doc.type.replace("_", " ")}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <button onClick={() => getDownloadUrl(doc.storage_path)}
-                    className="p-1.5 rounded-lg hover:bg-accent-primary/10 text-text-muted hover:text-accent-primary transition-colors">
-                    <Download className="w-3.5 h-3.5" />
+                <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
+                  <button onClick={() => getDownloadUrl(doc.storage_path)} title="Download" style={{ padding: "6px", background: "#FFFFFF", border: "1px solid #E0E0E0", borderRadius: "4px", cursor: "pointer", color: "#555555" }}>
+                    <Download size={14} />
                   </button>
-                  <button onClick={() => handleDelete(doc.id, doc.storage_path)}
-                    className="p-1.5 rounded-lg hover:bg-red-400/10 text-text-muted hover:text-red-400 transition-colors">
-                    <Trash2 className="w-3.5 h-3.5" />
+                  <button onClick={() => handleDelete(doc.id, doc.storage_path)} title="Delete" style={{ padding: "6px", background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: "4px", cursor: "pointer", color: "#DC2626" }}>
+                    <Trash2 size={14} />
                   </button>
                 </div>
               </div>

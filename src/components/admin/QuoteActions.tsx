@@ -14,6 +14,25 @@ const STATUS_LABELS: Record<Status, string> = {
   closed: "Closed",
 };
 
+const cardStyle = {
+  background: "#FFFFFF",
+  border: "1px solid #E0E0E0",
+  borderRadius: "4px",
+  boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+  padding: "24px",
+  marginTop: "20px",
+};
+
+const sectionLabel = {
+  fontSize: "11px",
+  fontWeight: 700,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.10em",
+  color: "#DC2626",
+  marginBottom: "16px",
+  display: "block",
+};
+
 export default function AdminQuoteActions({
   quoteId,
   currentStatus,
@@ -36,8 +55,8 @@ export default function AdminQuoteActions({
   companyName?: string;
 }) {
   const router = useRouter();
-  const [status, setStatus] = useState<Status>(currentStatus as Status);
-  const [notes, setNotes] = useState(adminNotes);
+  const [status, setStatus] = useState<Status>((currentStatus || "new") as Status);
+  const [notes, setNotes] = useState(adminNotes || "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -63,94 +82,136 @@ export default function AdminQuoteActions({
   }
 
   return (
-    <div className="glass-card p-6">
-      <h2 className="font-semibold text-text-primary mb-4 text-sm uppercase tracking-wider text-accent-primary">
-        Admin Actions
-      </h2>
+    <div style={cardStyle}>
+      <span style={sectionLabel}>Admin Actions & Management</span>
 
-      {/* Quick contact buttons */}
-      <div className="flex gap-2 mb-5 flex-wrap">
+      {/* Quick contact links */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px", flexWrap: "wrap" }}>
         {phone && (
-          <a href={`tel:${phone}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-400/10 border border-green-400/20 text-green-400 text-xs hover:bg-green-400/20 transition-colors">
-            <Phone className="w-3.5 h-3.5" /> Call
+          <a href={`tel:${phone}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#F0FDF4", border: "1px solid #BBF7D0", color: "#16A34A", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+            <Phone size={13} /> Call Customer
           </a>
         )}
         {email && (
-          <a href={`mailto:${email}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-400/10 border border-blue-400/20 text-blue-400 text-xs hover:bg-blue-400/20 transition-colors">
-            <Mail className="w-3.5 h-3.5" /> Email
+          <a href={`mailto:${email}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#EFF6FF", border: "1px solid #BFDBFE", color: "#2563EB", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+            <Mail size={13} /> Email Customer
           </a>
         )}
         {customerId && (
-          <a href={`/portal`} target="_blank" className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-primary/10 border border-accent-primary/20 text-accent-primary text-xs hover:bg-accent-primary/20 transition-colors">
-            <ExternalLink className="w-3.5 h-3.5" /> View Portal
+          <a href="/portal" target="_blank" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#F5F5F5", border: "1px solid #E0E0E0", color: "#111111", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+            <ExternalLink size={13} /> Open Customer Portal
           </a>
         )}
       </div>
 
-      {/* Status */}
-      <div className="mb-4">
-        <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">
-          Status
+      {/* Status Selection */}
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "block", fontSize: "11px", fontWeight: 700, color: "#555555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+          Quote Status
         </label>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {STATUSES.map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`px-3 py-2 rounded-lg text-xs font-medium border transition-all ${
-                status === s
-                  ? "bg-accent-primary text-bg-primary border-accent-primary"
-                  : "bg-bg-tertiary/40 text-text-secondary border-border-subtle hover:border-accent-primary/40"
-              }`}
-            >
-              {STATUS_LABELS[s]}
-            </button>
-          ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "8px" }}>
+          {STATUSES.map((s) => {
+            const isSelected = status === s;
+            return (
+              <button
+                key={s}
+                onClick={() => setStatus(s)}
+                type="button"
+                style={{
+                  padding: "10px 14px",
+                  borderRadius: "4px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  border: isSelected ? "2px solid #DC2626" : "1px solid #E0E0E0",
+                  background: isSelected ? "#FEF2F2" : "#FFFFFF",
+                  color: isSelected ? "#DC2626" : "#555555",
+                  transition: "all 0.15s ease",
+                }}
+              >
+                {STATUS_LABELS[s]}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Notes */}
-      <div className="mb-5">
-        <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2 flex items-center gap-1">
-          <MessageSquare className="w-3 h-3" /> Internal Notes
+      {/* Internal Notes */}
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: 700, color: "#555555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+          <MessageSquare size={13} /> Internal Admin Notes
         </label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
-          placeholder="Price discussed, timeline agreed, next steps..."
-          className="w-full px-4 py-3 rounded-xl bg-bg-tertiary/40 border border-border-subtle text-text-primary placeholder:text-text-muted text-sm focus:outline-none focus:border-accent-primary/60 transition-colors resize-none"
+          placeholder="Record phone discussion details, pricing estimates, next follow-up date..."
+          style={{
+            width: "100%",
+            padding: "12px 14px",
+            borderRadius: "4px",
+            background: "#FFFFFF",
+            border: "1px solid #E0E0E0",
+            color: "#111111",
+            fontSize: "13px",
+            outline: "none",
+            resize: "vertical",
+            boxSizing: "border-box",
+          }}
         />
       </div>
 
-      <div className="flex gap-3 flex-wrap">
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center", borderTop: "1px solid #F0F0F0", paddingTop: "20px" }}>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="btn-glow flex items-center gap-2 px-6 py-2.5 disabled:opacity-60"
+          type="button"
+          style={{
+            padding: "12px 24px",
+            background: saving ? "#AAAAAA" : "#DC2626",
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "13px",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            cursor: saving ? "not-allowed" : "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
         >
-          {saved ? (
-            <><CheckCircle className="w-4 h-4" /> Saved!</>
-          ) : saving ? (
-            <><span className="w-4 h-4 border-2 border-bg-primary/40 border-t-bg-primary rounded-full animate-spin" /> Saving…</>
-          ) : (
-            "Save Changes"
-          )}
+          {saved ? <><CheckCircle size={15} /> Changes Saved!</> :
+            saving ? "Saving..." :
+              "Save Changes"}
         </button>
-
-        {/* Convert to Order - only if quote has a registered customer */}
-        {customerId && (
+        {customerId ? (
           <button
             onClick={handleConvertToOrder}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-green-400/30 text-green-400 bg-green-400/5 hover:bg-green-400/15 transition-colors text-sm font-medium"
+            type="button"
+            style={{
+              padding: "12px 24px",
+              background: "#FFFFFF",
+              color: "#16A34A",
+              border: "1px solid #BBF7D0",
+              borderRadius: "4px",
+              fontSize: "13px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.05em",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
           >
-            <ArrowRight className="w-4 h-4" /> Convert to Order
+            <ArrowRight size={15} /> Convert to Order
           </button>
-        )}
-        {!customerId && (
-          <p className="text-xs text-text-muted self-center">
-            ⚠ No portal account linked — customer must sign up to create an order
-          </p>
+        ) : (
+          <span style={{ fontSize: "12px", color: "#888888", fontStyle: "italic" }}>
+            * Guest quote submission (customer not registered on portal)
+          </span>
         )}
       </div>
     </div>

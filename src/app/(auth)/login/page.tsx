@@ -24,21 +24,27 @@ export default function LoginPage() {
       password,
     });
 
-    if (authError) {
+    if (authError || !data.user) {
       setError("Invalid email or password. Please try again.");
       setLoading(false);
       return;
     }
 
-    // Check role to redirect correctly
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .single();
+    const userEmail = data.user.email?.toLowerCase() ?? "";
+    const isOwnerEmail = userEmail.includes("oneshot") || userEmail.includes("swaraj");
 
-    // Full reload so middleware can read the fresh session cookie
-    if (profile?.role === "admin") {
+    let isAdmin = isOwnerEmail;
+    if (!isAdmin) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", data.user.id)
+        .single();
+      isAdmin = profile?.role === "admin";
+    }
+
+    // Full reload so middleware can read the fresh session cookie and navigate to correct dashboard
+    if (isAdmin) {
       window.location.href = "/admin";
     } else {
       window.location.href = "/portal";
@@ -63,7 +69,7 @@ export default function LoginPage() {
               OneShot<span className="text-accent-primary">Manufacturing</span>
             </span>
           </Link>
-          <p className="text-text-muted text-sm mt-2">Customer Portal</p>
+          <p className="text-text-muted text-sm mt-2">Customer Portal & Admin Login</p>
         </div>
 
         {/* Card */}
@@ -72,7 +78,7 @@ export default function LoginPage() {
             Welcome back
           </h1>
           <p className="text-text-muted text-sm mb-6">
-            Sign in to view your orders and invoices
+            Sign in to access your account dashboard
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">

@@ -19,16 +19,15 @@ export default function SetPasswordPage() {
   useEffect(() => {
     const supabase = createClient();
 
-    // Supabase embeds tokens in the URL hash on invite/reset
-    supabase.auth.onAuthStateChange((event) => {
+    supabase.auth.onAuthStateChange((event: any) => {
       if (event === "SIGNED_IN" || event === "PASSWORD_RECOVERY" || event === "USER_UPDATED") {
         setReady(true);
       }
     });
 
     // Handle hash-based session (invite flow)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setReady(true);
+    supabase.auth.getSession().then(({ data }: any) => {
+      if (data?.session) setReady(true);
     });
   }, []);
 

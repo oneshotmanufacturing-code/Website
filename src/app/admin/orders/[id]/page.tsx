@@ -1,10 +1,10 @@
-import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { ArrowLeft, Package, MapPin, Truck } from "lucide-react";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Truck, MapPin, Mail, Phone } from "lucide-react";
 import OrderStatusUpdater from "@/components/admin/OrderStatusUpdater";
 
-export const metadata = { title: "Order Detail | Admin" };
+export const metadata = { title: "Order Detail | Admin — OneShot Manufacturing" };
 
 const STATUS_LABEL: Record<string, string> = {
   confirmed: "Confirmed",
@@ -15,28 +15,24 @@ const STATUS_LABEL: Record<string, string> = {
   delivered: "Delivered",
 };
 
-const STATUS_COLORS: Record<string, string> = {
-  confirmed: "text-blue-400 bg-blue-400/10 border-blue-400/20",
-  material_ready: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  in_production: "text-orange-400 bg-orange-400/10 border-orange-400/20",
-  quality_check: "text-purple-400 bg-purple-400/10 border-purple-400/20",
-  dispatched: "text-accent-primary bg-accent-primary/10 border-accent-primary/20",
-  delivered: "text-green-400 bg-green-400/10 border-green-400/20",
+const STATUS_COLOR: Record<string, { bg: string; color: string; border: string }> = {
+  confirmed: { bg: "#EFF6FF", color: "#2563EB", border: "#BFDBFE" },
+  material_ready: { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
+  in_production: { bg: "#FFF7ED", color: "#EA580C", border: "#FED7AA" },
+  quality_check: { bg: "#F5F3FF", color: "#7C3AED", border: "#DDD6FE" },
+  dispatched: { bg: "#FEF2F2", color: "#DC2626", border: "#FECACA" },
+  delivered: { bg: "#F0FDF4", color: "#16A34A", border: "#BBF7D0" },
 };
 
 export default async function AdminOrderDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") redirect("/portal");
 
   const { data: order } = await supabase
     .from("orders")
     .select("*, profiles(company_name, contact_name, email, phone, gstin)")
     .eq("id", params.id)
     .single();
+
   if (!order) notFound();
 
   const { data: events } = await supabase
@@ -51,138 +47,142 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
     .eq("order_id", params.id)
     .order("created_at", { ascending: false });
 
-  const customer = order.profiles as {
-    company_name: string; contact_name: string; email: string; phone: string; gstin: string;
-  } | null;
+  const customer = order.profiles as { company_name: string; contact_name: string; email: string; phone: string; gstin: string } | null;
+  const sc = STATUS_COLOR[order.status] ?? { bg: "#F5F5F5", color: "#555555", border: "#E0E0E0" };
+
+  const card = { background: "#FFFFFF", border: "1px solid #E0E0E0", borderRadius: "4px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", padding: "24px", marginBottom: "16px" };
+  const sectionLabel = { fontSize: "11px", fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "0.10em", color: "#DC2626", marginBottom: "16px", display: "block" };
+  const fieldLabel = { fontSize: "11px", color: "#AAAAAA", marginBottom: "4px" };
+  const fieldValue = { fontSize: "14px", color: "#111111", fontWeight: 500 };
 
   return (
-    <div className="min-h-screen py-24 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-3 mb-2">
-          <Link href="/admin/orders" className="text-text-muted hover:text-accent-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-          <p className="text-accent-primary text-xs font-semibold uppercase tracking-widest">Admin Panel</p>
-        </div>
-
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="font-display text-3xl font-bold text-text-primary font-mono">{order.order_number}</h1>
-            <p className="text-text-muted text-sm mt-1">{customer?.company_name}</p>
+    <div style={{ minHeight: "100vh", background: "#F5F5F5" }}>
+      {/* Nav */}
+      <nav style={{ position: "sticky", top: 0, background: "#111111", zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>ONESHOT</Link>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
+              <ArrowLeft size={14} /> Orders
+            </Link>
+            <Link href="/" style={{ background: "#DC2626", color: "#FFFFFF", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 20px", borderRadius: "4px", textDecoration: "none" }}>← SITE</Link>
           </div>
-          <span className={`text-sm px-3 py-1.5 rounded-full border font-medium ${STATUS_COLORS[order.status]}`}>
-            {STATUS_LABEL[order.status]}
+        </div>
+      </nav>
+
+      {/* Header */}
+      <section style={{ background: "#111111", padding: "40px 24px 32px" }}>
+        <div style={{ maxWidth: "1050px", margin: "0 auto", display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "8px" }}>Order Details</p>
+            <h1 style={{ color: "#FFFFFF", fontSize: "28px", fontWeight: 900, fontFamily: "monospace", letterSpacing: "0.05em" }}>{order.order_number}</h1>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", marginTop: "4px" }}>{customer?.company_name}</p>
+          </div>
+          <span style={{ fontSize: "13px", fontWeight: 600, padding: "6px 16px", borderRadius: "999px", background: sc.bg, color: sc.color, border: `1px solid ${sc.border}`, alignSelf: "flex-start" }}>
+            {STATUS_LABEL[order.status] ?? order.status}
           </span>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Left: Order info + Timeline */}
-          <div className="lg:col-span-2 space-y-5">
-
-            {/* Order Details */}
-            <div className="glass-card p-6">
-              <h2 className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Order Details</h2>
-              <div className="grid grid-cols-2 gap-4">
+      {/* Content */}
+      <section style={{ padding: "24px", maxWidth: "1050px", margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "20px", alignItems: "start" }}>
+          {/* Left Column: Order Specs and Timeline */}
+          <div>
+            <div style={card}>
+              <span style={sectionLabel}>Order Specifications</span>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                 <div>
-                  <p className="text-xs text-text-muted mb-0.5">Description</p>
-                  <p className="text-text-primary text-sm">{order.description}</p>
+                  <p style={fieldLabel}>Description</p>
+                  <p style={fieldValue}>{order.description}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-text-muted mb-0.5">Quantity</p>
-                  <p className="text-text-primary">{order.quantity ?? "—"}</p>
+                  <p style={fieldLabel}>Quantity</p>
+                  <p style={fieldValue}>{order.quantity ?? "—"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-text-muted mb-0.5">Agreed Amount</p>
-                  <p className="text-text-primary font-semibold">
-                    {order.amount ? `₹${Number(order.amount).toLocaleString("en-IN")}` : "—"}
-                  </p>
+                  <p style={fieldLabel}>Agreed Amount</p>
+                  <p style={{ ...fieldValue, fontWeight: 700 }}>{order.amount ? `₹${Number(order.amount).toLocaleString("en-IN")}` : "—"}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-text-muted mb-0.5">Expected Delivery</p>
-                  <p className="text-text-primary">
-                    {order.expected_delivery
-                      ? new Date(order.expected_delivery).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
-                      : "—"}
-                  </p>
+                  <p style={fieldLabel}>Expected Delivery</p>
+                  <p style={fieldValue}>{order.expected_delivery ? new Date(order.expected_delivery).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "—"}</p>
                 </div>
-                {order.pickup_required && (
-                  <div className="col-span-2">
-                    <span className="flex items-center gap-1.5 text-xs text-accent-primary bg-accent-primary/10 border border-accent-primary/20 rounded-lg px-3 py-1.5 w-fit">
-                      <Truck className="w-3.5 h-3.5" /> Free door-step pickup required
-                    </span>
-                  </div>
-                )}
-                {order.delivery_address && (
-                  <div className="col-span-2">
-                    <p className="text-xs text-text-muted mb-0.5 flex items-center gap-1"><MapPin className="w-3 h-3" /> Delivery Address</p>
-                    <p className="text-text-secondary text-sm">{order.delivery_address}</p>
-                  </div>
-                )}
               </div>
+              {order.pickup_required && (
+                <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #E0E0E0" }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "12px", color: "#DC2626", background: "#FEF2F2", border: "1px solid #FECACA", padding: "6px 12px", borderRadius: "4px", fontWeight: 600 }}>
+                    <Truck size={14} /> Free door-step pickup required from customer
+                  </span>
+                </div>
+              )}
+              {order.delivery_address && (
+                <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #E0E0E0" }}>
+                  <p style={{ ...fieldLabel, display: "flex", alignItems: "center", gap: "4px" }}><MapPin size={11} /> Delivery Address</p>
+                  <p style={fieldValue}>{order.delivery_address}</p>
+                </div>
+              )}
               {order.internal_notes && (
-                <div className="mt-4 pt-4 border-t border-border-subtle">
-                  <p className="text-xs text-text-muted mb-1">Internal Notes</p>
-                  <p className="text-text-secondary text-sm">{order.internal_notes}</p>
+                <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #E0E0E0" }}>
+                  <p style={fieldLabel}>Internal Notes</p>
+                  <p style={{ ...fieldValue, color: "#555555", fontStyle: "italic" }}>{order.internal_notes}</p>
                 </div>
               )}
             </div>
 
-            {/* Status Timeline */}
-            <div className="glass-card p-6">
-              <h2 className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-4">Status Timeline</h2>
+            {/* Timeline */}
+            <div style={card}>
+              <span style={sectionLabel}>Status Timeline & Events</span>
               {events && events.length > 0 ? (
-                <div className="space-y-3">
-                  {events.map((ev) => (
-                    <div key={ev.id} className="flex items-start gap-3">
-                      <div className="w-2 h-2 rounded-full bg-accent-primary mt-1.5 flex-shrink-0" />
+                <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  {events.map((ev, i) => (
+                    <div key={ev.id} style={{ display: "flex", gap: "14px", alignItems: "flex-start", position: "relative" }}>
+                      {i < events.length - 1 && <div style={{ position: "absolute", left: "5px", top: "14px", bottom: "-16px", width: "2px", background: "#E0E0E0" }} />}
+                      <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#DC2626", flexShrink: 0, marginTop: "3px", zIndex: 2 }} />
                       <div>
-                        <p className="text-sm font-medium text-text-primary">{STATUS_LABEL[ev.status] ?? ev.status}</p>
-                        {ev.note && <p className="text-xs text-text-muted">{ev.note}</p>}
-                        <p className="text-xs text-text-muted mt-0.5">
-                          {new Date(ev.created_at).toLocaleString("en-IN")}
-                        </p>
+                        <p style={{ fontSize: "14px", fontWeight: 700, color: "#111111", margin: 0 }}>{STATUS_LABEL[ev.status] ?? ev.status}</p>
+                        {ev.note && <p style={{ fontSize: "13px", color: "#555555", margin: "4px 0 0", background: "#F9F9F9", padding: "8px 12px", borderRadius: "4px", border: "1px solid #EFEFEF" }}>{ev.note}</p>}
+                        <p style={{ fontSize: "11px", color: "#AAAAAA", marginTop: "4px" }}>{new Date(ev.created_at).toLocaleString("en-IN")}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-text-muted text-sm">No events yet.</p>
+                <p style={{ fontSize: "14px", color: "#AAAAAA" }}>No events recorded yet.</p>
               )}
             </div>
-
           </div>
 
-          {/* Right: Customer + Actions */}
-          <div className="space-y-5">
-            {/* Customer Info */}
-            <div className="glass-card p-5">
-              <h2 className="text-xs uppercase tracking-widest text-accent-primary font-semibold mb-3">Customer</h2>
-              <p className="font-semibold text-text-primary">{customer?.company_name}</p>
-              <p className="text-sm text-text-secondary mt-0.5">{customer?.contact_name}</p>
+          {/* Right Column: Customer Info & Status Updater / Uploads */}
+          <div>
+            <div style={{ ...card, marginBottom: 0 }}>
+              <span style={sectionLabel}>Customer Information</span>
+              <p style={{ fontSize: "17px", fontWeight: 800, color: "#111111", marginBottom: "4px" }}>{customer?.company_name ?? "—"}</p>
+              <p style={{ fontSize: "13px", color: "#555555", marginBottom: "16px" }}>{customer?.contact_name}</p>
               {customer?.email && (
-                <a href={`mailto:${customer.email}`} className="text-xs text-accent-primary hover:underline block mt-1">
-                  {customer.email}
+                <a href={`mailto:${customer.email}`} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#DC2626", textDecoration: "none", marginBottom: "10px", fontWeight: 500 }}>
+                  <Mail size={14} /> {customer.email}
                 </a>
               )}
               {customer?.phone && (
-                <a href={`tel:${customer.phone}`} className="text-xs text-text-muted hover:text-accent-primary block mt-0.5">
-                  {customer.phone}
+                <a href={`tel:${customer.phone}`} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#555555", textDecoration: "none", marginBottom: "10px", fontWeight: 500 }}>
+                  <Phone size={14} /> {customer.phone}
                 </a>
               )}
               {customer?.gstin && (
-                <p className="text-xs font-mono text-text-muted mt-2">GSTIN: {customer.gstin}</p>
+                <p style={{ fontSize: "11px", color: "#777777", fontFamily: "monospace", marginTop: "12px", background: "#F5F5F5", padding: "6px 10px", borderRadius: "4px", display: "inline-block" }}>GSTIN: {customer.gstin}</p>
               )}
+              <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid #E0E0E0" }}>
+                <p style={fieldLabel}>Order Date</p>
+                <p style={{ fontSize: "13px", color: "#111111" }}>{new Date(order.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
+              </div>
             </div>
 
-            {/* Status Updater + Document Upload */}
-            <OrderStatusUpdater
-              orderId={order.id}
-              currentStatus={order.status}
-              documents={documents ?? []}
-            />
+            {/* Order Status & Documents Upload Component */}
+            <OrderStatusUpdater orderId={order.id} currentStatus={order.status} documents={documents ?? []} />
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

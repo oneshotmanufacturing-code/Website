@@ -1,81 +1,94 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { Users, ArrowLeft, Plus, Building2 } from "lucide-react";
+import { Users, Building2, Mail, Phone } from "lucide-react";
 
-export const metadata = { title: "Customers | Admin" };
+export const metadata = { title: "Customers | Admin — OneShot Manufacturing" };
+
+const NAV_STYLE = {
+  position: "sticky" as const,
+  top: 0,
+  background: "#111111",
+  zIndex: 50,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+};
 
 export default async function AdminCustomersPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") redirect("/portal");
 
   const { data: customers } = await supabase
     .from("profiles")
-    .select("*, orders(count)")
+    .select("id, company_name, contact_name, email, phone, gstin, city, state, created_at")
     .eq("role", "customer")
     .order("created_at", { ascending: false });
 
   return (
-    <div className="min-h-screen py-24 px-4">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center gap-3 mb-2">
-          <Link href="/admin" className="text-text-muted hover:text-accent-primary transition-colors">
-            <ArrowLeft className="w-4 h-4" />
+    <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+      {/* Nav */}
+      <nav style={NAV_STYLE}>
+        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>
+            ONESHOT
           </Link>
-          <p className="text-accent-primary text-xs font-semibold uppercase tracking-widest">Admin Panel</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            <Link href="/admin" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Dashboard</Link>
+            <Link href="/admin/messages" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Messages</Link>
+            <Link href="/admin/customers" style={{ color: "#FFFFFF", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none", borderBottom: "2px solid #DC2626", paddingBottom: "4px" }}>Customers</Link>
+            <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Orders</Link>
+            <Link href="/admin/quotes" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Quotes</Link>
+            <Link href="/" style={{ background: "#DC2626", color: "#FFFFFF", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 20px", borderRadius: "4px", textDecoration: "none" }}>← BACK TO SITE</Link>
+          </div>
         </div>
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="font-display text-3xl font-bold text-text-primary flex items-center gap-3">
-            <Users className="w-7 h-7 text-accent-primary" /> Customers
-          </h1>
-          <span className="text-text-muted text-sm">{customers?.length ?? 0} registered</span>
-        </div>
+      </nav>
 
+      {/* Header */}
+      <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
+        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <span style={{ display: "inline-block", background: "#DC2626", color: "#FFFFFF", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", padding: "4px 10px", marginBottom: "16px" }}>CUSTOMERS</span>
+            <h1 style={{ color: "#FFFFFF", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 900, lineHeight: 1.1, textTransform: "uppercase" }}>REGISTERED CUSTOMERS</h1>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", marginTop: "8px" }}>All users who have signed up on the portal.</p>
+          </div>
+          <div style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", padding: "8px 16px", borderRadius: "4px" }}>
+            <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#DC2626" }}>{customers?.length ?? 0} Total</p>
+          </div>
+        </div>
+      </section>
+
+      {/* List */}
+      <section style={{ padding: "32px 24px 80px", flex: 1 }}>
         {customers && customers.length > 0 ? (
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
             {customers.map((c) => (
-              <Link key={c.id} href={`/admin/customers/${c.id}`}
-                className="glass-card p-5 flex items-center justify-between hover:border-accent-primary/30 transition-all group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-5 h-5 text-accent-primary" />
+              <div key={c.id} style={{ background: "#FFFFFF", border: "1px solid #E0E0E0", borderLeft: "4px solid #DC2626", borderRadius: "4px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "#111111", display: "flex", alignItems: "center", justifyContent: "center", color: "#DC2626", fontSize: "20px", fontWeight: 800, flexShrink: 0 }}>
+                    {(c.company_name || c.contact_name || "?").charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-semibold text-text-primary group-hover:text-accent-primary transition-colors">
-                      {c.company_name}
-                    </p>
-                    <p className="text-sm text-text-secondary">{c.contact_name} · {c.email}</p>
-                    <div className="flex items-center gap-3 mt-0.5">
-                      {c.gstin && <span className="text-xs font-mono text-text-muted">GSTIN: {c.gstin}</span>}
-                      {c.city && <span className="text-xs text-text-muted">{c.city}, {c.state}</span>}
+                    <p style={{ fontSize: "16px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>{c.company_name || "—"}</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
+                      {c.contact_name && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Users size={12} color="#DC2626" /> {c.contact_name}</span>}
+                      {c.email && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Mail size={12} color="#DC2626" /> {c.email}</span>}
+                      {c.phone && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Phone size={12} color="#DC2626" /> {c.phone}</span>}
+                      {c.city && <span style={{ fontSize: "12px", color: "#555555" }}>{c.city}, {c.state}</span>}
                     </div>
+                    {c.gstin && <p style={{ fontSize: "11px", color: "#AAAAAA", fontFamily: "monospace", marginTop: "4px" }}>GSTIN: {c.gstin}</p>}
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0 ml-4">
-                  <p className="text-xs text-text-muted">Joined</p>
-                  <p className="text-xs text-text-secondary">
-                    {new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                  </p>
-                </div>
-              </Link>
+                <p style={{ fontSize: "12px", color: "#AAAAAA" }}>
+                  Joined {new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                </p>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="glass-card p-16 text-center">
-            <Users className="w-12 h-12 text-text-muted mx-auto mb-3" />
-            <p className="text-text-secondary font-medium">No customers yet</p>
-            <p className="text-text-muted text-sm mt-1">
-              Customers who sign up at{" "}
-              <Link href="/signup" className="text-accent-primary hover:underline">/signup</Link>{" "}
-              will appear here.
-            </p>
+          <div style={{ textAlign: "center", padding: "80px 24px", background: "#F5F5F5", borderRadius: "4px", border: "1px dashed #E0E0E0" }}>
+            <Building2 size={40} color="#AAAAAA" style={{ margin: "0 auto 16px", opacity: 0.4 }} />
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#111111", marginBottom: "8px" }}>No customers yet</h3>
+            <p style={{ fontSize: "14px", color: "#555555" }}>Customers who sign up at <Link href="/signup" style={{ color: "#DC2626" }}>/signup</Link> will appear here.</p>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
