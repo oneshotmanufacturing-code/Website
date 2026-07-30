@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -73,6 +74,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="antialiased" style={{ fontFamily: "var(--font-inter, 'Inter', 'Roboto', system-ui, sans-serif)" }}>
         {children}
+        <WhatsAppFloat />
       </body>
     </html>
   );

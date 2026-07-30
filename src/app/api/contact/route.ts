@@ -1,8 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
 import { Resend } from "resend";
 import { COMPANY } from "@/lib/constants";
+
+// Plain anon client — no cookies, no session, always runs as `anon` role.
+// Used for public endpoints so RLS policies for `anon` apply correctly
+// regardless of whether the caller has an admin session.
+const anonClient = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
@@ -77,9 +86,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = getSupabaseClient();
-    
-    const { data, error } = await supabase
+    const { data, error } = await anonClient
       .from("messages")
       .insert([
         {
