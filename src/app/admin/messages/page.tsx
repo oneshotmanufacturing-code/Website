@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  MessageSquare,
   Mail,
   Phone,
   Building2,
@@ -46,94 +45,6 @@ export default function AdminMessagesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
-      {/* ── Top Nav Bar ── */}
-      <nav
-        style={{
-          position: "sticky",
-          top: 0,
-          background: "#111111",
-          zIndex: 50,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "100%",
-            margin: "0 auto",
-            padding: "0 24px",
-            height: "64px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Link
-            href="/"
-            style={{
-              color: "#FFFFFF",
-              fontSize: "20px",
-              fontWeight: 800,
-              letterSpacing: "0.10em",
-              textDecoration: "none",
-              textTransform: "uppercase",
-            }}
-          >
-            ONESHOT
-          </Link>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <Link
-              href="/admin"
-              style={{
-                color: "rgba(255,255,255,0.7)",
-                fontSize: "13px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                textDecoration: "none",
-                paddingBottom: "4px",
-                borderBottom: "2px solid transparent",
-                transition: "color 0.2s, border-color 0.2s",
-              }}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/admin/messages"
-              style={{
-                color: "#FFFFFF",
-                fontSize: "13px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                textDecoration: "none",
-                paddingBottom: "4px",
-                borderBottom: "2px solid #DC2626",
-              }}
-            >
-              Messages
-            </Link>
-            <Link
-              href="/"
-              style={{
-                background: "#DC2626",
-                color: "#FFFFFF",
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                padding: "10px 20px",
-                borderRadius: "4px",
-                textDecoration: "none",
-                transition: "background 0.2s ease",
-              }}
-            >
-              ← BACK TO SITE
-            </Link>
-          </div>
-        </div>
-      </nav>
-
       {/* ── Header ── */}
       <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
         <div style={{ maxWidth: "100%", margin: "0 auto" }}>

@@ -19,6 +19,7 @@ export const COMPANY = {
   phone: "+91 96064 77077",
   email: "contact@oneshotmanufacturing.com",
   inquiryEmail: "contact@oneshotmanufacturing.com",
+  whatsappNumber: "919606477077", // +91 96064 77077, digits only, for wa.me links
   website: "www.oneshotmanufacturing.com",
   businessHours: {
     days: "Monday – Saturday",
@@ -40,7 +41,7 @@ export const FOOTER_LINKS = {
     { label: "PCB Assembly", href: "/services#pcb-assembly" },
     { label: "Raw Material Sourcing", href: "/services#material" },
     { label: "Door-Step Pickup & Delivery", href: "/services#logistics" },
-    { label: "Get a Quote", href: "/services#quote-builder" },
+    { label: "Get a Quote", href: "/quote" },
   ],
   company: [
     { label: "About Us", href: "/about" },

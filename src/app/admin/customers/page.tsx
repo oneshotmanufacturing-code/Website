@@ -4,14 +4,6 @@ import { Users, Building2, Mail, Phone } from "lucide-react";
 
 export const metadata = { title: "Customers | Admin — OneShot Manufacturing" };
 
-const NAV_STYLE = {
-  position: "sticky" as const,
-  top: 0,
-  background: "#111111",
-  zIndex: 50,
-  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-};
-
 export default async function AdminCustomersPage() {
   const supabase = await createClient();
 
@@ -23,23 +15,6 @@ export default async function AdminCustomersPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
-      {/* Nav */}
-      <nav style={NAV_STYLE}>
-        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>
-            ONESHOT
-          </Link>
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <Link href="/admin" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Dashboard</Link>
-            <Link href="/admin/messages" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Messages</Link>
-            <Link href="/admin/customers" style={{ color: "#FFFFFF", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none", borderBottom: "2px solid #DC2626", paddingBottom: "4px" }}>Customers</Link>
-            <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Orders</Link>
-            <Link href="/admin/quotes" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Quotes</Link>
-            <Link href="/" style={{ background: "#DC2626", color: "#FFFFFF", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 20px", borderRadius: "4px", textDecoration: "none" }}>← BACK TO SITE</Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Header */}
       <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>

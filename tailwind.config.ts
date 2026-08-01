@@ -31,6 +31,17 @@ const config: Config = {
         red:            "#DC2626",
         "red-hover":    "#B91C1C",
         "red-dim":      "#FEF2F2",
+        /* Tokens the /portal and (auth) screens still reference (dead
+           dark-theme names) — pointed at the live light palette above so
+           those pages render instead of compiling to nothing. */
+        "accent-primary":  "#DC2626",
+        "bg-primary":      "#FFFFFF",
+        "bg-secondary":    "#F5F5F5",
+        "bg-tertiary":     "#F0F0F0",
+        "text-primary":    "#1A1A1A",
+        "text-secondary":  "#555555",
+        "text-muted":      "#767676",
+        "border-subtle":   "#E0E0E0",
       },
       fontFamily: {
         body:    ["var(--font-body)", "Inter", "Roboto", "system-ui", "sans-serif"],

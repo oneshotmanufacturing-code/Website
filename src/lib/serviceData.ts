@@ -246,3 +246,17 @@ export const ALL_SERVICE_GROUPS: ServiceGroup[] = [
   PCB_ASSEMBLY_SERVICES,
   CNC_SERVICES,
 ];
+
+// service_type / specs.services value -> display label. Single source of
+// truth so CNC quotes don't render as "Wire & Cable Prep" in some places
+// and correctly elsewhere.
+export const SERVICE_LABELS: Record<string, string> = {
+  wire_cable: "Wire & Cable Prep",
+  pcb: "PCB Assembly",
+  cnc: "CNC Manufacturing",
+  general: "General Attachment",
+};
+
+export function serviceLabel(type: string | null | undefined): string {
+  return (type && SERVICE_LABELS[type]) || "Custom Request";
+}

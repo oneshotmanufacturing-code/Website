@@ -200,15 +200,12 @@ function NewOrderForm() {
 export default function NewOrderPage() {
   return (
     <div style={{ minHeight: "100vh", background: "#F5F5F5" }}>
-      {/* Nav */}
-      <nav style={{ position: "sticky", top: 0, background: "#111111", zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>ONESHOT</Link>
-          <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
-            <ArrowLeft size={14} /> Orders
-          </Link>
-        </div>
-      </nav>
+      {/* Breadcrumb */}
+      <div style={{ background: "#F5F5F5", borderBottom: "1px solid #E0E0E0", padding: "12px 24px" }}>
+        <Link href="/admin/orders" style={{ color: "#555555", fontSize: "13px", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <ArrowLeft size={14} /> Orders
+        </Link>
+      </div>
 
       <div style={{ maxWidth: "680px", margin: "0 auto", padding: "40px 24px 80px" }}>
         <h1 style={{ fontSize: "28px", fontWeight: 900, color: "#111111", textTransform: "uppercase", marginBottom: "32px", display: "flex", alignItems: "center", gap: "12px" }}>

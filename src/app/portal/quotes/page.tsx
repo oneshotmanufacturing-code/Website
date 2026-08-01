@@ -77,7 +77,7 @@ export default async function PortalQuotesPage() {
                       <p className="text-xs text-green-400">✅ Great news! Your order has been confirmed. Check <Link href="/portal/orders" className="underline">My Orders</Link>.</p>
                     )}
                     {q.status === "closed" && (
-                      <p className="text-xs text-text-muted">This quote request has been closed. <Link href="/services#quote-builder" className="text-accent-primary hover:underline">Submit a new one</Link>.</p>
+                      <p className="text-xs text-text-muted">This quote request has been closed. <Link href="/quote" className="text-accent-primary hover:underline">Submit a new one</Link>.</p>
                     )}
                   </div>
                 </div>
@@ -89,7 +89,7 @@ export default async function PortalQuotesPage() {
             <ClipboardList className="w-12 h-12 text-text-muted mx-auto mb-3" />
             <p className="text-text-secondary font-medium">No quote requests yet</p>
             <p className="text-text-muted text-sm mt-1">
-              <Link href="/services#quote-builder" className="text-accent-primary hover:underline">
+              <Link href="/quote" className="text-accent-primary hover:underline">
                 Submit a quote request
               </Link>{" "}
               and we'll get back to you.

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import AdminNav from "@/components/admin/AdminNav";
 
 export default async function AdminLayout({
   children,
@@ -44,5 +45,10 @@ export default async function AdminLayout({
       .eq("id", user.id);
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <AdminNav userEmail={user.email ?? ""} />
+      {children}
+    </>
+  );
 }

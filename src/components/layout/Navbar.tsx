@@ -3,24 +3,25 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
-export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+export default function Navbar({ solid = false }: { solid?: boolean }) {
+  const [isScrolled, setIsScrolled] = useState(solid);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBannerVisible, setIsBannerVisible] = useState(true);
 
   useEffect(() => {
+    if (solid) return;
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [solid]);
 
   const navLinks = [
-    { name: "Services", href: "#services" },
-    { name: "Why Us",   href: "#why-us" },
-    { name: "Process",  href: "#process" },
-    { name: "Contact",  href: "#contact" },
+    { name: "Services", href: "/#services" },
+    { name: "Why Us",   href: "/#why-us" },
+    { name: "Process",  href: "/#process" },
+    { name: "Contact",  href: "/#contact" },
   ];
 
   return (
@@ -153,7 +154,7 @@ export default function Navbar() {
           {/* CTA + mobile toggle */}
           <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "16px" }}>
             <a
-              href="#contact"
+              href="/quote"
               className="hidden md:inline-flex"
               style={{
                 background: "#DC2626",
@@ -237,7 +238,7 @@ export default function Navbar() {
                 </a>
               ))}
               <a
-                href="#contact"
+                href="/quote"
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{
                   background: "#DC2626",

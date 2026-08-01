@@ -19,7 +19,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   ghost:
     "bg-transparent text-text-secondary hover:text-accent-primary hover:bg-accent-primary/5 transition-colors duration-300 px-6 py-3 rounded-xl font-semibold text-sm",
   secondary:
-    "bg-accent-secondary/15 text-accent-secondary border border-accent-secondary/30 hover:bg-accent-secondary/25 hover:border-accent-secondary/50 transition-all duration-300 px-6 py-3 rounded-xl font-semibold text-sm",
+    "bg-[#111111]/5 text-[#111111] border border-[#111111]/20 hover:bg-[#111111]/10 hover:border-[#111111]/40 transition-all duration-300 px-6 py-3 rounded-xl font-semibold text-sm",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Phone, Mail, MessageSquare, ArrowRight, ExternalLink } from "lucide-react";
+import { serviceLabel } from "@/lib/serviceData";
 
 const STATUSES = ["new", "contacted", "converted", "closed"] as const;
 type Status = typeof STATUSES[number];
@@ -72,10 +73,18 @@ export default function AdminQuoteActions({
     setTimeout(() => { setSaved(false); router.refresh(); }, 1500);
   }
 
-  function handleConvertToOrder() {
+  async function handleConvertToOrder() {
+    if (status === "converted") {
+      const proceed = window.confirm("This quote is already marked converted. Create another order anyway?");
+      if (!proceed) return;
+    }
+    const supabase = createClient();
+    await supabase.from("quote_requests").update({ status: "converted" }).eq("id", quoteId);
+    setStatus("converted");
+
     const params = new URLSearchParams();
     if (customerId) params.set("customer_id", customerId);
-    if (serviceType) params.set("description", serviceType === "pcb" ? "PCB Assembly" : "Wire & Cable Preparation");
+    if (serviceType) params.set("description", serviceLabel(serviceType));
     if (quantity) params.set("quantity", String(quantity));
     params.set("quote_id", quoteId);
     router.push(`/admin/orders/new?${params.toString()}`);

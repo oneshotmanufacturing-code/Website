@@ -116,6 +116,55 @@
     line-height: 1.15;
   }
 
+  /* ── Dead-theme button/background names, still used by ui/Button.tsx
+     and (auth)/portal — aliased to the live palette. ── */
+  .btn-glow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-amber);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+  .btn-glow:hover {
+    background: var(--color-amber-hover);
+  }
+
+  .btn-outline-glow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--color-navy);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: 2px solid var(--color-gray-300);
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .btn-outline-glow:hover {
+    border-color: var(--color-amber);
+    color: var(--color-amber);
+  }
+
+  .circuit-bg {
+    background: linear-gradient(180deg, #FAFAFA 0%, #FFFFFF 100%);
+  }
+
   /* ── Primary amber CTA button ── */
   .btn-amber {
     display: inline-flex;
@@ -161,17 +210,24 @@
     border-color: var(--color-amber);
   }
 
-  /* ── Standard card ── */
-  .cl-card {
+  /* ── Standard card ──
+     .glass-card / .glass-card-hover are dead-theme names still used by
+     ui/Card.tsx and /portal — same visual as .cl-card, just aliased.
+     ui/Card.tsx picks ONE of the two as its base class (not a :hover
+     pseudo-state), so both need full card styling. */
+  .cl-card, .glass-card, .glass-card-hover {
     background: #FFFFFF;
     border: 1px solid var(--color-gray-300);
     border-radius: 4px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     transition: box-shadow 0.25s ease, transform 0.25s ease;
   }
-  .cl-card:hover {
+  .cl-card:hover, .glass-card-hover:hover {
     box-shadow: 0 4px 16px rgba(0,0,0,0.12);
     transform: translateY(-2px);
+  }
+  .shadow-glow-sm {
+    box-shadow: 0 4px 16px rgba(220,38,38,0.15);
   }
 
   /* ── Left-accented card ── */
@@ -250,4 +306,29 @@
   .tracking-nav { letter-spacing: 0.05em; }
   .tracking-eyebrow { letter-spacing: 0.12em; }
   .tracking-stat-label { letter-spacing: 0.10em; }
+}
+
+/* ── Admin nav (src/components/admin/AdminNav.tsx) ──
+   Plain CSS, not Tailwind: the admin surface is styled with inline
+   style={{}} objects throughout, so responsive behavior for this one
+   component lives here instead of a dead Tailwind class. */
+.admin-nav-desktop {
+  display: none;
+}
+.admin-nav-toggle {
+  display: flex;
+}
+.admin-nav-drawer {
+  display: block;
+}
+@media (min-width: 768px) {
+  .admin-nav-desktop {
+    display: flex;
+  }
+  .admin-nav-toggle {
+    display: none;
+  }
+  .admin-nav-drawer {
+    display: none;
+  }
 }

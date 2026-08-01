@@ -51,10 +51,10 @@ export default function Footer() {
               Quick Links
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <FooterLink href="#services">Services</FooterLink>
-              <FooterLink href="#why-us">Why Us</FooterLink>
-              <FooterLink href="#process">Process</FooterLink>
-              <FooterLink href="#contact">Contact</FooterLink>
+              <FooterLink href="/#services">Services</FooterLink>
+              <FooterLink href="/#why-us">Why Us</FooterLink>
+              <FooterLink href="/#process">Process</FooterLink>
+              <FooterLink href="/#contact">Contact</FooterLink>
             </div>
           </div>
 

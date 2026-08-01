@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { COMPANY } from "@/lib/constants";
 
-const PHONE = "919606477077"; // +91 96064 77077 stripped of non-digits
 const MESSAGE = encodeURIComponent(
   "Hi, I have some inquiries. Can we connect or set up a meeting?"
 );
-const WA_URL = `https://wa.me/${PHONE}?text=${MESSAGE}`;
+const WA_URL = `https://wa.me/${COMPANY.whatsappNumber}?text=${MESSAGE}`;
 
 export default function WhatsAppFloat() {
   const [hovered, setHovered] = useState(false);

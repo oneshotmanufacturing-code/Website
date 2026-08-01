@@ -104,7 +104,7 @@ export default async function PortalOrdersPage() {
             <p className="text-text-muted text-sm mt-1">
               Your orders will appear here once confirmed by our team.
             </p>
-            <Link href="/services#quote-builder"
+            <Link href="/quote"
               className="inline-block mt-4 text-sm text-accent-primary hover:underline">
               Request a quote →
             </Link>

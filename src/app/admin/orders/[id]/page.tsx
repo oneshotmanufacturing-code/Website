@@ -57,18 +57,14 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
 
   return (
     <div style={{ minHeight: "100vh", background: "#F5F5F5" }}>
-      {/* Nav */}
-      <nav style={{ position: "sticky", top: 0, background: "#111111", zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>ONESHOT</Link>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}>
-              <ArrowLeft size={14} /> Orders
-            </Link>
-            <Link href="/" style={{ background: "#DC2626", color: "#FFFFFF", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 20px", borderRadius: "4px", textDecoration: "none" }}>← SITE</Link>
-          </div>
+      {/* Breadcrumb */}
+      <div style={{ background: "#F5F5F5", borderBottom: "1px solid #E0E0E0", padding: "12px 24px" }}>
+        <div style={{ maxWidth: "1050px", margin: "0 auto" }}>
+          <Link href="/admin/orders" style={{ color: "#555555", fontSize: "13px", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+            <ArrowLeft size={14} /> Orders
+          </Link>
         </div>
-      </nav>
+      </div>
 
       {/* Header */}
       <section style={{ background: "#111111", padding: "40px 24px 32px" }}>

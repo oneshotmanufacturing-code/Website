@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { ClipboardList, Eye, Mail, Phone, Calendar } from "lucide-react";
+import { ClipboardList, Eye, Mail, Phone, Calendar, Paperclip } from "lucide-react";
+import { serviceLabel } from "@/lib/serviceData";
 
 export const metadata = { title: "Quote Requests | Admin — OneShot Manufacturing" };
 
@@ -28,21 +29,6 @@ export default async function AdminQuotesPage() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
-      {/* Nav */}
-      <nav style={{ position: "sticky", top: 0, background: "#111111", zIndex: 50, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ padding: "0 24px", height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Link href="/" style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800, letterSpacing: "0.10em", textDecoration: "none", textTransform: "uppercase" }}>ONESHOT</Link>
-          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <Link href="/admin" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Dashboard</Link>
-            <Link href="/admin/messages" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Messages</Link>
-            <Link href="/admin/customers" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Customers</Link>
-            <Link href="/admin/orders" style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none" }}>Orders</Link>
-            <Link href="/admin/quotes" style={{ color: "#FFFFFF", fontSize: "13px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", textDecoration: "none", borderBottom: "2px solid #DC2626", paddingBottom: "4px" }}>Quotes</Link>
-            <Link href="/" style={{ background: "#DC2626", color: "#FFFFFF", fontSize: "12px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", padding: "10px 20px", borderRadius: "4px", textDecoration: "none" }}>← BACK TO SITE</Link>
-          </div>
-        </div>
-      </nav>
-
       {/* Header */}
       <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
@@ -80,10 +66,15 @@ export default async function AdminQuotesPage() {
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "10px" }}>
                         <span style={{ display: "inline-block", background: "#F5F5F5", color: "#333333", fontSize: "11px", fontWeight: 700, padding: "3px 8px", borderRadius: "3px", textTransform: "uppercase" }}>
-                          {q.service_type === "pcb" ? "PCB Assembly" : "Wire & Cable Prep"}
+                          {serviceLabel(q.service_type)}
                         </span>
                         {q.quantity && <span style={{ fontSize: "12px", color: "#777777" }}>Qty: <strong style={{ color: "#111111" }}>{q.quantity}</strong></span>}
                         {q.gstin && <span style={{ fontSize: "11px", color: "#888888", fontFamily: "monospace" }}>GSTIN: {q.gstin}</span>}
+                        {Array.isArray((q.specs as { attachments?: unknown[] } | null)?.attachments) && (q.specs as { attachments: unknown[] }).attachments.length > 0 && (
+                          <span style={{ fontSize: "11px", color: "#777777", display: "flex", alignItems: "center", gap: "4px" }}>
+                            <Paperclip size={12} /> {(q.specs as { attachments: unknown[] }).attachments.length} file{(q.specs as { attachments: unknown[] }).attachments.length > 1 ? "s" : ""}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>

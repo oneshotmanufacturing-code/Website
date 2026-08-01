@@ -4,7 +4,7 @@ import { Cable, Cpu, ShoppingBag, Settings } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import ServiceCard from "@/components/ServiceCard";
-import QuoteBuilder from "@/components/QuoteBuilder";
+import NotifyMeForm from "@/components/NotifyMeForm";
 import {
   WIRE_CABLE_SERVICES,
   PCB_ASSEMBLY_SERVICES,
@@ -91,8 +91,28 @@ export default function ServicesPage() {
             />
           </div>
 
-          {/* CNC Manufacturing */}
-          <div id="cnc-manufacturing">
+          {/* CNC Manufacturing — not launched yet, badge + notify form bolted on */}
+          <div id="cnc-manufacturing" style={{ position: "relative" }}>
+            <span
+              style={{
+                position: "absolute",
+                top: 24,
+                right: 24,
+                zIndex: 1,
+                display: "inline-block",
+                background: "#FEF2F2",
+                color: "#DC2626",
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                padding: "4px 10px",
+                borderRadius: 999,
+                border: "1px solid #DC2626",
+              }}
+            >
+              Coming Soon
+            </span>
             <ServiceCard
               title={CNC_SERVICES.title}
               description={CNC_SERVICES.description}
@@ -103,6 +123,12 @@ export default function ServicesPage() {
               }
               categories={CNC_SERVICES.categories}
             />
+            <div style={{ marginTop: 12, padding: "16px 24px" }}>
+              <p style={{ fontSize: 13, color: "#555555", marginBottom: 8 }}>
+                CNC manufacturing is launching soon. Leave your email and we&apos;ll notify you when it&apos;s live.
+              </p>
+              <NotifyMeForm service="cnc" />
+            </div>
           </div>
 
           {/* Raw Material Sourcing */}
@@ -141,22 +167,6 @@ export default function ServicesPage() {
             </Card>
           </div>
         </div>
-      </section>
-
-      {/* ── Divider ── */}
-      <div className="section-divider max-w-5xl mx-auto" />
-
-      {/* ── Quote Builder ── */}
-      <section
-        id="quote-builder"
-        className="py-14 lg:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
-      >
-        <SectionHeader
-          badge="Get a Quote"
-          title="Build Your Quote Request"
-          subtitle="Tell us exactly what you need — select your services, specify the details, and we'll get back with a quotation within 24 hours."
-        />
-        <QuoteBuilder />
       </section>
     </>
   );
