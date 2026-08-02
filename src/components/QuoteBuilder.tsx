@@ -278,8 +278,6 @@ export default function QuoteBuilder() {
   const [form, setForm] = useState<QuoteFormData>(initialForm);
   const [sectionFiles, setSectionFiles] = useState<Record<ServiceKey, File[]>>({ wire_cable: [], pcb: [], cnc: [] });
   const [fileErrors, setFileErrors] = useState<Record<ServiceKey, string | null>>({ wire_cable: null, pcb: null, cnc: null });
-  const [designFiles, setDesignFiles] = useState<File[]>([]);
-  const [designFileError, setDesignFileError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<{ reference: string; failedUploads: string[] } | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -338,21 +336,6 @@ export default function QuoteBuilder() {
   const removeFile = (section: ServiceKey, index: number) =>
     setSectionFiles((prev) => ({ ...prev, [section]: prev[section].filter((_, i) => i !== index) }));
 
-  const onDesignFilesSelected = (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    for (const file of Array.from(files)) {
-      const err = validateFile(file);
-      if (err) {
-        setDesignFileError(err);
-        return;
-      }
-    }
-    setDesignFiles((prev) => [...prev, ...Array.from(files)]);
-    setDesignFileError(null);
-  };
-
-  const removeDesignFile = (index: number) =>
-    setDesignFiles((prev) => prev.filter((_, i) => i !== index));
 
   async function saveQuote(): Promise<{ id: string; reference: string; failedUploads: string[] }> {
     if (form.services.length === 0) throw new Error("Select at least one service.");
@@ -417,17 +400,6 @@ export default function QuoteBuilder() {
         }
         attachments.push({ section, filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
       }
-    }
-    for (const file of designFiles) {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `quotes/${quoteId}/general/${crypto.randomUUID()}_${safeName}`;
-      const { error: uploadError } = await supabase.storage.from("quote_attachments").upload(path, file);
-      if (uploadError) {
-        console.error(`Upload failed for ${file.name}:`, uploadError);
-        failedUploads.push(`${file.name} (General Attachment)`);
-        continue;
-      }
-      attachments.push({ section: "general", filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
     }
 
     const specs = {
@@ -538,7 +510,6 @@ export default function QuoteBuilder() {
           onClick={() => {
             setForm(initialForm);
             setSectionFiles({ wire_cable: [], pcb: [], cnc: [] });
-            setDesignFiles([]);
             setSubmitted(null);
           }}
         >
@@ -724,23 +695,6 @@ export default function QuoteBuilder() {
             rows={3} placeholder="Any special requirements, BOM reference, drawings…"
             className={`${fieldBase} resize-y`}
           />
-        </div>
-
-        {/* ── General Design File ── */}
-        <div>
-          <label className={fieldLabel}>Design File / Drawing (Optional, general)</label>
-          <div className="p-4 rounded-md border border-dashed border-[#D4D4D4] bg-[#FAFAFA] space-y-3">
-            <input
-              type="file"
-              id="file-upload"
-              multiple
-              onChange={(e) => { onDesignFilesSelected(e.target.files); e.target.value = ""; }}
-              className="text-sm text-[#555555]"
-            />
-            {designFileError && <p className="text-xs text-[#DC2626] flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {designFileError}</p>}
-            <FileList files={designFiles} onRemove={removeDesignFile} />
-          </div>
-          <p className="mt-2 text-xs text-[#767676]">A catch-all for anything not covered by the per-section uploads above.</p>
         </div>
 
         <div className="h-px bg-[#E0E0E0]" />
