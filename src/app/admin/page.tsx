@@ -12,6 +12,7 @@ import {
   Inbox,
   FileText,
   ShoppingBag,
+  Users,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -35,12 +36,14 @@ export default function AdminPage() {
   const [messageStats, setMessageStats] = useState<Stats>({ total: 0, today: 0 });
   const [quoteStats, setQuoteStats] = useState<Stats>({ total: 0, today: 0 });
   const [orderStats, setOrderStats] = useState<Stats>({ total: 0, today: 0 });
+  const [visitorStats, setVisitorStats] = useState<Stats>({ total: 0, today: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const supabase = createClient();
+
     async function loadDashboardData() {
       setLoading(true);
-      const supabase = createClient();
 
       try {
         // 1. Messages
@@ -67,6 +70,15 @@ export default function AdminPage() {
         const { count: totalOrders } = await supabase.from("orders").select("*", { count: "exact", head: true });
         setOrderStats({ total: totalOrders || 0, today: 0 });
 
+        // 4. Visitors
+        const todayStartIso = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
+        const { count: totalVisitors } = await supabase.from("page_views").select("*", { count: "exact", head: true });
+        const { count: todayVisitors } = await supabase
+          .from("page_views")
+          .select("*", { count: "exact", head: true })
+          .gte("created_at", todayStartIso);
+        setVisitorStats({ total: totalVisitors || 0, today: todayVisitors || 0 });
+
       } catch (e) {
         console.error("Dashboard load failed:", e);
       } finally {
@@ -75,6 +87,26 @@ export default function AdminPage() {
     }
 
     loadDashboardData();
+
+    const channel = supabase
+      .channel("page_views_live")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "page_views" },
+        (payload: { new: { created_at: string } }) => {
+          const createdAt = new Date(payload.new.created_at);
+          const isToday = createdAt.toDateString() === new Date().toDateString();
+          setVisitorStats((prev) => ({
+            total: prev.total + 1,
+            today: prev.today + (isToday ? 1 : 0),
+          }));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -154,6 +186,36 @@ export default function AdminPage() {
             </p>
             <p className="text-[11px] font-bold uppercase tracking-announcement text-text-light mt-2">
               TOTAL ORDERS
+            </p>
+          </div>
+
+          {/* Total Visitors */}
+          <div className="bg-white border border-gray-300-cl rounded p-7 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-0.5">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded bg-amber-light flex items-center justify-center">
+                <Users size={20} className="text-amber" />
+              </div>
+            </div>
+            <p className="text-4xl font-black text-text-dark leading-none">
+              {loading ? "—" : visitorStats.total}
+            </p>
+            <p className="text-[11px] font-bold uppercase tracking-announcement text-text-light mt-2">
+              TOTAL VISITORS
+            </p>
+          </div>
+
+          {/* Today's Visitors */}
+          <div className="bg-white border border-gray-300-cl rounded p-7 shadow-card">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-10 h-10 rounded bg-gray-100-cl flex items-center justify-center">
+                <Clock size={20} className="text-text-dark" />
+              </div>
+            </div>
+            <p className="text-4xl font-black text-text-dark leading-none">
+              {loading ? "—" : visitorStats.today}
+            </p>
+            <p className="text-[11px] font-bold uppercase tracking-announcement text-text-light mt-2">
+              TODAY&apos;S VISITORS
             </p>
           </div>
         </div>
