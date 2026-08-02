@@ -14,53 +14,53 @@ export default async function AdminCustomersPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+    <div className="min-h-screen bg-white flex flex-col">
       {/* Header */}
-      <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
+      <section className="bg-navy px-6 py-12 lg:px-8">
+        <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <span style={{ display: "inline-block", background: "#DC2626", color: "#FFFFFF", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", padding: "4px 10px", marginBottom: "16px" }}>CUSTOMERS</span>
-            <h1 style={{ color: "#FFFFFF", fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 900, lineHeight: 1.1, textTransform: "uppercase" }}>REGISTERED CUSTOMERS</h1>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", marginTop: "8px" }}>All users who have signed up on the portal.</p>
+            <span className="amber-badge mb-4">CUSTOMERS</span>
+            <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-black uppercase leading-tight">REGISTERED CUSTOMERS</h1>
+            <p className="text-white/50 text-sm mt-2">All users who have signed up on the portal.</p>
           </div>
-          <div style={{ background: "rgba(220,38,38,0.15)", border: "1px solid rgba(220,38,38,0.3)", padding: "8px 16px", borderRadius: "4px" }}>
-            <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: "#DC2626" }}>{customers?.length ?? 0} Total</p>
+          <div className="bg-amber-light/20 border border-amber/30 px-4 py-2 rounded">
+            <p className="text-[11px] font-bold uppercase tracking-announcement text-amber">{customers?.length ?? 0} Total</p>
           </div>
         </div>
       </section>
 
       {/* List */}
-      <section style={{ padding: "32px 24px 80px", flex: 1 }}>
+      <section className="px-6 py-8 lg:px-8 flex-1">
         {customers && customers.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div className="flex flex-col gap-4">
             {customers.map((c) => (
-              <div key={c.id} style={{ background: "#FFFFFF", border: "1px solid #E0E0E0", borderLeft: "4px solid #DC2626", borderRadius: "4px", boxShadow: "0 1px 4px rgba(0,0,0,0.08)", padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "#111111", display: "flex", alignItems: "center", justifyContent: "center", color: "#DC2626", fontSize: "20px", fontWeight: 800, flexShrink: 0 }}>
+              <div key={c.id} className="bg-white border border-gray-300-cl border-l-4 border-l-amber rounded shadow-card p-5 flex items-center justify-between flex-wrap gap-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-amber text-xl font-black shrink-0">
                     {(c.company_name || c.contact_name || "?").charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p style={{ fontSize: "16px", fontWeight: 700, color: "#111111", marginBottom: "4px" }}>{c.company_name || "—"}</p>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "14px" }}>
-                      {c.contact_name && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Users size={12} color="#DC2626" /> {c.contact_name}</span>}
-                      {c.email && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Mail size={12} color="#DC2626" /> {c.email}</span>}
-                      {c.phone && <span style={{ fontSize: "12px", color: "#555555", display: "flex", alignItems: "center", gap: "4px" }}><Phone size={12} color="#DC2626" /> {c.phone}</span>}
-                      {c.city && <span style={{ fontSize: "12px", color: "#555555" }}>{c.city}, {c.state}</span>}
+                    <p className="text-base font-bold text-text-dark mb-1">{c.company_name || "—"}</p>
+                    <div className="flex flex-wrap gap-3">
+                      {c.contact_name && <span className="text-xs text-text-mid flex items-center gap-1"><Users size={12} className="text-amber" /> {c.contact_name}</span>}
+                      {c.email && <span className="text-xs text-text-mid flex items-center gap-1"><Mail size={12} className="text-amber" /> {c.email}</span>}
+                      {c.phone && <span className="text-xs text-text-mid flex items-center gap-1"><Phone size={12} className="text-amber" /> {c.phone}</span>}
+                      {c.city && <span className="text-xs text-text-mid">{c.city}, {c.state}</span>}
                     </div>
-                    {c.gstin && <p style={{ fontSize: "11px", color: "#AAAAAA", fontFamily: "monospace", marginTop: "4px" }}>GSTIN: {c.gstin}</p>}
+                    {c.gstin && <p className="text-[11px] text-text-light font-mono mt-1">GSTIN: {c.gstin}</p>}
                   </div>
                 </div>
-                <p style={{ fontSize: "12px", color: "#AAAAAA" }}>
+                <p className="text-xs text-text-light">
                   Joined {new Date(c.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                 </p>
               </div>
             ))}
           </div>
         ) : (
-          <div style={{ textAlign: "center", padding: "80px 24px", background: "#F5F5F5", borderRadius: "4px", border: "1px dashed #E0E0E0" }}>
-            <Building2 size={40} color="#AAAAAA" style={{ margin: "0 auto 16px", opacity: 0.4 }} />
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#111111", marginBottom: "8px" }}>No customers yet</h3>
-            <p style={{ fontSize: "14px", color: "#555555" }}>Customers who sign up at <Link href="/signup" style={{ color: "#DC2626" }}>/signup</Link> will appear here.</p>
+          <div className="text-center py-20 bg-gray-100-cl rounded border border-dashed border-gray-300-cl">
+            <Building2 size={40} className="mx-auto mb-4 text-text-light opacity-40" />
+            <h3 className="text-lg font-bold text-text-dark mb-2">No customers yet</h3>
+            <p className="text-text-mid text-sm">Customers who sign up at <Link href="/signup" className="text-amber hover:underline">/signup</Link> will appear here.</p>
           </div>
         )}
       </section>

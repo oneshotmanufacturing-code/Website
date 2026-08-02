@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { ArrowLeft, ClipboardList, Clock } from "lucide-react";
+import { serviceLabel } from "@/lib/serviceData";
 
 export const metadata = { title: "My Quotes | Portal" };
 
@@ -17,7 +18,7 @@ export default async function PortalQuotesPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: quotes } = await supabase
+  const { data: quotes, error } = await supabase
     .from("quote_requests")
     .select("*")
     .eq("customer_id", user.id)
@@ -36,7 +37,12 @@ export default async function PortalQuotesPage() {
           <ClipboardList className="w-7 h-7 text-accent-primary" /> My Quote Requests
         </h1>
 
-        {quotes && quotes.length > 0 ? (
+        {error ? (
+          <div className="glass-card p-8 text-center border border-red-500/30">
+            <p className="text-red-400 font-medium">Couldn&apos;t load your quotes</p>
+            <p className="text-text-muted text-sm mt-1">{error.message}</p>
+          </div>
+        ) : quotes && quotes.length > 0 ? (
           <div className="space-y-4">
             {quotes.map((q) => {
               const s = STATUS_STYLES[q.status] ?? STATUS_STYLES.new;
@@ -46,7 +52,7 @@ export default async function PortalQuotesPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1 flex-wrap">
                         <p className="font-semibold text-text-primary">
-                          {q.service_type === "pcb" ? "PCB Assembly" : "Wire & Cable Preparation"}
+                          {serviceLabel(q.service_type)}
                         </p>
                         <span className={`text-xs px-2.5 py-0.5 rounded-full border font-medium ${s.color}`}>
                           {s.label}

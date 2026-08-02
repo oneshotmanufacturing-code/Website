@@ -388,6 +388,48 @@ export default function QuoteBuilder() {
       cncPartsOut.reduce((sum, c) => sum + (Number(c.quantity) || 0), 0) +
       Object.values(form.approxQuantity).reduce((sum, v) => sum + (Number(v) || 0), 0);
 
+    // Mint the id client-side so storage paths are known before the row
+    // exists, and so WhatsApp/the success card can reference it without
+    // relying on `.select().single()` — PostgREST filters RETURNING through
+    // the table's SELECT policy, and a public anon insert has no SELECT
+    // grant, so reading the row back after insert 403s (PGRST116).
+    const quoteId = crypto.randomUUID();
+    const reference = `Q-${quoteId.slice(0, 8).toUpperCase()}`;
+
+    // Uploads happen BEFORE the insert. There is deliberately no UPDATE
+    // policy on quote_requests for anon (only quote_requests_update_admin_only
+    // exists), so a public visitor can never patch attachments onto an
+    // already-inserted row — that update used to silently match zero rows.
+    // Uploads are still best-effort: a failed attachment must not discard a
+    // quote that's otherwise ready to save, so failures are collected rather
+    // than thrown.
+    const failedUploads: string[] = [];
+    const attachments: Attachment[] = [];
+    for (const section of form.services) {
+      for (const file of sectionFiles[section]) {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `quotes/${quoteId}/${section}/${crypto.randomUUID()}_${safeName}`;
+        const { error: uploadError } = await supabase.storage.from("quote_attachments").upload(path, file);
+        if (uploadError) {
+          console.error(`Upload failed for ${file.name}:`, uploadError);
+          failedUploads.push(`${file.name} (${SERVICES.find((s) => s.key === section)?.label ?? section})`);
+          continue;
+        }
+        attachments.push({ section, filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
+      }
+    }
+    for (const file of designFiles) {
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `quotes/${quoteId}/general/${crypto.randomUUID()}_${safeName}`;
+      const { error: uploadError } = await supabase.storage.from("quote_attachments").upload(path, file);
+      if (uploadError) {
+        console.error(`Upload failed for ${file.name}:`, uploadError);
+        failedUploads.push(`${file.name} (General Attachment)`);
+        continue;
+      }
+      attachments.push({ section: "general", filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
+    }
+
     const specs = {
       services: form.services,
       material_supply: form.materialSupply,
@@ -396,15 +438,8 @@ export default function QuoteBuilder() {
       cnc_parts: cncPartsOut,
       section_modes: form.sectionModes,
       approx_quantity: form.approxQuantity,
-      attachments: [] as Attachment[],
+      attachments,
     };
-
-    // Mint the id client-side so it can be sent to WhatsApp / the "attachments"
-    // patch below without relying on `.select().single()` — PostgREST filters
-    // RETURNING through the table's SELECT policy, and a public anon insert
-    // has no SELECT grant, so reading the row back after insert 403s (PGRST116).
-    const quoteId = crypto.randomUUID();
-    const reference = `Q-${quoteId.slice(0, 8).toUpperCase()}`;
 
     const { error: insertError } = await supabase
       .from("quote_requests")
@@ -424,37 +459,6 @@ export default function QuoteBuilder() {
       });
 
     if (insertError) throw insertError;
-
-    // Uploads are best-effort: a failed attachment must not discard a quote
-    // that's already saved to the DB. Collect failures instead of throwing.
-    const failedUploads: string[] = [];
-    const attachments: Attachment[] = [];
-    for (const section of form.services) {
-      for (const file of sectionFiles[section]) {
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const path = `quotes/${quoteId}/${section}/${crypto.randomUUID()}_${safeName}`;
-        const { error: uploadError } = await supabase.storage.from("quote_attachments").upload(path, file);
-        if (uploadError) {
-          failedUploads.push(`${file.name} (${SERVICES.find((s) => s.key === section)?.label ?? section})`);
-          continue;
-        }
-        attachments.push({ section, filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
-      }
-    }
-    for (const file of designFiles) {
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `quotes/${quoteId}/general/${crypto.randomUUID()}_${safeName}`;
-      const { error: uploadError } = await supabase.storage.from("quote_attachments").upload(path, file);
-      if (uploadError) {
-        failedUploads.push(`${file.name} (General Attachment)`);
-        continue;
-      }
-      attachments.push({ section: "general", filename: file.name, size: file.size, storage_path: path, uploaded_at: new Date().toISOString() });
-    }
-
-    if (attachments.length > 0) {
-      await supabase.from("quote_requests").update({ specs: { ...specs, attachments } }).eq("id", quoteId);
-    }
 
     // Non-fatal lead capture for the not-yet-live CNC service. The
     // service_notifications table is being created by a separate migration —
@@ -795,6 +799,7 @@ function SectionBlock({
   approxQty: string;
   onApproxQtyChange: (v: string) => void;
 }) {
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   return (
     <div className="space-y-5 p-5 rounded-md border border-[#E0E0E0]">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -810,7 +815,7 @@ function SectionBlock({
       ) : (
         <div className="space-y-3">
           <label
-            htmlFor={`upload-${title}`}
+            htmlFor={`upload-${slug}`}
             className="flex flex-col items-center justify-center gap-2 p-8 rounded-md border-2 border-dashed border-[#D4D4D4] bg-[#FAFAFA] hover:border-[#DC2626] cursor-pointer transition-colors text-center"
           >
             <Upload className="w-6 h-6 text-[#A3A3A3]" />
@@ -818,7 +823,7 @@ function SectionBlock({
             <span className="text-xs text-[#A3A3A3]">.xlsx .xls .csv .pdf .doc .docx images .step .stp .dxf — up to {MAX_FILE_MB}MB each</span>
           </label>
           <input
-            id={`upload-${title}`} type="file" multiple className="sr-only"
+            id={`upload-${slug}`} type="file" multiple className="sr-only"
             onChange={(e) => { onFilesSelected(e.target.files); e.target.value = ""; }}
           />
           {fileError && <p className="text-xs text-[#DC2626] flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {fileError}</p>}

@@ -60,35 +60,109 @@ export default function AdminQuoteActions({
   const [notes, setNotes] = useState(adminNotes || "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [converting, setConverting] = useState(false);
+  const [convertError, setConvertError] = useState<string | null>(null);
+  const [replyBody, setReplyBody] = useState("");
+  const [replyState, setReplyState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [replyError, setReplyError] = useState<string | null>(null);
+
+  const reference = `Q-${quoteId.slice(0, 8).toUpperCase()}`;
 
   async function handleSave() {
     setSaving(true);
+    setSaveError(null);
     const supabase = createClient();
-    await supabase
+    const { error } = await supabase
       .from("quote_requests")
       .update({ status, admin_notes: notes })
       .eq("id", quoteId);
     setSaving(false);
+    if (error) {
+      setSaveError(error.message);
+      return;
+    }
     setSaved(true);
     setTimeout(() => { setSaved(false); router.refresh(); }, 1500);
   }
 
   async function handleConvertToOrder() {
+    if (!customerId) return;
     if (status === "converted") {
       const proceed = window.confirm("This quote is already marked converted. Create another order anyway?");
       if (!proceed) return;
     }
+    setConverting(true);
+    setConvertError(null);
     const supabase = createClient();
-    await supabase.from("quote_requests").update({ status: "converted" }).eq("id", quoteId);
-    setStatus("converted");
 
+    const year = new Date().getFullYear();
+    const rand = Math.floor(Math.random() * 900) + 100;
+    const orderNumber = `MP-${year}-${rand}`;
+
+    // Order must exist before the quote is marked converted — otherwise an
+    // aborted/failed insert leaves the quote flipped with no order behind it.
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        customer_id: customerId,
+        order_number: orderNumber,
+        description: serviceType ? serviceLabel(serviceType) : "",
+        quantity: quantity ?? null,
+        status: "confirmed",
+        internal_notes: `Converted from quote ${reference}`,
+        quote_id: quoteId,
+      })
+      .select()
+      .single();
+
+    if (orderError || !order) {
+      setConverting(false);
+      setConvertError(orderError?.message ?? "Could not create the order.");
+      return;
+    }
+
+    await supabase.from("order_events").insert({ order_id: order.id, status: "confirmed", note: "Order created" });
+    await supabase.from("quote_requests").update({ status: "converted" }).eq("id", quoteId);
+
+    setConverting(false);
+    setStatus("converted");
+    router.push(`/admin/orders/${order.id}`);
+  }
+
+  function handleConvertGuest() {
     const params = new URLSearchParams();
-    if (customerId) params.set("customer_id", customerId);
     if (serviceType) params.set("description", serviceLabel(serviceType));
     if (quantity) params.set("quantity", String(quantity));
     params.set("quote_id", quoteId);
     router.push(`/admin/orders/new?${params.toString()}`);
   }
+
+  async function handleSendReply() {
+    if (!replyBody.trim() || !email) return;
+    setReplyState("sending");
+    setReplyError(null);
+    try {
+      const res = await fetch("/api/quotes/reply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quoteId, to: email, message: replyBody }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to send reply.");
+      setReplyState("sent");
+      setReplyBody("");
+      setTimeout(() => setReplyState("idle"), 2500);
+    } catch (err) {
+      setReplyState("error");
+      setReplyError(err instanceof Error ? err.message : "Failed to send reply.");
+    }
+  }
+
+  const waMessage = encodeURIComponent(
+    `Hi${companyName ? " " + companyName : ""}, this is OneShot Manufacturing regarding your quote request ${reference}.`
+  );
+  const waPhone = phone?.replace(/[^0-9]/g, "");
 
   return (
     <div style={cardStyle}>
@@ -102,8 +176,13 @@ export default function AdminQuoteActions({
           </a>
         )}
         {email && (
-          <a href={`mailto:${email}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#EFF6FF", border: "1px solid #BFDBFE", color: "#2563EB", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+          <a href={`mailto:${email}?subject=${encodeURIComponent(`Regarding your quote request ${reference}`)}`} style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#EFF6FF", border: "1px solid #BFDBFE", color: "#2563EB", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
             <Mail size={13} /> Email Customer
+          </a>
+        )}
+        {waPhone && (
+          <a href={`https://wa.me/${waPhone}?text=${waMessage}`} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "6px", padding: "8px 14px", borderRadius: "4px", background: "#F0FDF4", border: "1px solid #BBF7D0", color: "#16A34A", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+            <MessageSquare size={13} /> WhatsApp Customer
           </a>
         )}
         {customerId && (
@@ -170,56 +249,115 @@ export default function AdminQuoteActions({
         />
       </div>
 
-      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center", borderTop: "1px solid #F0F0F0", paddingTop: "20px" }}>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          type="button"
-          style={{
-            padding: "12px 24px",
-            background: saving ? "#AAAAAA" : "#DC2626",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "13px",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            cursor: saving ? "not-allowed" : "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-        >
-          {saved ? <><CheckCircle size={15} /> Changes Saved!</> :
-            saving ? "Saving..." :
-              "Save Changes"}
-        </button>
-        {customerId ? (
+      {/* Reply via email (Resend) */}
+      {email && (
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", fontWeight: 700, color: "#555555", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "8px" }}>
+            <Mail size={13} /> Reply to Customer (sends an email)
+          </label>
+          <textarea
+            value={replyBody}
+            onChange={(e) => setReplyBody(e.target.value)}
+            rows={3}
+            placeholder={`Write a reply to ${email}...`}
+            style={{ width: "100%", padding: "12px 14px", borderRadius: "4px", background: "#FFFFFF", border: "1px solid #E0E0E0", color: "#111111", fontSize: "13px", outline: "none", resize: "vertical", boxSizing: "border-box" }}
+          />
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "8px" }}>
+            <button
+              onClick={handleSendReply}
+              disabled={replyState === "sending" || !replyBody.trim()}
+              type="button"
+              style={{
+                padding: "10px 18px", background: replyState === "sending" ? "#AAAAAA" : "#2563EB", color: "#FFFFFF",
+                border: "none", borderRadius: "4px", fontSize: "12px", fontWeight: 700, textTransform: "uppercase",
+                cursor: replyState === "sending" || !replyBody.trim() ? "not-allowed" : "pointer",
+              }}
+            >
+              {replyState === "sending" ? "Sending..." : replyState === "sent" ? "Sent!" : "Send Reply"}
+            </button>
+            {replyState === "error" && replyError && <span style={{ fontSize: "12px", color: "#DC2626" }}>{replyError}</span>}
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px", borderTop: "1px solid #F0F0F0", paddingTop: "20px" }}>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
           <button
-            onClick={handleConvertToOrder}
+            onClick={handleSave}
+            disabled={saving}
             type="button"
             style={{
               padding: "12px 24px",
-              background: "#FFFFFF",
-              color: "#16A34A",
-              border: "1px solid #BBF7D0",
+              background: saving ? "#AAAAAA" : "#DC2626",
+              color: "#FFFFFF",
+              border: "none",
               borderRadius: "4px",
               fontSize: "13px",
               fontWeight: 700,
               textTransform: "uppercase",
-              letterSpacing: "0.05em",
-              cursor: "pointer",
+              letterSpacing: "0.08em",
+              cursor: saving ? "not-allowed" : "pointer",
               display: "inline-flex",
               alignItems: "center",
               gap: "8px",
             }}
           >
-            <ArrowRight size={15} /> Convert to Order
+            {saved ? <><CheckCircle size={15} /> Changes Saved!</> :
+              saving ? "Saving..." :
+                "Save Changes"}
           </button>
-        ) : (
+          {customerId ? (
+            <button
+              onClick={handleConvertToOrder}
+              disabled={converting}
+              type="button"
+              style={{
+                padding: "12px 24px",
+                background: "#FFFFFF",
+                color: "#16A34A",
+                border: "1px solid #BBF7D0",
+                borderRadius: "4px",
+                fontSize: "13px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                cursor: converting ? "not-allowed" : "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <ArrowRight size={15} /> {converting ? "Creating Order..." : "Convert to Order"}
+            </button>
+          ) : (
+            <button
+              onClick={handleConvertGuest}
+              type="button"
+              style={{
+                padding: "12px 24px",
+                background: "#FFFFFF",
+                color: "#16A34A",
+                border: "1px solid #BBF7D0",
+                borderRadius: "4px",
+                fontSize: "13px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <ArrowRight size={15} /> Convert to Order…
+            </button>
+          )}
+        </div>
+        {saveError && <p style={{ fontSize: "12px", color: "#DC2626", margin: 0 }}>Couldn&apos;t save: {saveError}</p>}
+        {convertError && <p style={{ fontSize: "12px", color: "#DC2626", margin: 0 }}>Couldn&apos;t create order: {convertError}</p>}
+        {!customerId && (
           <span style={{ fontSize: "12px", color: "#888888", fontStyle: "italic" }}>
-            * Guest quote submission (customer not registered on portal)
+            * Guest quote submission (customer not registered on portal) — opens the order form to fill in a customer manually.
           </span>
         )}
       </div>

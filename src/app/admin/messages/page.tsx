@@ -44,114 +44,39 @@ export default function AdminMessagesPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#FFFFFF", display: "flex", flexDirection: "column" }}>
+    <div className="min-h-screen bg-white flex flex-col">
       {/* ── Header ── */}
-      <section style={{ background: "#111111", padding: "48px 24px 40px" }}>
-        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+      <section className="bg-navy px-6 py-12 lg:px-8">
+        <div className="max-w-full mx-auto">
           {/* Breadcrumbs */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "24px",
-            }}
-          >
+          <div className="flex items-center gap-2 mb-6">
             <Link
               href="/admin"
-              style={{
-                color: "rgba(255,255,255,0.5)",
-                fontSize: "12px",
-                fontWeight: 600,
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                transition: "color 0.2s",
-              }}
+              className="text-white/50 text-xs font-semibold flex items-center gap-1 transition-colors hover:text-white"
             >
               <ArrowLeft size={14} /> Dashboard
             </Link>
-            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "12px" }}>
-              /
-            </span>
-            <span
-              style={{
-                color: "#DC2626",
-                fontSize: "12px",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
+            <span className="text-white/20 text-xs">/</span>
+            <span className="text-amber text-xs font-bold uppercase tracking-announcement">
               Messages
             </span>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "16px",
-            }}
-          >
+          <div className="flex items-end justify-between flex-wrap gap-4">
             <div>
-              <span
-                style={{
-                  display: "inline-block",
-                  background: "#DC2626",
-                  color: "#FFFFFF",
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.10em",
-                  padding: "4px 10px",
-                  marginBottom: "16px",
-                }}
-              >
+              <span className="amber-badge mb-4">
                 INBOX
               </span>
-              <h1
-                style={{
-                  color: "#FFFFFF",
-                  fontSize: "clamp(24px, 3.5vw, 36px)",
-                  fontWeight: 900,
-                  lineHeight: 1.1,
-                  textTransform: "uppercase",
-                }}
-              >
+              <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-black uppercase leading-tight">
                 INQUIRY MESSAGES
               </h1>
-              <p
-                style={{
-                  color: "rgba(255,255,255,0.5)",
-                  fontSize: "14px",
-                  marginTop: "8px",
-                }}
-              >
+              <p className="text-white/50 text-sm mt-2">
                 Review and manage incoming contact form submissions.
               </p>
             </div>
 
-            <div
-              style={{
-                background: "rgba(220,38,38,0.15)",
-                border: "1px solid rgba(220,38,38,0.3)",
-                padding: "8px 16px",
-                borderRadius: "4px",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.10em",
-                  color: "#DC2626",
-                }}
-              >
+            <div className="bg-amber-light/20 border border-amber/30 px-4 py-2 rounded">
+              <p className="text-[11px] font-bold uppercase tracking-announcement text-amber">
                 {messages.length} Total
               </p>
             </div>
@@ -160,55 +85,21 @@ export default function AdminMessagesPage() {
       </section>
 
       {/* ── Search ── */}
-      <section
-        style={{
-          background: "#FFFFFF",
-          padding: "0 24px",
-          marginTop: "-20px",
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E0E0E0",
-              borderRadius: "4px",
-              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-              padding: "12px 20px",
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-            }}
-          >
-            <Search size={18} color="#AAAAAA" />
+      <section className="bg-white px-6 py-0 lg:px-8 -mt-5 relative z-10">
+        <div className="max-w-full mx-auto">
+          <div className="bg-white border border-gray-300-cl rounded shadow-card p-3 flex items-center gap-3">
+            <Search size={18} className="text-text-light" />
             <input
               type="text"
               placeholder="Search by name, email, company, or message..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                border: "none",
-                outline: "none",
-                fontSize: "14px",
-                color: "#1A1A1A",
-                background: "transparent",
-              }}
+              className="flex-1 border-none outline-none text-sm text-text-dark bg-transparent"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  color: "#AAAAAA",
-                  fontSize: "12px",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                }}
+                className="bg-none border-none cursor-pointer text-text-light text-xs font-bold uppercase"
               >
                 Clear
               </button>
@@ -218,213 +109,71 @@ export default function AdminMessagesPage() {
       </section>
 
       {/* ── Message List ── */}
-      <section style={{ padding: "32px 24px 80px", flex: 1 }}>
-        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+      <section className="px-6 py-8 lg:px-8 flex-1">
+        <div className="max-w-full mx-auto">
           {loading ? (
-            <div style={{ textAlign: "center", padding: "80px 0" }}>
-              <div
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  border: "3px solid #E0E0E0",
-                  borderTopColor: "#DC2626",
-                  borderRadius: "50%",
-                  animation: "spin 0.8s linear infinite",
-                  margin: "0 auto 16px",
-                }}
-              />
-              <p style={{ color: "#AAAAAA", fontSize: "14px" }}>
+            <div className="text-center py-20">
+              <div className="w-8 h-8 border-3 border-gray-300-cl border-t-amber rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-text-light text-sm">
                 Loading messages…
               </p>
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: `@keyframes spin { to { transform: rotate(360deg); } }`,
-                }}
-              />
             </div>
           ) : filtered.length === 0 ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "80px 24px",
-                background: "#F5F5F5",
-                borderRadius: "4px",
-                border: "1px dashed #E0E0E0",
-              }}
-            >
-              <Inbox
-                size={40}
-                color="#AAAAAA"
-                style={{ margin: "0 auto 16px", opacity: 0.4 }}
-              />
-              <h3
-                style={{
-                  fontSize: "18px",
-                  fontWeight: 700,
-                  color: "#111111",
-                  marginBottom: "8px",
-                }}
-              >
+            <div className="text-center py-20 bg-gray-100-cl rounded border border-dashed border-gray-300-cl">
+              <Inbox size={40} className="mx-auto mb-4 text-text-light opacity-40" />
+              <h3 className="text-lg font-bold text-text-dark mb-2">
                 {search ? "No matching messages" : "No messages yet"}
               </h3>
-              <p
-                style={{
-                  fontSize: "14px",
-                  color: "#555555",
-                  maxWidth: "360px",
-                  margin: "0 auto",
-                }}
-              >
+              <p className="text-text-mid text-sm max-w-xs mx-auto">
                 {search
                   ? "Try a different search term."
                   : "Inquiries from the contact form will appear here."}
               </p>
             </div>
           ) : (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "16px",
-              }}
-            >
+            <div className="flex flex-col gap-4">
               {filtered.map((m) => (
                 <div
                   key={m.id}
-                  style={{
-                    background: "#FFFFFF",
-                    border: "1px solid #E0E0E0",
-                    borderLeft: "4px solid #DC2626",
-                    borderRadius: "4px",
-                    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-                    overflow: "hidden",
-                    transition:
-                      "box-shadow 0.25s ease, transform 0.25s ease",
-                  }}
+                  className="bg-white border border-gray-300-cl border-l-4 border-l-amber rounded shadow-card overflow-hidden transition-all hover:shadow-card-hover"
                 >
                   {/* Card Header */}
-                  <div
-                    style={{
-                      padding: "20px 24px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      flexWrap: "wrap",
-                      gap: "12px",
-                      background: "#F5F5F5",
-                      borderBottom: "1px solid #E0E0E0",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "16px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "48px",
-                          height: "48px",
-                          borderRadius: "50%",
-                          background: "#111111",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "#DC2626",
-                          fontSize: "20px",
-                          fontWeight: 800,
-                          flexShrink: 0,
-                        }}
-                      >
+                  <div className="p-5 flex items-center justify-between flex-wrap gap-3 bg-gray-100-cl border-b border-gray-300-cl">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-navy flex items-center justify-center text-amber text-xl font-black shrink-0">
                         {m.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p
-                          style={{
-                            fontSize: "17px",
-                            fontWeight: 700,
-                            color: "#111111",
-                            marginBottom: "4px",
-                          }}
-                        >
+                        <p className="text-base font-bold text-text-dark mb-1">
                           {m.name}
                         </p>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: "16px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              color: "#555555",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "4px",
-                            }}
-                          >
-                            <Mail size={13} color="#DC2626" /> {m.email}
+                        <div className="flex flex-wrap gap-3">
+                          <span className="text-xs text-text-mid flex items-center gap-1">
+                            <Mail size={13} className="text-amber" /> {m.email}
                           </span>
                           {m.phone && (
-                            <span
-                              style={{
-                                fontSize: "12px",
-                                color: "#555555",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                            >
-                              <Phone size={13} color="#DC2626" /> {m.phone}
+                            <span className="text-xs text-text-mid flex items-center gap-1">
+                              <Phone size={13} className="text-amber" /> {m.phone}
                             </span>
                           )}
                           {m.company && (
-                            <span
-                              style={{
-                                fontSize: "12px",
-                                color: "#555555",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "4px",
-                              }}
-                            >
-                              <Building2 size={13} color="#DC2626" />{" "}
-                              {m.company}
+                            <span className="text-xs text-text-mid flex items-center gap-1">
+                              <Building2 size={13} className="text-amber" /> {m.company}
                             </span>
                           )}
                         </div>
                       </div>
                     </div>
-
-                    <div style={{ textAlign: "right" }}>
-                      <p
-                        style={{
-                          fontSize: "12px",
-                          fontWeight: 600,
-                          color: "#555555",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <Clock size={12} color="#AAAAAA" />
+                    <div className="text-right">
+                      <p className="text-[11px] font-bold text-text-mid flex items-center justify-end gap-1">
+                        <Clock size={12} className="text-text-light" />
                         {new Date(m.created_at).toLocaleDateString(undefined, {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                         })}
                       </p>
-                      <p
-                        style={{
-                          fontSize: "11px",
-                          color: "#AAAAAA",
-                          marginTop: "2px",
-                        }}
-                      >
+                      <p className="text-[11px] text-text-light mt-0.5">
                         {new Date(m.created_at).toLocaleTimeString(undefined, {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -434,54 +183,19 @@ export default function AdminMessagesPage() {
                   </div>
 
                   {/* Card Body — Message */}
-                  <div style={{ padding: "20px 24px" }}>
-                    <div
-                      style={{
-                        borderLeft: "3px solid rgba(220,38,38,0.3)",
-                        paddingLeft: "16px",
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize: "14px",
-                          color: "#555555",
-                          lineHeight: 1.7,
-                          fontStyle: "italic",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
+                  <div className="p-5 lg:p-6">
+                    <div className="border-l-3 border-amber/30 pl-4">
+                      <p className="text-sm text-text-mid leading-relaxed italic whitespace-pre-wrap">
                         &ldquo;{m.message}&rdquo;
                       </p>
                     </div>
                   </div>
 
                   {/* Card Footer */}
-                  <div
-                    style={{
-                      padding: "12px 24px",
-                      background: "#F5F5F5",
-                      borderTop: "1px solid #E0E0E0",
-                      display: "flex",
-                      justifyContent: "flex-end",
-                    }}
-                  >
+                  <div className="p-3 flex justify-end bg-gray-100-cl border-t border-gray-300-cl">
                     <a
                       href={`mailto:${m.email}`}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        background: "#DC2626",
-                        color: "#FFFFFF",
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        padding: "8px 16px",
-                        borderRadius: "4px",
-                        textDecoration: "none",
-                        transition: "background 0.2s ease",
-                      }}
+                      className="bg-amber text-white text-xs font-bold uppercase tracking-announcement px-4 py-2 rounded transition-colors hover:bg-amber-hover flex items-center gap-2"
                     >
                       <Mail size={13} /> Reply via Email
                     </a>
@@ -494,20 +208,8 @@ export default function AdminMessagesPage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer
-        style={{
-          background: "#111111",
-          padding: "24px",
-          textAlign: "center",
-        }}
-      >
-        <p
-          style={{
-            fontSize: "12px",
-            color: "rgba(255,255,255,0.4)",
-            letterSpacing: "0.05em",
-          }}
-        >
+      <footer className="bg-navy p-6 text-center">
+        <p className="text-[12px] text-white/40 tracking-announcement">
           © {new Date().getFullYear()} OneShot Manufacturing — Admin Panel
         </p>
       </footer>

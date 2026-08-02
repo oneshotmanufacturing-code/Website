@@ -42,8 +42,24 @@ function formatBytes(bytes: number): string {
 export default async function AdminQuoteDetailPage({ params }: { params: { id: string } }) {
   const supabase = await createClient();
 
-  const { data: quote } = await supabase.from("quote_requests").select("*").eq("id", params.id).single();
-  if (!quote) notFound();
+  const { data: quote, error: quoteError } = await supabase.from("quote_requests").select("*").eq("id", params.id).single();
+  // PGRST116 = no row matched — either a bad id or an RLS denial (RLS filters
+  // rather than throws, so a real bad id and a permissions gap both land here
+  // via .single() finding zero rows). Any other error code is a genuine
+  // fetch failure and must not be shown as a plain 404.
+  if (!quote) {
+    if (quoteError && quoteError.code !== "PGRST116") {
+      return (
+        <div style={{ minHeight: "100vh", background: "#F5F5F5", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+          <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 4, padding: 24, maxWidth: 480 }}>
+            <h1 style={{ color: "#DC2626", fontSize: 18, fontWeight: 800, marginBottom: 8 }}>Couldn&apos;t load this quote</h1>
+            <p style={{ color: "#555555", fontSize: 14 }}>{quoteError.message}</p>
+          </div>
+        </div>
+      );
+    }
+    notFound();
+  }
 
   const rawSpecs = quote.specs as unknown;
   const structured = isStructuredSpecs(rawSpecs) ? rawSpecs : null;
@@ -51,10 +67,12 @@ export default async function AdminQuoteDetailPage({ params }: { params: { id: s
 
   // Signed URLs must be minted server-side; do it once here for every attachment.
   const attachmentLinks = new Map<string, string>();
+  const attachmentErrors = new Map<string, string>();
   if (structured?.attachments?.length) {
     for (const a of structured.attachments) {
-      const { data: signed } = await supabase.storage.from("quote_attachments").createSignedUrl(a.storage_path, 300);
+      const { data: signed, error: signError } = await supabase.storage.from("quote_attachments").createSignedUrl(a.storage_path, 300);
       if (signed?.signedUrl) attachmentLinks.set(a.storage_path, signed.signedUrl);
+      else if (signError) attachmentErrors.set(a.storage_path, signError.message);
     }
   }
 
@@ -219,7 +237,8 @@ export default async function AdminQuoteDetailPage({ params }: { params: { id: s
                           href={url ?? "#"}
                           target="_blank"
                           rel="noopener noreferrer"
-                          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", background: "#F9F9F9", border: "1px solid #EFEFEF", borderRadius: "4px", padding: "10px 14px", textDecoration: "none", color: "#111111", fontSize: "13px", opacity: url ? 1 : 0.5, pointerEvents: url ? "auto" : "none" }}
+                          title={url ? undefined : attachmentErrors.get(a.storage_path) ?? "Link unavailable"}
+                          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", background: url ? "#F9F9F9" : "#FEF2F2", border: url ? "1px solid #EFEFEF" : "1px solid #FECACA", borderRadius: "4px", padding: "10px 14px", textDecoration: "none", color: "#111111", fontSize: "13px", opacity: url ? 1 : 0.7, pointerEvents: url ? "auto" : "none" }}
                         >
                           <span><strong>{serviceLabel(a.section)}</strong> — {a.filename} <span style={{ color: "#888888" }}>({formatBytes(a.size)})</span></span>
                           <Download size={14} color="#DC2626" />

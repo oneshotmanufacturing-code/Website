@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import AdminNav from "@/components/admin/AdminNav";
 import { isOwner } from "@/lib/auth/owner";
 
-export default async function AdminLayout({
+export default async function PortalLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -13,15 +12,12 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 1. Not logged in -> must authenticate
   if (!user) {
     redirect("/login");
   }
 
-  // 2. Check if user email belongs to authorized owner accounts
   const isOwnerEmail = isOwner(user.email);
 
-  // 3. Check profile role from DB
   const { data: profile } = await supabase
     .from("profiles")
     .select("role")
@@ -30,15 +26,10 @@ export default async function AdminLayout({
 
   const isAdminRole = profile?.role === "admin";
 
-  // 4. If not owner email and not admin role -> bounce to customer portal
-  if (!isOwnerEmail && !isAdminRole) {
-    redirect("/portal");
+  // If user is an admin or owner, they should be in the admin panel, not the portal.
+  if (isOwnerEmail || isAdminRole) {
+    redirect("/admin");
   }
 
-  return (
-    <>
-      <AdminNav userEmail={user.email ?? ""} />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

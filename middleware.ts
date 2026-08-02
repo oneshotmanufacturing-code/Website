@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isOwner } from "@/lib/auth/owner";
 
 const isDummyEnv =
   process.env.NEXT_PUBLIC_SUPABASE_URL?.includes("dummy-project") ?? false;
@@ -46,8 +47,7 @@ export async function middleware(request: NextRequest) {
 
   // Logged in — check role for /admin routes
   if (user && pathname.startsWith("/admin")) {
-    const email = user.email?.toLowerCase() ?? "";
-    const isOwnerEmail = email.includes("oneshotmanufacturing@gmail.com") || email.includes("swarajdangare2016@gmail.com");
+    const isOwnerEmail = isOwner(user.email);
 
     if (!isOwnerEmail) {
       const { data: profile } = await supabase
@@ -64,8 +64,7 @@ export async function middleware(request: NextRequest) {
 
   // Logged-in users visiting /login or /signup → redirect to appropriate dashboard
   if (user && (pathname === "/login" || pathname === "/signup")) {
-    const email = user.email?.toLowerCase() ?? "";
-    const isOwnerEmail = email.includes("oneshot") || email.includes("swaraj");
+    const isOwnerEmail = isOwner(user.email);
 
     if (isOwnerEmail) {
       return NextResponse.redirect(new URL("/admin", request.url));
